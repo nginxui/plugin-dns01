@@ -62,6 +62,15 @@ func Build() (*protocol.Manifest, error) {
 		executables[p.OS+"-"+p.Arch] = ExecutablePath(p.OS, p.Arch)
 	}
 
+	root, err := repoRoot()
+	if err != nil {
+		return nil, err
+	}
+	shared, err := webappSharedRanges(root)
+	if err != nil {
+		return nil, err
+	}
+
 	return &protocol.Manifest{
 		ID:                PluginID,
 		Name:              PluginName,
@@ -77,6 +86,7 @@ func Build() (*protocol.Manifest, error) {
 		Webapp: &protocol.ManifestWebapp{
 			BundlePath: "webapp/dist/main.js",
 			StylePath:  "webapp/dist/style.css",
+			Shared:     shared,
 		},
 		Capabilities: []string{protocol.CapabilityDNS01},
 		Permissions:  []string{protocol.PermissionNetwork},
@@ -99,6 +109,33 @@ func Build() (*protocol.Manifest, error) {
 			},
 		},
 	}, nil
+}
+
+// webappManifestFragment is the shape @nginx-ui/plugin-sdk/vite writes to
+// webapp/dist/manifest.webapp.json. Only Shared is consumed here: bundle_path
+// and style_path are fixed by the layout build.sh packages.
+type webappManifestFragment struct {
+	Shared map[string]string `json:"shared"`
+}
+
+// webappSharedRanges reads the semver ranges the webapp bundle was built
+// against, if the bundle has been built. A missing file is not an error: the
+// Go tests and cross compilation do not depend on the JS toolchain having run.
+func webappSharedRanges(root string) (map[string]string, error) {
+	path := filepath.Join(root, "webapp", "dist", "manifest.webapp.json")
+	data, err := os.ReadFile(path)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return nil, nil
+		}
+		return nil, fmt.Errorf("read %s: %w", path, err)
+	}
+
+	var fragment webappManifestFragment
+	if err := json.Unmarshal(data, &fragment); err != nil {
+		return nil, fmt.Errorf("decode %s: %w", path, err)
+	}
+	return fragment.Shared, nil
 }
 
 // dns01Providers converts the catalog into manifest entries.

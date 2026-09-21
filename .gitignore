@@ -8,3 +8,7 @@ dist/
 # Built executables
 dns01
 dns01-*
+
+# Webapp bundle
+node_modules/
+webapp/dist/

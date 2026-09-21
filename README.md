@@ -105,10 +105,41 @@ Refreshing the catalog with `go run ./cmd/lego_config` is the one operation
 that downloads anything, and it is a maintainer tool, not part of running the
 plugin.
 
+## Web bundle
+
+`webapp/` is a small Vue 3 + TypeScript project, built with
+[@nginx-ui/plugin-sdk](https://github.com/0xJacky/nginx-ui-plugin-sdk-web),
+that replaces the host's built-in DNS-01 challenge form
+(`certificate.challenge.form:dns01`) with one that also exposes the plugin's
+own per-certificate options: disabling CNAME following, and skipping the
+authoritative or the recursive nameserver propagation check.
+
+```bash
+cd webapp
+bun install
+bun run build     # writes webapp/dist/{main.js,style.css,manifest.webapp.json}
+```
+
+`webapp/dist/manifest.webapp.json` is not part of the package; it only tells
+`go run ./cmd/manifest` which semver ranges the bundle was built against, so
+`plugin.json`'s `webapp.shared` always matches the versions of vue,
+vue-router, pinia, antdv-next and @vueuse/core the bundle actually used.
+Build the webapp **before** regenerating the manifest:
+
+```bash
+(cd webapp && bun install && bun run build)
+go run ./cmd/manifest
+```
+
+`build.sh` copies `webapp/dist` into the package automatically when the
+directory exists, so a plugin built without Bun still works, minus the custom
+DNS-01 form (the host falls back to its own generic DNS challenge UI).
+
 ## Development
 
 ```bash
 go run ./cmd/lego_config          # refresh catalog/data from the latest lego release
+(cd webapp && bun install && bun run build)  # optional: build the webapp bundle first
 go run ./cmd/manifest             # regenerate plugin.json
 go test -race -count=1 ./...      # run the tests
 ./build.sh --host-only            # build for the current platform
@@ -117,7 +148,11 @@ go test -race -count=1 ./...      # run the tests
 
 The plugin depends on
 [nginx-ui-plugin-sdk-go](https://github.com/0xJacky/nginx-ui-plugin-sdk-go)
-through a local `replace` directive until the SDK is published.
+through a local `replace` directive until the SDK is published. The webapp
+depends on
+[nginx-ui-plugin-sdk-web](https://github.com/0xJacky/nginx-ui-plugin-sdk-web)
+the same way, through `"file:../../nginx-ui-plugin-sdk-web"` in
+`webapp/package.json`.
 
 ## Support
 
