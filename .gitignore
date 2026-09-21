@@ -1,0 +1,10 @@
+.DS_Store
+dist/
+*.tar.gz
+*.test
+*.out
+*.prof
+
+# Built executables
+dns01
+dns01-*

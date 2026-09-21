@@ -1,0 +1,4402 @@
+{
+  "id": "com.nginxui.dns01",
+  "name": "DNS-01 Challenge",
+  "version": "1.0.0",
+  "description": "Solve the ACME DNS-01 challenge with any of the DNS providers supported by lego.",
+  "api_version": 1,
+  "min_nginx_ui_version": "2.7.0",
+  "server": {
+    "executables": {
+      "darwin-amd64": "server/dist/dns01-darwin-amd64",
+      "darwin-arm64": "server/dist/dns01-darwin-arm64",
+      "linux-amd64": "server/dist/dns01-linux-amd64",
+      "linux-arm64": "server/dist/dns01-linux-arm64",
+      "windows-amd64": "server/dist/dns01-windows-amd64.exe",
+      "windows-arm64": "server/dist/dns01-windows-arm64.exe"
+    },
+    "lifecycle": "on_demand",
+    "idle_timeout_seconds": 300
+  },
+  "webapp": {
+    "bundle_path": "webapp/dist/main.js",
+    "style_path": "webapp/dist/style.css"
+  },
+  "capabilities": [
+    "dns01"
+  ],
+  "permissions": [
+    "network"
+  ],
+  "dns01": {
+    "providers": [
+      {
+        "name": "1cloud.ru",
+        "code": "onecloudru",
+        "configuration": {
+          "credentials": {
+            "ONECLOUDRU_TOKEN": "API token"
+          },
+          "additional": {
+            "ONECLOUDRU_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "ONECLOUDRU_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "ONECLOUDRU_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "ONECLOUDRU_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 300)"
+          }
+        },
+        "links": {
+          "api": "https://1cloud.ru/api/"
+        }
+      },
+      {
+        "name": "35.com/三五互联",
+        "code": "com35",
+        "configuration": {
+          "credentials": {
+            "COM35_PASSWORD": "API password",
+            "COM35_USERNAME": "Username"
+          },
+          "additional": {
+            "COM35_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "COM35_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 10)",
+            "COM35_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 120)",
+            "COM35_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 60)"
+          }
+        },
+        "links": {
+          "api": "https://api.35.cn/CustomerCenter/doc/domain_v2.html"
+        }
+      },
+      {
+        "name": "51DNS",
+        "code": "dns51",
+        "configuration": {
+          "credentials": {
+            "DNS51_API_KEY": "API key",
+            "DNS51_API_SECRET": "API secret"
+          },
+          "additional": {
+            "DNS51_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "DNS51_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "DNS51_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "DNS51_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://www.51dns.com/document/api/4/81.html"
+        }
+      },
+      {
+        "name": "Abion",
+        "code": "abion",
+        "configuration": {
+          "credentials": {
+            "ABION_API_KEY": "API key"
+          },
+          "additional": {
+            "ABION_HTTP_TIMEOUT": "API request timeout in seconds (Default: 10)",
+            "ABION_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "ABION_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "ABION_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://demo.abion.com/pmapi-doc/openapi-ui/index.html"
+        }
+      },
+      {
+        "name": "Active24",
+        "code": "active24",
+        "configuration": {
+          "credentials": {
+            "ACTIVE24_API_KEY": "API key",
+            "ACTIVE24_SECRET": "Secret"
+          },
+          "additional": {
+            "ACTIVE24_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "ACTIVE24_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "ACTIVE24_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "ACTIVE24_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://rest.active24.cz/v2/docs"
+        }
+      },
+      {
+        "name": "Akamai EdgeDNS",
+        "code": "edgedns",
+        "configuration": {
+          "credentials": {
+            "AKAMAI_ACCESS_TOKEN": "Access token, managed by the Akamai EdgeGrid client",
+            "AKAMAI_CLIENT_SECRET": "Client secret, managed by the Akamai EdgeGrid client",
+            "AKAMAI_CLIENT_TOKEN": "Client token, managed by the Akamai EdgeGrid client",
+            "AKAMAI_EDGERC": "Path to the .edgerc file, managed by the Akamai EdgeGrid client",
+            "AKAMAI_EDGERC_SECTION": "Configuration section, managed by the Akamai EdgeGrid client",
+            "AKAMAI_HOST": "API host, managed by the Akamai EdgeGrid client"
+          },
+          "additional": {
+            "AKAMAI_ACCOUNT_SWITCH_KEY": "Target account ID when the DNS zone and credentials belong to different accounts",
+            "AKAMAI_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 15)",
+            "AKAMAI_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 180)",
+            "AKAMAI_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://developer.akamai.com/api/cloud_security/edge_dns_zone_management/v2.html",
+          "go_client": "https://github.com/akamai/AkamaiOPEN-edgegrid-golang"
+        }
+      },
+      {
+        "name": "Alibaba Cloud DNS",
+        "code": "alidns",
+        "configuration": {
+          "credentials": {
+            "ALICLOUD_ACCESS_KEY": "Access key ID",
+            "ALICLOUD_RAM_ROLE": "Your instance RAM role (https://www.alibabacloud.com/help/en/ecs/user-guide/attach-an-instance-ram-role-to-an-ecs-instance)",
+            "ALICLOUD_SECRET_KEY": "Access Key secret",
+            "ALICLOUD_SECURITY_TOKEN": "STS Security Token (optional)"
+          },
+          "additional": {
+            "ALICLOUD_HTTP_TIMEOUT": "API request timeout in seconds (Default: 10)",
+            "ALICLOUD_LINE": "Line (Default: default)",
+            "ALICLOUD_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "ALICLOUD_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "ALICLOUD_REGION_ID": "Region ID (Default: cn-hangzhou)",
+            "ALICLOUD_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 600)"
+          }
+        },
+        "links": {
+          "api": "https://www.alibabacloud.com/help/en/alibaba-cloud-dns/latest/api-alidns-2015-01-09-dir-parsing-records",
+          "go_client": "https://github.com/alibabacloud-go/alidns-20150109"
+        }
+      },
+      {
+        "name": "AlibabaCloud ESA",
+        "code": "aliesa",
+        "configuration": {
+          "credentials": {
+            "ALIESA_ACCESS_KEY": "Access key ID",
+            "ALIESA_RAM_ROLE": "Your instance RAM role (https://www.alibabacloud.com/help/en/ecs/user-guide/attach-an-instance-ram-role-to-an-ecs-instance)",
+            "ALIESA_SECRET_KEY": "Access Key secret",
+            "ALIESA_SECURITY_TOKEN": "STS Security Token (optional)"
+          },
+          "additional": {
+            "ALIESA_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "ALIESA_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "ALIESA_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "ALIESA_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://www.alibabacloud.com/help/en/edge-security-acceleration/esa/api-esa-2024-09-10-overview?spm=a2c63.p38356.help-menu-2673927.d_6_0_0.20b224c28PSZDc#:~:text=DNS-,DNS%20records,-DNS%20records",
+          "go_client": "https://github.com/alibabacloud-go/esa-20240910"
+        }
+      },
+      {
+        "name": "all-inkl",
+        "code": "allinkl",
+        "configuration": {
+          "credentials": {
+            "ALL_INKL_LOGIN": "KAS login",
+            "ALL_INKL_PASSWORD": "KAS password"
+          },
+          "additional": {
+            "ALL_INKL_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "ALL_INKL_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "ALL_INKL_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)"
+          }
+        },
+        "links": {
+          "api": "https://kasapi.kasserver.com/dokumentation/phpdoc/index.html"
+        }
+      },
+      {
+        "name": "Alwaysdata",
+        "code": "alwaysdata",
+        "configuration": {
+          "credentials": {
+            "ALWAYSDATA_API_KEY": "API Key"
+          },
+          "additional": {
+            "ALWAYSDATA_ACCOUNT": "Account name",
+            "ALWAYSDATA_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "ALWAYSDATA_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "ALWAYSDATA_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "ALWAYSDATA_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://help.alwaysdata.com/en/api/resources/"
+        }
+      },
+      {
+        "name": "Amazon Lightsail",
+        "code": "lightsail",
+        "configuration": {
+          "credentials": {
+            "AWS_ACCESS_KEY_ID": "Managed by the AWS client. Access key ID (`AWS_ACCESS_KEY_ID_FILE` is not supported, use `AWS_SHARED_CREDENTIALS_FILE` instead)",
+            "AWS_SECRET_ACCESS_KEY": "Managed by the AWS client. Secret access key (`AWS_SECRET_ACCESS_KEY_FILE` is not supported, use `AWS_SHARED_CREDENTIALS_FILE` instead)",
+            "DNS_ZONE": "Domain name of the DNS zone"
+          },
+          "additional": {
+            "AWS_SHARED_CREDENTIALS_FILE": "Managed by the AWS client. Shared credentials file.",
+            "LIGHTSAIL_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "LIGHTSAIL_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "go_client": "https://github.com/aws/aws-sdk-go-v2"
+        }
+      },
+      {
+        "name": "Amazon Route 53",
+        "code": "route53",
+        "configuration": {
+          "credentials": {
+            "AWS_ACCESS_KEY_ID": "Managed by the AWS client. Access key ID (`AWS_ACCESS_KEY_ID_FILE` is not supported, use `AWS_SHARED_CREDENTIALS_FILE` instead)",
+            "AWS_ASSUME_ROLE_ARN": "Managed by the AWS Role ARN (`AWS_ASSUME_ROLE_ARN_FILE` is not supported)",
+            "AWS_EXTERNAL_ID": "Managed by STS AssumeRole API operation (`AWS_EXTERNAL_ID_FILE` is not supported)",
+            "AWS_HOSTED_ZONE_ID": "Override the hosted zone ID.",
+            "AWS_PROFILE": "Managed by the AWS client (`AWS_PROFILE_FILE` is not supported)",
+            "AWS_REGION": "Managed by the AWS client (`AWS_REGION_FILE` is not supported)",
+            "AWS_SDK_LOAD_CONFIG": "Managed by the AWS client. Retrieve the region from the CLI config file (`AWS_SDK_LOAD_CONFIG_FILE` is not supported)",
+            "AWS_SECRET_ACCESS_KEY": "Managed by the AWS client. Secret access key (`AWS_SECRET_ACCESS_KEY_FILE` is not supported, use `AWS_SHARED_CREDENTIALS_FILE` instead)",
+            "AWS_WAIT_FOR_RECORD_SETS_CHANGED": "Wait for changes to be INSYNC (it can be unstable)"
+          },
+          "additional": {
+            "AWS_MAX_RETRIES": "The number of maximum returns the service will use to make an individual API request",
+            "AWS_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 4)",
+            "AWS_PRIVATE_ZONE": "Set to true to use private zones only (default: use public zones only)",
+            "AWS_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 120)",
+            "AWS_SHARED_CREDENTIALS_FILE": "Managed by the AWS client. Shared credentials file.",
+            "AWS_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 10)"
+          }
+        },
+        "links": {
+          "api": "https://docs.aws.amazon.com/Route53/latest/APIReference/API_Operations_Amazon_Route_53.html",
+          "go_client": "https://github.com/aws/aws-sdk-go-v2"
+        }
+      },
+      {
+        "name": "Amazon S3",
+        "code": "s3",
+        "configuration": {
+          "credentials": {
+            "AWS_ACCESS_KEY_ID": "Managed by the AWS client. Access key ID (`AWS_ACCESS_KEY_ID_FILE` is not supported, use `AWS_SHARED_CREDENTIALS_FILE` instead)",
+            "AWS_ASSUME_ROLE_ARN": "Managed by the AWS Role ARN (`AWS_ASSUME_ROLE_ARN_FILE` is not supported)",
+            "AWS_EXTERNAL_ID": "Managed by STS AssumeRole API operation (`AWS_EXTERNAL_ID_FILE` is not supported)",
+            "AWS_PROFILE": "Managed by the AWS client (`AWS_PROFILE_FILE` is not supported)",
+            "AWS_REGION": "Managed by the AWS client (`AWS_REGION_FILE` is not supported)",
+            "AWS_SDK_LOAD_CONFIG": "Managed by the AWS client. Retrieve the region from the CLI config file (`AWS_SDK_LOAD_CONFIG_FILE` is not supported)",
+            "AWS_SECRET_ACCESS_KEY": "Managed by the AWS client. Secret access key (`AWS_SECRET_ACCESS_KEY_FILE` is not supported, use `AWS_SHARED_CREDENTIALS_FILE` instead)",
+            "S3_BUCKET": "Name of the s3 bucket"
+          },
+          "additional": {
+            "AWS_MAX_RETRIES": "The number of maximum returns the service will use to make an individual API request",
+            "AWS_SHARED_CREDENTIALS_FILE": "Managed by the AWS client. Shared credentials file."
+          }
+        },
+        "links": {
+          "api": "https://docs.aws.amazon.com/AmazonS3/latest/userguide//Welcome.html",
+          "go_client": "https://docs.aws.amazon.com/sdk-for-go/"
+        }
+      },
+      {
+        "name": "Anexia CloudDNS",
+        "code": "anexia",
+        "configuration": {
+          "credentials": {
+            "ANEXIA_TOKEN": "API token for Anexia Engine"
+          },
+          "additional": {
+            "ANEXIA_API_URL": "API endpoint URL (default: https://engine.anexia-it.com)",
+            "ANEXIA_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "ANEXIA_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "ANEXIA_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 300)",
+            "ANEXIA_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 300)"
+          }
+        },
+        "links": {
+          "api": "https://engine.anexia-it.com/docs/en/module/clouddns/api"
+        }
+      },
+      {
+        "name": "ANS SafeDNS",
+        "code": "safedns",
+        "configuration": {
+          "credentials": {
+            "SAFEDNS_AUTH_TOKEN": "Authentication token"
+          },
+          "additional": {
+            "SAFEDNS_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "SAFEDNS_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "SAFEDNS_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "SAFEDNS_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://developers.ukfast.io/documentation/safedns"
+        }
+      },
+      {
+        "name": "ArtFiles",
+        "code": "artfiles",
+        "configuration": {
+          "credentials": {
+            "ARTFILES_PASSWORD": "API password",
+            "ARTFILES_USERNAME": "API username"
+          },
+          "additional": {
+            "ARTFILES_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "ARTFILES_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "ARTFILES_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 360)",
+            "ARTFILES_SERVER_NAME": "Your server name (Default: dcp)"
+          }
+        },
+        "links": {
+          "api": "https://support.artfiles.de/DCP-API#dns"
+        }
+      },
+      {
+        "name": "ArvanCloud",
+        "code": "arvancloud",
+        "configuration": {
+          "credentials": {
+            "ARVANCLOUD_API_KEY": "API key"
+          },
+          "additional": {
+            "ARVANCLOUD_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "ARVANCLOUD_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "ARVANCLOUD_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 120)",
+            "ARVANCLOUD_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 600)"
+          }
+        },
+        "links": {
+          "api": "https://www.arvancloud.ir/docs/api/cdn/4.0"
+        }
+      },
+      {
+        "name": "Aurora DNS",
+        "code": "auroradns",
+        "configuration": {
+          "credentials": {
+            "AURORA_API_KEY": "API key or username to used",
+            "AURORA_SECRET": "Secret password to be used"
+          },
+          "additional": {
+            "AURORA_ENDPOINT": "API endpoint URL",
+            "AURORA_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "AURORA_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "AURORA_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 300)"
+          }
+        },
+        "links": {
+          "api": "https://libcloud.readthedocs.io/en/latest/dns/drivers/auroradns.html#api-docs",
+          "go_client": "https://github.com/nrdcg/auroradns"
+        }
+      },
+      {
+        "name": "Autodns",
+        "code": "autodns",
+        "configuration": {
+          "credentials": {
+            "AUTODNS_API_PASSWORD": "User Password",
+            "AUTODNS_API_USER": "Username"
+          },
+          "additional": {
+            "AUTODNS_CONTEXT": "API context (4 for production, 1 for testing. Defaults to 4)",
+            "AUTODNS_ENDPOINT": "API endpoint URL, defaults to https://api.autodns.com/v1/",
+            "AUTODNS_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "AUTODNS_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "AUTODNS_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 120)",
+            "AUTODNS_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 600)"
+          }
+        },
+        "links": {
+          "api": "https://help.internetx.com/display/APIJSONEN"
+        }
+      },
+      {
+        "name": "Axelname",
+        "code": "axelname",
+        "configuration": {
+          "credentials": {
+            "AXELNAME_NICKNAME": "Account nickname",
+            "AXELNAME_TOKEN": "API token"
+          },
+          "additional": {
+            "AXELNAME_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "AXELNAME_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "AXELNAME_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "AXELNAME_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://axelname.ru/static/content/files/axelname_api_rest_lite.pdf"
+        }
+      },
+      {
+        "name": "Azion",
+        "code": "azion",
+        "configuration": {
+          "credentials": {
+            "AZION_PERSONAL_TOKEN": "Your Azion personal token."
+          },
+          "additional": {
+            "AZION_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "AZION_PAGE_SIZE": "The page size for the API request (Default: 50)",
+            "AZION_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "AZION_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "AZION_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://api.azion.com/",
+          "go_client": "https://github.com/aziontech/azionapi-go-sdk"
+        }
+      },
+      {
+        "name": "Azure DNS",
+        "code": "azuredns",
+        "configuration": {
+          "credentials": {
+            "AZURE_CLIENT_CERTIFICATE_PATH": "Client certificate path",
+            "AZURE_CLIENT_ID": "Client ID",
+            "AZURE_CLIENT_SECRET": "Client secret",
+            "AZURE_TENANT_ID": "Tenant ID"
+          },
+          "additional": {
+            "AZURE_AUTH_METHOD": "Specify which authentication method to use",
+            "AZURE_AUTH_MSI_TIMEOUT": "Managed Identity timeout duration",
+            "AZURE_ENVIRONMENT": "Azure environment, one of: public, usgovernment, and china",
+            "AZURE_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "AZURE_PRIVATE_ZONE": "Set to true to use Azure Private DNS Zones and not public",
+            "AZURE_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 120)",
+            "AZURE_RESOURCE_GROUP": "DNS zone resource group",
+            "AZURE_SERVICEDISCOVERY_FILTER": "Advanced ServiceDiscovery filter using Kusto query condition",
+            "AZURE_SUBSCRIPTION_ID": "DNS zone subscription ID",
+            "AZURE_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 60)",
+            "AZURE_ZONE_NAME": "Zone name to use inside Azure DNS service to add the TXT record in"
+          }
+        },
+        "links": {
+          "api": "https://docs.microsoft.com/en-us/go/azure/",
+          "go_client": "https://github.com/Azure/azure-sdk-for-go"
+        }
+      },
+      {
+        "name": "Baidu Cloud",
+        "code": "baiducloud",
+        "configuration": {
+          "credentials": {
+            "BAIDUCLOUD_ACCESS_KEY_ID": "Access key",
+            "BAIDUCLOUD_SECRET_ACCESS_KEY": "Secret access key"
+          },
+          "additional": {
+            "BAIDUCLOUD_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "BAIDUCLOUD_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "BAIDUCLOUD_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 300)"
+          }
+        },
+        "links": {
+          "api": "https://cloud.baidu.com/doc/DNS/s/El4s7lssr",
+          "go_client": "https://github.com/baidubce/bce-sdk-go"
+        }
+      },
+      {
+        "name": "Beget.com",
+        "code": "beget",
+        "configuration": {
+          "credentials": {
+            "BEGET_PASSWORD": "API password",
+            "BEGET_USERNAME": "API username"
+          },
+          "additional": {
+            "BEGET_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "BEGET_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 30)",
+            "BEGET_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 300)",
+            "BEGET_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://beget.com/ru/kb/api/funkczii-upravleniya-dns"
+        }
+      },
+      {
+        "name": "Binary Lane",
+        "code": "binarylane",
+        "configuration": {
+          "credentials": {
+            "BINARYLANE_API_TOKEN": "API token"
+          },
+          "additional": {
+            "BINARYLANE_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "BINARYLANE_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "BINARYLANE_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "BINARYLANE_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://api.binarylane.com.au/reference/#tag/Domains"
+        }
+      },
+      {
+        "name": "Bindman",
+        "code": "bindman",
+        "configuration": {
+          "credentials": {
+            "BINDMAN_MANAGER_ADDRESS": "The server URL, should have scheme, hostname, and port (if required) of the Bindman-DNS Manager server"
+          },
+          "additional": {
+            "BINDMAN_HTTP_TIMEOUT": "API request timeout in seconds (Default: 60)",
+            "BINDMAN_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "BINDMAN_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)"
+          }
+        },
+        "links": {
+          "api": "https://gitlab.isc.org/isc-projects/bind9",
+          "go_client": "https://github.com/labbsr0x/bindman-dns-webhook"
+        }
+      },
+      {
+        "name": "Bluecat",
+        "code": "bluecat",
+        "configuration": {
+          "credentials": {
+            "BLUECAT_CONFIG_NAME": "Configuration name",
+            "BLUECAT_DNS_VIEW": "External DNS View Name",
+            "BLUECAT_PASSWORD": "API password",
+            "BLUECAT_SERVER_URL": "The server URL, should have scheme, hostname, and port (if required) of the authoritative Bluecat BAM serve",
+            "BLUECAT_USER_NAME": "API username"
+          },
+          "additional": {
+            "BLUECAT_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "BLUECAT_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "BLUECAT_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "BLUECAT_SKIP_DEPLOY": "Skip deployments",
+            "BLUECAT_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://docs.bluecatnetworks.com/r/Address-Manager-API-Guide/REST-API/9.1.0"
+        }
+      },
+      {
+        "name": "Bluecat v2",
+        "code": "bluecatv2",
+        "configuration": {
+          "credentials": {
+            "BLUECATV2_CONFIG_NAME": "Configuration name",
+            "BLUECATV2_PASSWORD": "API password",
+            "BLUECATV2_SERVER_URL": "The server URL: it should have a scheme, hostname, and port (if required) of the authoritative Bluecat BAM serve",
+            "BLUECATV2_USERNAME": "API username",
+            "BLUECATV2_VIEW_NAME": "DNS View Name"
+          },
+          "additional": {
+            "BLUECATV2_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "BLUECATV2_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "BLUECATV2_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "BLUECATV2_SKIP_DEPLOY": "Skip quick deployments",
+            "BLUECATV2_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://docs.bluecatnetworks.com/r/Address-Manager-RESTful-v2-API-Guide/Introduction/9.6.0"
+        }
+      },
+      {
+        "name": "BookMyName",
+        "code": "bookmyname",
+        "configuration": {
+          "credentials": {
+            "BOOKMYNAME_PASSWORD": "Password",
+            "BOOKMYNAME_USERNAME": "Username"
+          },
+          "additional": {
+            "BOOKMYNAME_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "BOOKMYNAME_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "BOOKMYNAME_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "BOOKMYNAME_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://fr.faqs.bookmyname.com/frfaqs/dyndns"
+        }
+      },
+      {
+        "name": "Bunny",
+        "code": "bunny",
+        "configuration": {
+          "credentials": {
+            "BUNNY_API_KEY": "API key"
+          },
+          "additional": {
+            "BUNNY_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "BUNNY_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "BUNNY_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 120)",
+            "BUNNY_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 60)"
+          }
+        },
+        "links": {
+          "api": "https://docs.bunny.net/reference/dnszonepublic_index"
+        }
+      },
+      {
+        "name": "Checkdomain",
+        "code": "checkdomain",
+        "configuration": {
+          "credentials": {
+            "CHECKDOMAIN_TOKEN": "API token"
+          },
+          "additional": {
+            "CHECKDOMAIN_ENDPOINT": "API endpoint URL, defaults to https://api.checkdomain.de",
+            "CHECKDOMAIN_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "CHECKDOMAIN_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 300)",
+            "CHECKDOMAIN_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 7)",
+            "CHECKDOMAIN_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 300)"
+          }
+        },
+        "links": {
+          "api": "https://developer.checkdomain.de/reference/"
+        }
+      },
+      {
+        "name": "Civo",
+        "code": "civo",
+        "configuration": {
+          "credentials": {
+            "CIVO_TOKEN": "Authentication token"
+          },
+          "additional": {
+            "CIVO_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "CIVO_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 30)",
+            "CIVO_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 300)",
+            "CIVO_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 600)"
+          }
+        },
+        "links": {
+          "api": "https://www.civo.com/api/dns"
+        }
+      },
+      {
+        "name": "Cloud.ru",
+        "code": "cloudru",
+        "configuration": {
+          "credentials": {
+            "CLOUDRU_KEY_ID": "Key ID (login)",
+            "CLOUDRU_SECRET": "Key Secret",
+            "CLOUDRU_SERVICE_INSTANCE_ID": "Service Instance ID (parentId)"
+          },
+          "additional": {
+            "CLOUDRU_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "CLOUDRU_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 5)",
+            "CLOUDRU_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 300)",
+            "CLOUDRU_SEQUENCE_INTERVAL": "Time between sequential requests in seconds (Default: 120)",
+            "CLOUDRU_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://cloud.ru/ru/docs/clouddns/ug/topics/api-ref.html"
+        }
+      },
+      {
+        "name": "CloudDNS",
+        "code": "clouddns",
+        "configuration": {
+          "credentials": {
+            "CLOUDDNS_CLIENT_ID": "Client ID",
+            "CLOUDDNS_EMAIL": "Account email",
+            "CLOUDDNS_PASSWORD": "Account password"
+          },
+          "additional": {
+            "CLOUDDNS_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "CLOUDDNS_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 5)",
+            "CLOUDDNS_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 120)",
+            "CLOUDDNS_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 300)"
+          }
+        },
+        "links": {
+          "api": "https://admin.vshosting.cloud/clouddns/swagger/"
+        }
+      },
+      {
+        "name": "Cloudflare",
+        "code": "cloudflare",
+        "configuration": {
+          "credentials": {
+            "CF_API_EMAIL": "Account email",
+            "CF_API_KEY": "API key",
+            "CF_DNS_API_TOKEN": "API token with DNS:Edit permission (since v3.1.0)",
+            "CF_ZONE_API_TOKEN": "API token with Zone:Read permission (since v3.1.0)",
+            "CLOUDFLARE_API_KEY": "Alias to CF_API_KEY",
+            "CLOUDFLARE_DNS_API_TOKEN": "Alias to CF_DNS_API_TOKEN",
+            "CLOUDFLARE_EMAIL": "Alias to CF_API_EMAIL",
+            "CLOUDFLARE_ZONE_API_TOKEN": "Alias to CF_ZONE_API_TOKEN"
+          },
+          "additional": {
+            "CLOUDFLARE_BASE_URL": "API base URL (Default: https://api.cloudflare.com/client/v4)",
+            "CLOUDFLARE_HTTP_TIMEOUT": "API request timeout in seconds (Default: )",
+            "CLOUDFLARE_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "CLOUDFLARE_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 120)",
+            "CLOUDFLARE_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://api.cloudflare.com/",
+          "go_client": "https://github.com/cloudflare/cloudflare-go"
+        }
+      },
+      {
+        "name": "ClouDNS",
+        "code": "cloudns",
+        "configuration": {
+          "credentials": {
+            "CLOUDNS_AUTH_ID": "The API user ID",
+            "CLOUDNS_AUTH_PASSWORD": "The password for API user ID"
+          },
+          "additional": {
+            "CLOUDNS_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "CLOUDNS_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 10)",
+            "CLOUDNS_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 180)",
+            "CLOUDNS_SUB_AUTH_ID": "The API sub user ID",
+            "CLOUDNS_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 60)"
+          }
+        },
+        "links": {
+          "api": "https://www.cloudns.net/wiki/article/42/"
+        }
+      },
+      {
+        "name": "Connbyte",
+        "code": "connbyte",
+        "configuration": {
+          "credentials": {
+            "CONNBYTE_TOKEN": "Token"
+          },
+          "additional": {
+            "CONNBYTE_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "CONNBYTE_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "CONNBYTE_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "CONNBYTE_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://api.connbyte.com/"
+        }
+      },
+      {
+        "name": "ConoHa v2",
+        "code": "conoha",
+        "configuration": {
+          "credentials": {
+            "CONOHA_API_PASSWORD": "The API password",
+            "CONOHA_API_USERNAME": "The API username",
+            "CONOHA_TENANT_ID": "Tenant ID"
+          },
+          "additional": {
+            "CONOHA_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "CONOHA_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "CONOHA_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "CONOHA_REGION": "The region (Default: tyo1)",
+            "CONOHA_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 60)"
+          }
+        },
+        "links": {
+          "api": "https://doc.conoha.jp/reference/api-vps2/api-dns-vps2"
+        }
+      },
+      {
+        "name": "ConoHa v3",
+        "code": "conohav3",
+        "configuration": {
+          "credentials": {
+            "CONOHAV3_API_PASSWORD": "The API password",
+            "CONOHAV3_API_USER_ID": "The API user ID",
+            "CONOHAV3_TENANT_ID": "Tenant ID"
+          },
+          "additional": {
+            "CONOHAV3_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "CONOHAV3_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "CONOHAV3_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "CONOHAV3_REGION": "The region (Default: c3j1)",
+            "CONOHAV3_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 60)"
+          }
+        },
+        "links": {
+          "api": "https://doc.conoha.jp/reference/api-vps3/api-dns-vps3/"
+        }
+      },
+      {
+        "name": "Constellix",
+        "code": "constellix",
+        "configuration": {
+          "credentials": {
+            "CONSTELLIX_API_KEY": "User API key",
+            "CONSTELLIX_SECRET_KEY": "User secret key"
+          },
+          "additional": {
+            "CONSTELLIX_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "CONSTELLIX_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 10)",
+            "CONSTELLIX_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "CONSTELLIX_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 60)"
+          }
+        },
+        "links": {
+          "api": "https://api-docs.constellix.com"
+        }
+      },
+      {
+        "name": "Core-Networks",
+        "code": "corenetworks",
+        "configuration": {
+          "credentials": {
+            "CORENETWORKS_LOGIN": "The username of the API account",
+            "CORENETWORKS_PASSWORD": "The password"
+          },
+          "additional": {
+            "CORENETWORKS_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "CORENETWORKS_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "CORENETWORKS_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "CORENETWORKS_SEQUENCE_INTERVAL": "Time between sequential requests in seconds (Default: 60)",
+            "CORENETWORKS_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 3600)"
+          }
+        },
+        "links": {
+          "api": "https://beta.api.core-networks.de/doc/"
+        }
+      },
+      {
+        "name": "CPanel/WHM",
+        "code": "cpanel",
+        "configuration": {
+          "credentials": {
+            "CPANEL_BASE_URL": "API server URL",
+            "CPANEL_TOKEN": "API token",
+            "CPANEL_USERNAME": "username"
+          },
+          "additional": {
+            "CPANEL_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "CPANEL_MODE": "use cpanel API or WHM API (Default: cpanel)",
+            "CPANEL_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "CPANEL_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 120)",
+            "CPANEL_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 300)"
+          }
+        },
+        "links": {}
+      },
+      {
+        "name": "Curanet",
+        "code": "curanet",
+        "configuration": {
+          "credentials": {
+            "CURANET_API_KEY": "API key"
+          },
+          "additional": {
+            "CURANET_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "CURANET_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "CURANET_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "CURANET_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://api.curanet.dk/dns/swagger/index.html"
+        }
+      },
+      {
+        "name": "Czechia",
+        "code": "czechia",
+        "configuration": {
+          "credentials": {
+            "CZECHIA_TOKEN": "Authorization token"
+          },
+          "additional": {
+            "CZECHIA_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "CZECHIA_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "CZECHIA_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "CZECHIA_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://api.czechia.com/swagger/index.html"
+        }
+      },
+      {
+        "name": "DanDomain",
+        "code": "dandomain",
+        "configuration": {
+          "credentials": {
+            "DANDOMAIN_API_KEY": "API key"
+          },
+          "additional": {
+            "DANDOMAIN_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "DANDOMAIN_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "DANDOMAIN_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "DANDOMAIN_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://api.dandomain.dk/dns/swagger/index.html"
+        }
+      },
+      {
+        "name": "DDnss (DynDNS Service)",
+        "code": "ddnss",
+        "configuration": {
+          "credentials": {
+            "DDNSS_KEY": "Update key"
+          },
+          "additional": {
+            "DDNSS_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "DDNSS_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "DDNSS_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "DDNSS_SEQUENCE_INTERVAL": "Time between sequential requests in seconds (Default: 60)",
+            "DDNSS_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://ddnss.de/info.php"
+        }
+      },
+      {
+        "name": "Derak Cloud",
+        "code": "derak",
+        "configuration": {
+          "credentials": {
+            "DERAK_API_KEY": "The API key"
+          },
+          "additional": {
+            "DERAK_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "DERAK_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 5)",
+            "DERAK_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 120)",
+            "DERAK_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)",
+            "DERAK_WEBSITE_ID": "Force the zone/website ID"
+          }
+        }
+      },
+      {
+        "name": "deSEC.io",
+        "code": "desec",
+        "configuration": {
+          "credentials": {
+            "DESEC_TOKEN": "Domain token"
+          },
+          "additional": {
+            "DESEC_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "DESEC_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 4)",
+            "DESEC_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 120)",
+            "DESEC_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 3600)"
+          }
+        },
+        "links": {
+          "api": "https://desec.readthedocs.io/en/latest/"
+        }
+      },
+      {
+        "name": "Designate DNSaaS for Openstack",
+        "code": "designate",
+        "configuration": {
+          "credentials": {
+            "OS_APPLICATION_CREDENTIAL_ID": "Application credential ID",
+            "OS_APPLICATION_CREDENTIAL_NAME": "Application credential name",
+            "OS_APPLICATION_CREDENTIAL_SECRET": "Application credential secret",
+            "OS_AUTH_URL": "Identity endpoint URL",
+            "OS_PASSWORD": "Password",
+            "OS_PROJECT_NAME": "Project name",
+            "OS_REGION_NAME": "Region name",
+            "OS_USERNAME": "Username",
+            "OS_USER_ID": "User ID"
+          },
+          "additional": {
+            "DESIGNATE_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 10)",
+            "DESIGNATE_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 600)",
+            "DESIGNATE_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 10)",
+            "DESIGNATE_ZONE_NAME": "The zone name to use in the OpenStack Project to manage TXT records.",
+            "OS_PROJECT_ID": "Project ID",
+            "OS_TENANT_NAME": "Tenant name (deprecated see OS_PROJECT_NAME and OS_PROJECT_ID)"
+          }
+        },
+        "links": {
+          "api": "https://docs.openstack.org/designate/latest/",
+          "go_client": "https://pkg.go.dev/github.com/gophercloud/gophercloud/openstack/dns/v2"
+        }
+      },
+      {
+        "name": "Digital Ocean",
+        "code": "digitalocean",
+        "configuration": {
+          "credentials": {
+            "DO_AUTH_TOKEN": "Authentication token"
+          },
+          "additional": {
+            "DO_API_URL": "The URL of the API",
+            "DO_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "DO_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 5)",
+            "DO_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "DO_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 30)"
+          }
+        },
+        "links": {
+          "api": "https://developers.digitalocean.com/documentation/v2/#domain-records"
+        }
+      },
+      {
+        "name": "Dinahosting",
+        "code": "dinahosting",
+        "configuration": {
+          "credentials": {
+            "DINAHOSTING_PASSWORD": "Password",
+            "DINAHOSTING_USERNAME": "Username"
+          },
+          "additional": {
+            "DINAHOSTING_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "DINAHOSTING_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "DINAHOSTING_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "DINAHOSTING_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://en.dinahosting.com/api"
+        }
+      },
+      {
+        "name": "DirectAdmin",
+        "code": "directadmin",
+        "configuration": {
+          "credentials": {
+            "DIRECTADMIN_API_URL": "URL of the API",
+            "DIRECTADMIN_PASSWORD": "API password",
+            "DIRECTADMIN_USERNAME": "API username"
+          },
+          "additional": {
+            "DIRECTADMIN_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "DIRECTADMIN_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 5)",
+            "DIRECTADMIN_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "DIRECTADMIN_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 30)",
+            "DIRECTADMIN_ZONE_NAME": "Zone name used to add the TXT record"
+          }
+        },
+        "links": {
+          "api": "https://www.directadmin.com/api.php"
+        }
+      },
+      {
+        "name": "DNS Made Easy",
+        "code": "dnsmadeeasy",
+        "configuration": {
+          "credentials": {
+            "DNSMADEEASY_API_KEY": "The API key",
+            "DNSMADEEASY_API_SECRET": "The API Secret key"
+          },
+          "additional": {
+            "DNSMADEEASY_HTTP_TIMEOUT": "API request timeout in seconds (Default: 10)",
+            "DNSMADEEASY_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "DNSMADEEASY_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "DNSMADEEASY_SANDBOX": "Activate the sandbox (boolean)",
+            "DNSMADEEASY_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://api-docs.dnsmadeeasy.com/"
+        }
+      },
+      {
+        "name": "DNS Update (RFC2136)",
+        "code": "dnsupdate",
+        "configuration": {
+          "credentials": {
+            "DNSUPDATE_NAMESERVER": "Network address in the form \"host\" or \"host:port\""
+          },
+          "additional": {
+            "DNSUPDATE_DNS_TIMEOUT": "API request timeout in seconds (Default: 10)",
+            "DNSUPDATE_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "DNSUPDATE_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "DNSUPDATE_SEQUENCE_INTERVAL": "Time between sequential requests in seconds (Default: 60)",
+            "DNSUPDATE_TSIG_ALGORITHM": "TSIG algorithm. See [miekg/dns#tsig.go](https://github.com/miekg/dns/blob/master/tsig.go) for supported values. To disable TSIG authentication, leave the `DNSUPDATE_TSIG_KEY` or `DNSUPDATE_TSIG_SECRET` variables unset.",
+            "DNSUPDATE_TSIG_FILE": "Path to a key file generated by tsig-keygen",
+            "DNSUPDATE_TSIG_GSS_KEYTAB_FILE": "Path to Kerberos keytab file. The TSIG algorithm must be `gss-tsig.`.",
+            "DNSUPDATE_TSIG_GSS_PASSWORD": "Kerberos password. The TSIG algorithm must be `gss-tsig.`.",
+            "DNSUPDATE_TSIG_GSS_REALM": "Kerberos realm. The TSIG algorithm must be `gss-tsig.`.",
+            "DNSUPDATE_TSIG_GSS_USERNAME": "Kerberos username. The TSIG algorithm must be `gss-tsig.`.",
+            "DNSUPDATE_TSIG_KEY": "Name of the secret key as defined in DNS server configuration. To disable TSIG authentication, leave the `DNSUPDATE_TSIG_KEY` variable unset.",
+            "DNSUPDATE_TSIG_SECRET": "Secret key payload. To disable TSIG authentication, leave the `DNSUPDATE_TSIG_SECRET` variable unset.",
+            "DNSUPDATE_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)",
+            "DNSUPDATE_ZONES": "List of potential zones (separated by commas)"
+          }
+        },
+        "links": {
+          "api": "https://www.rfc-editor.org/rfc/rfc2136.html"
+        }
+      },
+      {
+        "name": "dns.la",
+        "code": "dnsla",
+        "configuration": {
+          "credentials": {
+            "DNSLA_API_ID": "API ID",
+            "DNSLA_API_SECRET": "API secret"
+          },
+          "additional": {
+            "DNSLA_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "DNSLA_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "DNSLA_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "DNSLA_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://www.dns.la/docs/ApiDoc"
+        }
+      },
+      {
+        "name": "DNS.services",
+        "code": "dnsservices",
+        "configuration": {
+          "credentials": {
+            "DNSSERVICES_PASSWORD": "Password",
+            "DNSSERVICES_USERNAME": "Username"
+          },
+          "additional": {
+            "DNSSERVICES_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "DNSSERVICES_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "DNSSERVICES_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "DNSSERVICES_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://dns.services/userapi#dns-85"
+        }
+      },
+      {
+        "name": "DNScale",
+        "code": "dnscale",
+        "configuration": {
+          "credentials": {
+            "DNSCALE_API_TOKEN": "API token"
+          },
+          "additional": {
+            "DNSCALE_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "DNSCALE_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "DNSCALE_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "DNSCALE_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://dnscale.eu/api"
+        }
+      },
+      {
+        "name": "DNSExit",
+        "code": "dnsexit",
+        "configuration": {
+          "credentials": {
+            "DNSEXIT_API_KEY": "API key"
+          },
+          "additional": {
+            "DNSEXIT_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "DNSEXIT_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 10)",
+            "DNSEXIT_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 300)",
+            "DNSEXIT_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://dnsexit.com/dns/dns-api/"
+        }
+      },
+      {
+        "name": "dnsHome.de",
+        "code": "dnshomede",
+        "configuration": {
+          "credentials": {
+            "DNSHOMEDE_CREDENTIALS": "Comma-separated list of domain:password credential pairs"
+          },
+          "additional": {
+            "DNSHOMEDE_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "DNSHOMEDE_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 1200)",
+            "DNSHOMEDE_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 2)",
+            "DNSHOMEDE_SEQUENCE_INTERVAL": "Time between sequential requests in seconds (Default: 120)"
+          }
+        }
+      },
+      {
+        "name": "DNSimple",
+        "code": "dnsimple",
+        "configuration": {
+          "credentials": {
+            "DNSIMPLE_OAUTH_TOKEN": "OAuth token"
+          },
+          "additional": {
+            "DNSIMPLE_BASE_URL": "API endpoint URL",
+            "DNSIMPLE_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "DNSIMPLE_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "DNSIMPLE_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://developer.dnsimple.com/v2/",
+          "go_client": "https://github.com/dnsimple/dnsimple-go"
+        }
+      },
+      {
+        "name": "DNSMint",
+        "code": "dnsmint",
+        "configuration": {
+          "credentials": {
+            "DNSMINT_API_KEY": "API key with the dns01:write scope"
+          },
+          "additional": {
+            "DNSMINT_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "DNSMINT_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "DNSMINT_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "DNSMINT_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://dnsmint.com/api-reference"
+        }
+      },
+      {
+        "name": "Domain Offensive (do.de)",
+        "code": "dode",
+        "configuration": {
+          "credentials": {
+            "DODE_TOKEN": "API token"
+          },
+          "additional": {
+            "DODE_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "DODE_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "DODE_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "DODE_SEQUENCE_INTERVAL": "Time between sequential requests in seconds (Default: 60)"
+          }
+        },
+        "links": {
+          "api": "https://www.do.de/wiki/freie-ssl-tls-zertifikate-ueber-acme/"
+        }
+      },
+      {
+        "name": "Domeneshop",
+        "code": "domeneshop",
+        "configuration": {
+          "credentials": {
+            "DOMENESHOP_API_SECRET": "API secret",
+            "DOMENESHOP_API_TOKEN": "API token"
+          },
+          "additional": {
+            "DOMENESHOP_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "DOMENESHOP_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 20)",
+            "DOMENESHOP_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 300)"
+          }
+        },
+        "links": {
+          "api": "https://api.domeneshop.no/docs"
+        }
+      },
+      {
+        "name": "DreamHost",
+        "code": "dreamhost",
+        "configuration": {
+          "credentials": {
+            "DREAMHOST_API_KEY": "The API key"
+          },
+          "additional": {
+            "DREAMHOST_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "DREAMHOST_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 60)",
+            "DREAMHOST_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 3600)"
+          }
+        },
+        "links": {
+          "api": "https://help.dreamhost.com/hc/en-us/articles/217560167-API_overview"
+        }
+      },
+      {
+        "name": "Duck DNS",
+        "code": "duckdns",
+        "configuration": {
+          "credentials": {
+            "DUCKDNS_TOKEN": "Account token"
+          },
+          "additional": {
+            "DUCKDNS_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "DUCKDNS_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "DUCKDNS_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "DUCKDNS_SEQUENCE_INTERVAL": "Time between sequential requests in seconds (Default: 60)"
+          }
+        },
+        "links": {
+          "api": "https://www.duckdns.org/spec.jsp"
+        }
+      },
+      {
+        "name": "Dyn",
+        "code": "dyn",
+        "configuration": {
+          "credentials": {
+            "DYN_CUSTOMER_NAME": "Customer name",
+            "DYN_PASSWORD": "Password",
+            "DYN_USER_NAME": "User name"
+          },
+          "additional": {
+            "DYN_HTTP_TIMEOUT": "API request timeout in seconds (Default: 10)",
+            "DYN_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "DYN_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "DYN_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://help.dyn.com/rest/"
+        }
+      },
+      {
+        "name": "Dynadot",
+        "code": "dynadot",
+        "configuration": {
+          "credentials": {
+            "DYNADOT_API_KEY": "API key",
+            "DYNADOT_API_SECRET": "API secret"
+          },
+          "additional": {
+            "DYNADOT_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "DYNADOT_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "DYNADOT_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "DYNADOT_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://www.dynadot.com/domain/api-document"
+        }
+      },
+      {
+        "name": "DynDnsFree.de",
+        "code": "dyndnsfree",
+        "configuration": {
+          "credentials": {
+            "DYNDNSFREE_PASSWORD": "Password",
+            "DYNDNSFREE_USERNAME": "Username"
+          },
+          "additional": {
+            "DYNDNSFREE_HTTP_TIMEOUT": "Request timeout in seconds (Default: 30)",
+            "DYNDNSFREE_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "DYNDNSFREE_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)"
+          }
+        },
+        "links": {
+          "api": "https://www.dyndnsfree.de/user/hilfe.php?hsm=2"
+        }
+      },
+      {
+        "name": "Dynu",
+        "code": "dynu",
+        "configuration": {
+          "credentials": {
+            "DYNU_API_KEY": "API key"
+          },
+          "additional": {
+            "DYNU_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "DYNU_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 10)",
+            "DYNU_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 180)",
+            "DYNU_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 300)"
+          }
+        },
+        "links": {
+          "api": "https://www.dynu.com/en-US/Support/API"
+        }
+      },
+      {
+        "name": "EasyDNS",
+        "code": "easydns",
+        "configuration": {
+          "credentials": {
+            "EASYDNS_KEY": "API Key",
+            "EASYDNS_TOKEN": "API Token"
+          },
+          "additional": {
+            "EASYDNS_ENDPOINT": "The endpoint URL of the API Server",
+            "EASYDNS_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "EASYDNS_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "EASYDNS_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "EASYDNS_SEQUENCE_INTERVAL": "Time between sequential requests in seconds (Default: 60)",
+            "EASYDNS_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://docs.sandbox.rest.easydns.net"
+        }
+      },
+      {
+        "name": "EdgeCenter",
+        "code": "edgecenter",
+        "configuration": {
+          "credentials": {
+            "EDGECENTER_PERMANENT_API_TOKEN": "Permanent API token (https://edgecenter.ru/blog/permanent-api-token-explained/)"
+          },
+          "additional": {
+            "EDGECENTER_HTTP_TIMEOUT": "API request timeout in seconds (Default: 10)",
+            "EDGECENTER_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 20)",
+            "EDGECENTER_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 360)",
+            "EDGECENTER_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://apidocs.edgecenter.ru/dns"
+        }
+      },
+      {
+        "name": "Efficient IP",
+        "code": "efficientip",
+        "configuration": {
+          "credentials": {
+            "EFFICIENTIP_DNS_NAME": "DNS name (ex: dns.smart)",
+            "EFFICIENTIP_HOSTNAME": "Hostname (ex: foo.example.com)",
+            "EFFICIENTIP_PASSWORD": "Password",
+            "EFFICIENTIP_USERNAME": "Username"
+          },
+          "additional": {
+            "EFFICIENTIP_HTTP_TIMEOUT": "API request timeout in seconds (Default: 10)",
+            "EFFICIENTIP_INSECURE_SKIP_VERIFY": "Whether or not to verify EfficientIP API certificate",
+            "EFFICIENTIP_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "EFFICIENTIP_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "EFFICIENTIP_VIEW_NAME": "View name (ex: external)"
+          }
+        }
+      },
+      {
+        "name": "Epik",
+        "code": "epik",
+        "configuration": {
+          "credentials": {
+            "EPIK_SIGNATURE": "Epik API signature (https://registrar.epik.com/account/api-settings/)"
+          },
+          "additional": {
+            "EPIK_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "EPIK_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "EPIK_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "EPIK_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 3600)"
+          }
+        },
+        "links": {
+          "api": "https://docs-userapi.epik.com/v2/"
+        }
+      },
+      {
+        "name": "EuroDNS",
+        "code": "eurodns",
+        "configuration": {
+          "credentials": {
+            "EURODNS_API_KEY": "API key",
+            "EURODNS_APP_ID": "Application ID"
+          },
+          "additional": {
+            "EURODNS_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "EURODNS_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "EURODNS_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "EURODNS_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 600)"
+          }
+        },
+        "links": {
+          "api": "https://docapi.eurodns.com/"
+        }
+      },
+      {
+        "name": "EUserv",
+        "code": "euserv",
+        "configuration": {
+          "credentials": {
+            "EUSERV_EMAIL": "The customer email address. You can also use the customer id instead.",
+            "EUSERV_ORDER_ID": "The order ID of the API contract that you want to use for this login session.",
+            "EUSERV_PASSWORD": "The customer account password."
+          },
+          "additional": {
+            "EUSERV_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "EUSERV_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 10)",
+            "EUSERV_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 360)",
+            "EUSERV_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://support.euserv.com/api-doc/"
+        }
+      },
+      {
+        "name": "Excedo",
+        "code": "excedo",
+        "configuration": {
+          "credentials": {
+            "EXCEDO_API_KEY": "API key",
+            "EXCEDO_API_URL": "API base URL"
+          },
+          "additional": {
+            "EXCEDO_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "EXCEDO_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 10)",
+            "EXCEDO_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 600)",
+            "EXCEDO_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 60)"
+          }
+        },
+        "links": {
+          "api": "none"
+        }
+      },
+      {
+        "name": "Exoscale",
+        "code": "exoscale",
+        "configuration": {
+          "credentials": {
+            "EXOSCALE_API_KEY": "API key",
+            "EXOSCALE_API_SECRET": "API secret"
+          },
+          "additional": {
+            "EXOSCALE_ENDPOINT": "API endpoint URL",
+            "EXOSCALE_HTTP_TIMEOUT": "API request timeout in seconds (Default: 60)",
+            "EXOSCALE_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "EXOSCALE_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "EXOSCALE_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://openapi-v2.exoscale.com/#endpoint-dns",
+          "go_client": "https://github.com/exoscale/egoscale"
+        }
+      },
+      {
+        "name": "External program",
+        "code": "exec"
+      },
+      {
+        "name": "F5 XC",
+        "code": "f5xc",
+        "configuration": {
+          "credentials": {
+            "F5XC_API_TOKEN": "API token",
+            "F5XC_GROUP_NAME": "Group name",
+            "F5XC_TENANT_NAME": "XC Tenant shortname"
+          },
+          "additional": {
+            "F5XC_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "F5XC_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "F5XC_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "F5XC_SERVER": "Server domain (Default: console.ves.volterra.io)",
+            "F5XC_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://docs.cloud.f5.com/docs-v2/api/dns-zone-rrset"
+        }
+      },
+      {
+        "name": "FENO",
+        "code": "feno",
+        "configuration": {
+          "credentials": {
+            "FENO_API_KEY": "API key"
+          },
+          "additional": {
+            "FENO_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "FENO_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "FENO_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "FENO_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://github.com/mrerikcodes/feno-api/blob/main/openapi.yaml"
+        }
+      },
+      {
+        "name": "Fornex",
+        "code": "fornex",
+        "configuration": {
+          "credentials": {
+            "FORNEX_API_KEY": "API key"
+          },
+          "additional": {
+            "FORNEX_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "FORNEX_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "FORNEX_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "FORNEX_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://fornex.com/api/#tag/Domain:-Entry"
+        }
+      },
+      {
+        "name": "freemyip.com",
+        "code": "freemyip",
+        "configuration": {
+          "credentials": {
+            "FREEMYIP_TOKEN": "Account token"
+          },
+          "additional": {
+            "FREEMYIP_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "FREEMYIP_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "FREEMYIP_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "FREEMYIP_SEQUENCE_INTERVAL": "Time between sequential requests in seconds (Default: 60)",
+            "FREEMYIP_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 3600)"
+          }
+        },
+        "links": {
+          "api": "https://freemyip.com/help"
+        }
+      },
+      {
+        "name": "FusionLayer NameSurfer",
+        "code": "namesurfer",
+        "configuration": {
+          "credentials": {
+            "NAMESURFER_API_KEY": "API key name",
+            "NAMESURFER_API_SECRET": "API secret",
+            "NAMESURFER_BASE_URL": "The base URL of NameSurfer API (jsonrpc10) endpoint URL (e.g., https://foo.example.com:8443/API/NSService_10)"
+          },
+          "additional": {
+            "NAMESURFER_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "NAMESURFER_INSECURE_SKIP_VERIFY": "Whether to verify the API certificate",
+            "NAMESURFER_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "NAMESURFER_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 120)",
+            "NAMESURFER_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 300)",
+            "NAMESURFER_VIEW": "DNS view name (optional, default: empty string)"
+          }
+        },
+        "links": {
+          "api": "https://web.archive.org/web/20260213170737/http://95.128.3.201:8053/API/NSService_10"
+        }
+      },
+      {
+        "name": "G-Core",
+        "code": "gcore",
+        "configuration": {
+          "credentials": {
+            "GCORE_PERMANENT_API_TOKEN": "Permanent API token (https://gcore.com/blog/permanent-api-token-explained/)"
+          },
+          "additional": {
+            "GCORE_HTTP_TIMEOUT": "API request timeout in seconds (Default: 10)",
+            "GCORE_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 20)",
+            "GCORE_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 360)",
+            "GCORE_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://api.gcore.com/docs/dns#tag/zones"
+        }
+      },
+      {
+        "name": "Gandi",
+        "code": "gandi",
+        "configuration": {
+          "credentials": {
+            "GANDI_API_KEY": "API key"
+          },
+          "additional": {
+            "GANDI_HTTP_TIMEOUT": "API request timeout in seconds (Default: 60)",
+            "GANDI_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 60)",
+            "GANDI_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 2400)",
+            "GANDI_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 300)"
+          }
+        },
+        "links": {
+          "api": "https://doc.rpc.gandi.net/index.html"
+        }
+      },
+      {
+        "name": "Gandi Live DNS (v5)",
+        "code": "gandiv5",
+        "configuration": {
+          "credentials": {
+            "GANDIV5_API_KEY": "API key (Deprecated)",
+            "GANDIV5_PERSONAL_ACCESS_TOKEN": "Personal Access Token"
+          },
+          "additional": {
+            "GANDIV5_HTTP_TIMEOUT": "API request timeout in seconds (Default: 10)",
+            "GANDIV5_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 20)",
+            "GANDIV5_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 1200)",
+            "GANDIV5_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 300)"
+          }
+        },
+        "links": {
+          "api": "https://api.gandi.net/docs/livedns/"
+        }
+      },
+      {
+        "name": "Gehirn",
+        "code": "gehirn",
+        "configuration": {
+          "credentials": {
+            "GEHIRN_TOKEN_ID": "Token ID",
+            "GEHIRN_TOKEN_SECRET": "Token secret"
+          },
+          "additional": {
+            "GEHIRN_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "GEHIRN_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "GEHIRN_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "GEHIRN_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://support.gehirn.jp/apidocs/dns/index.html"
+        }
+      },
+      {
+        "name": "Gigahost.no",
+        "code": "gigahostno",
+        "configuration": {
+          "credentials": {
+            "GIGAHOSTNO_API_KEY": "API key (optionnal of GIGAHOSTNO_USERNAME and GIGAHOSTNO_PASSWORD are defined)",
+            "GIGAHOSTNO_PASSWORD": "Password (optional if GIGAHOSTNO_API_KEY is defined)",
+            "GIGAHOSTNO_USERNAME": "Username (optional if GIGAHOSTNO_API_KEY is defined)"
+          },
+          "additional": {
+            "GIGAHOSTNO_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "GIGAHOSTNO_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "GIGAHOSTNO_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "GIGAHOSTNO_SECRET": "TOTP secret (Only usable with username/password)",
+            "GIGAHOSTNO_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://gigahost.no/api-dokumentasjon"
+        }
+      },
+      {
+        "name": "Glesys",
+        "code": "glesys",
+        "configuration": {
+          "credentials": {
+            "GLESYS_API_KEY": "API key",
+            "GLESYS_API_USER": "API user"
+          },
+          "additional": {
+            "GLESYS_HTTP_TIMEOUT": "API request timeout in seconds (Default: 10)",
+            "GLESYS_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 20)",
+            "GLESYS_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 1200)",
+            "GLESYS_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 60)"
+          }
+        },
+        "links": {
+          "api": "https://github.com/GleSYS/API/wiki/API-Documentation"
+        }
+      },
+      {
+        "name": "Gname",
+        "code": "gname",
+        "configuration": {
+          "credentials": {
+            "GNAME_APP_ID": "App ID",
+            "GNAME_APP_KEY": "App key"
+          },
+          "additional": {
+            "GNAME_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "GNAME_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "GNAME_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "GNAME_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://www.gname.com/domain/api/jiexi/add"
+        }
+      },
+      {
+        "name": "Go Daddy",
+        "code": "godaddy",
+        "configuration": {
+          "credentials": {
+            "GODADDY_API_KEY": "API key",
+            "GODADDY_API_SECRET": "API secret"
+          },
+          "additional": {
+            "GODADDY_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "GODADDY_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "GODADDY_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 120)",
+            "GODADDY_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 600)"
+          }
+        },
+        "links": {
+          "api": "https://developer.godaddy.com/doc/endpoint/domains"
+        }
+      },
+      {
+        "name": "Google Cloud",
+        "code": "gcloud",
+        "configuration": {
+          "credentials": {
+            "Application Default Credentials": "[Documentation](https://cloud.google.com/docs/authentication/production#providing_credentials_to_your_application)",
+            "GCE_PROJECT": "Project name (by default, the project name is auto-detected by using the metadata service)",
+            "GCE_SERVICE_ACCOUNT": "Account",
+            "GCE_SERVICE_ACCOUNT_FILE": "Account file path"
+          },
+          "additional": {
+            "GCE_ACCESS_TOKEN": "The OAuth2 access token used by the client to authenticate against the Google Cloud API.",
+            "GCE_ALLOW_PRIVATE_ZONE": "Allows requested domain to be in private DNS zone, works only with a private ACME server (by default: false)",
+            "GCE_IMPERSONATE_SERVICE_ACCOUNT": "Service account email to impersonate",
+            "GCE_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 5)",
+            "GCE_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 180)",
+            "GCE_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)",
+            "GCE_ZONE_ID": "Allows to skip the automatic detection of the zone"
+          }
+        },
+        "links": {
+          "api": "https://cloud.google.com/dns/api/v1/",
+          "go_client": "https://github.com/googleapis/google-api-go-client"
+        }
+      },
+      {
+        "name": "Gravity",
+        "code": "gravity",
+        "configuration": {
+          "credentials": {
+            "GRAVITY_PASSWORD": "Password",
+            "GRAVITY_SERVER_URL": "URL of the server",
+            "GRAVITY_USERNAME": "Username"
+          },
+          "additional": {
+            "GRAVITY_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "GRAVITY_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "GRAVITY_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "GRAVITY_SEQUENCE_INTERVAL": "Time between sequential requests in seconds (Default: 1)"
+          }
+        },
+        "links": {
+          "api": "https://gravity.beryju.io/docs/api/reference/"
+        }
+      },
+      {
+        "name": "Hetzner",
+        "code": "hetzner",
+        "configuration": {
+          "credentials": {
+            "HETZNER_API_TOKEN": "API token"
+          },
+          "additional": {
+            "HETZNER_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "HETZNER_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "HETZNER_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "HETZNER_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://docs.hetzner.cloud/reference/cloud#dns"
+        }
+      },
+      {
+        "name": "Hosting.de",
+        "code": "hostingde",
+        "configuration": {
+          "credentials": {
+            "HOSTINGDE_API_KEY": "API key"
+          },
+          "additional": {
+            "HOSTINGDE_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "HOSTINGDE_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "HOSTINGDE_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 120)",
+            "HOSTINGDE_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)",
+            "HOSTINGDE_ZONE_NAME": "Zone name in ACE format"
+          }
+        },
+        "links": {
+          "api": "https://www.hosting.de/api/#dns"
+        }
+      },
+      {
+        "name": "Hosting.nl",
+        "code": "hostingnl",
+        "configuration": {
+          "credentials": {
+            "HOSTINGNL_API_KEY": "The API key"
+          },
+          "additional": {
+            "HOSTINGNL_HTTP_TIMEOUT": "API request timeout in seconds (Default: 10)",
+            "HOSTINGNL_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "HOSTINGNL_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 120)",
+            "HOSTINGNL_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://api.hosting.nl/api/documentation"
+        }
+      },
+      {
+        "name": "Hostinger",
+        "code": "hostinger",
+        "configuration": {
+          "credentials": {
+            "HOSTINGER_API_TOKEN": "API Token"
+          },
+          "additional": {
+            "HOSTINGER_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "HOSTINGER_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "HOSTINGER_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "HOSTINGER_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://developers.hostinger.com/#tag/dns-zone"
+        }
+      },
+      {
+        "name": "Hosttech",
+        "code": "hosttech",
+        "configuration": {
+          "credentials": {
+            "HOSTTECH_API_KEY": "API login",
+            "HOSTTECH_PASSWORD": "API password"
+          },
+          "additional": {
+            "HOSTTECH_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "HOSTTECH_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "HOSTTECH_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "HOSTTECH_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 3600)"
+          }
+        },
+        "links": {
+          "api": "https://api.ns1.hosttech.eu/api/documentation"
+        }
+      },
+      {
+        "name": "HostUp",
+        "code": "hostup",
+        "configuration": {
+          "credentials": {
+            "HOSTUP_API_KEY": "API token (required scopes: read:dns, write:dns, read:domains)"
+          },
+          "additional": {
+            "HOSTUP_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "HOSTUP_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "HOSTUP_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "HOSTUP_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://developer.hostup.se/"
+        }
+      },
+      {
+        "name": "HTTP request",
+        "code": "httpreq",
+        "configuration": {
+          "credentials": {
+            "HTTPREQ_ENDPOINT": "The URL of the server",
+            "HTTPREQ_MODE": "`RAW`, none"
+          },
+          "additional": {
+            "HTTPREQ_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "HTTPREQ_PASSWORD": "Basic authentication password",
+            "HTTPREQ_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "HTTPREQ_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "HTTPREQ_USERNAME": "Basic authentication username"
+          }
+        }
+      },
+      {
+        "name": "http.net",
+        "code": "httpnet",
+        "configuration": {
+          "credentials": {
+            "HTTPNET_API_KEY": "API key"
+          },
+          "additional": {
+            "HTTPNET_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "HTTPNET_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "HTTPNET_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 120)",
+            "HTTPNET_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)",
+            "HTTPNET_ZONE_NAME": "Zone name in ACE format"
+          }
+        },
+        "links": {
+          "api": "https://www.http.net/docs/api/#dns"
+        }
+      },
+      {
+        "name": "Huawei Cloud",
+        "code": "huaweicloud",
+        "configuration": {
+          "credentials": {
+            "HUAWEICLOUD_ACCESS_KEY_ID": "Access key ID",
+            "HUAWEICLOUD_REGION": "Region",
+            "HUAWEICLOUD_SECRET_ACCESS_KEY": "Access Key secret"
+          },
+          "additional": {
+            "HUAWEICLOUD_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "HUAWEICLOUD_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "HUAWEICLOUD_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "HUAWEICLOUD_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 300)"
+          }
+        },
+        "links": {
+          "api": "https://console-intl.huaweicloud.com/apiexplorer/#/openapi/DNS/doc?locale=en-us",
+          "go_client": "https://github.com/huaweicloud/huaweicloud-sdk-go-v3"
+        }
+      },
+      {
+        "name": "Hurricane Electric DNS",
+        "code": "hurricane",
+        "configuration": {
+          "credentials": {
+            "HURRICANE_TOKENS": "TXT record names and tokens"
+          },
+          "additional": {
+            "HURRICANE_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "HURRICANE_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "HURRICANE_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation (Default: 300)",
+            "HURRICANE_SEQUENCE_INTERVAL": "Time between sequential requests in seconds (Default: 60)"
+          }
+        },
+        "links": {
+          "api": "https://dns.he.net/"
+        }
+      },
+      {
+        "name": "HyperOne",
+        "code": "hyperone",
+        "configuration": {
+          "additional": {
+            "HYPERONE_API_URL": "Allows to pass custom API Endpoint to be used in the challenge (default https://api.hyperone.com/v2)",
+            "HYPERONE_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "HYPERONE_LOCATION_ID": "Specifies location (region) to be used in API calls. (default pl-waw-1)",
+            "HYPERONE_PASSPORT_LOCATION": "Allows to pass custom passport file location (default ~/.h1/passport.json)",
+            "HYPERONE_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 60)",
+            "HYPERONE_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 2)",
+            "HYPERONE_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://api.hyperone.com/v2/docs"
+        }
+      },
+      {
+        "name": "IBM Cloud (SoftLayer)",
+        "code": "ibmcloud",
+        "configuration": {
+          "credentials": {
+            "SOFTLAYER_API_KEY": "Classic Infrastructure API key",
+            "SOFTLAYER_USERNAME": "Username (IBM Cloud is {accountID}_{emailAddress})"
+          },
+          "additional": {
+            "SOFTLAYER_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "SOFTLAYER_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "SOFTLAYER_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "SOFTLAYER_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://cloud.ibm.com/docs/dns?topic=dns-getting-started-with-the-dns-api",
+          "go_client": "https://github.com/softlayer/softlayer-go"
+        }
+      },
+      {
+        "name": "IIJ DNS Platform Service",
+        "code": "iijdpf",
+        "configuration": {
+          "credentials": {
+            "IIJ_DPF_API_TOKEN": "API token",
+            "IIJ_DPF_DPM_SERVICE_CODE": "IIJ Managed DNS Service's service code"
+          },
+          "additional": {
+            "IIJ_DPF_API_ENDPOINT": "API endpoint URL, defaults to https://api.dns-platform.jp/dpf/v1",
+            "IIJ_DPF_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 5)",
+            "IIJ_DPF_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 660)",
+            "IIJ_DPF_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 300)"
+          }
+        },
+        "links": {
+          "api": "https://manual.iij.jp/dpf/dpfapi/",
+          "go_client": "https://github.com/mimuret/golang-iij-dpf"
+        }
+      },
+      {
+        "name": "Infoblox",
+        "code": "infoblox",
+        "configuration": {
+          "credentials": {
+            "INFOBLOX_HOST": "Host URI",
+            "INFOBLOX_PASSWORD": "Account Password",
+            "INFOBLOX_USERNAME": "Account Username"
+          },
+          "additional": {
+            "INFOBLOX_CA_CERTIFICATE": "The path to the CA certificate (PEM encoded)",
+            "INFOBLOX_DNS_VIEW": "The view for the TXT records (Default: External)",
+            "INFOBLOX_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "INFOBLOX_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "INFOBLOX_PORT": "The port for the infoblox grid manager  (Default: 443)",
+            "INFOBLOX_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "INFOBLOX_SSL_VERIFY": "Whether or not to verify the TLS certificate  (Default: true)",
+            "INFOBLOX_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)",
+            "INFOBLOX_WAPI_VERSION": "The version of WAPI being used  (Default: 2.11)"
+          }
+        },
+        "links": {
+          "api": "https://your.infoblox.server/wapidoc/",
+          "go_client": "https://github.com/infobloxopen/infoblox-go-client"
+        }
+      },
+      {
+        "name": "Infomaniak",
+        "code": "infomaniak",
+        "configuration": {
+          "credentials": {
+            "INFOMANIAK_ACCESS_TOKEN": "Access token"
+          },
+          "additional": {
+            "INFOMANIAK_ENDPOINT": "API endpoint (default: https://api.infomaniak.com)",
+            "INFOMANIAK_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "INFOMANIAK_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 10)",
+            "INFOMANIAK_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 120)",
+            "INFOMANIAK_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 300)"
+          }
+        },
+        "links": {
+          "api": "https://developer.infomaniak.com/docs/api"
+        }
+      },
+      {
+        "name": "Internet.bs",
+        "code": "internetbs",
+        "configuration": {
+          "credentials": {
+            "INTERNET_BS_API_KEY": "API key",
+            "INTERNET_BS_PASSWORD": "API password"
+          },
+          "additional": {
+            "INTERNET_BS_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "INTERNET_BS_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "INTERNET_BS_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "INTERNET_BS_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 3600)"
+          }
+        },
+        "links": {
+          "api": "https://internetbs.net/internet-bs-api.pdf"
+        }
+      },
+      {
+        "name": "INWX",
+        "code": "inwx",
+        "configuration": {
+          "credentials": {
+            "INWX_PASSWORD": "Password",
+            "INWX_USERNAME": "Username"
+          },
+          "additional": {
+            "INWX_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "INWX_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 360)",
+            "INWX_SANDBOX": "Activate the sandbox (boolean)",
+            "INWX_SHARED_SECRET": "shared secret related to 2FA",
+            "INWX_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 300)"
+          }
+        },
+        "links": {
+          "api": "https://www.inwx.de/en/help/apidoc",
+          "go_client": "https://github.com/nrdcg/goinwx"
+        }
+      },
+      {
+        "name": "Ionos",
+        "code": "ionos",
+        "configuration": {
+          "credentials": {
+            "IONOS_API_KEY": "API key `<prefix>.<secret>` https://developer.hosting.ionos.com/docs/getstarted"
+          },
+          "additional": {
+            "IONOS_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "IONOS_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "IONOS_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 900)",
+            "IONOS_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 300)"
+          }
+        },
+        "links": {
+          "api": "https://developer.hosting.ionos.com/docs/dns"
+        }
+      },
+      {
+        "name": "Ionos Cloud",
+        "code": "ionoscloud",
+        "configuration": {
+          "credentials": {
+            "IONOSCLOUD_API_TOKEN": "API token"
+          },
+          "additional": {
+            "IONOSCLOUD_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "IONOSCLOUD_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "IONOSCLOUD_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 120)",
+            "IONOSCLOUD_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://api.ionos.com/docs/dns/v1/"
+        }
+      },
+      {
+        "name": "IPv64",
+        "code": "ipv64",
+        "configuration": {
+          "credentials": {
+            "IPV64_API_KEY": "Account API Key"
+          },
+          "additional": {
+            "IPV64_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "IPV64_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "IPV64_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)"
+          }
+        },
+        "links": {
+          "api": "https://ipv64.net/dyndns_updater_api"
+        }
+      },
+      {
+        "name": "ISPConfig 3",
+        "code": "ispconfig",
+        "configuration": {
+          "credentials": {
+            "ISPCONFIG_PASSWORD": "Password",
+            "ISPCONFIG_SERVER_URL": "Server URL",
+            "ISPCONFIG_USERNAME": "Username"
+          },
+          "additional": {
+            "ISPCONFIG_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "ISPCONFIG_INSECURE_SKIP_VERIFY": "Whether to verify the API certificate",
+            "ISPCONFIG_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "ISPCONFIG_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "ISPCONFIG_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://git.ispconfig.org/ispconfig/ispconfig3/-/blob/develop/remoting_client/API-docs/index.html"
+        }
+      },
+      {
+        "name": "ISPConfig 3 - Dynamic DNS (DDNS) Module",
+        "code": "ispconfigddns",
+        "configuration": {
+          "credentials": {
+            "ISPCONFIG_DDNS_SERVER_URL": "API server URL (ex: https://panel.example.com:8080)",
+            "ISPCONFIG_DDNS_TOKEN": "DDNS API token"
+          },
+          "additional": {
+            "ISPCONFIG_DDNS_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "ISPCONFIG_DDNS_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "ISPCONFIG_DDNS_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "ISPCONFIG_DDNS_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 3600)"
+          }
+        },
+        "links": {
+          "api": "https://github.com/mhofer117/ispconfig-ddns-module/tree/master/lib/updater"
+        }
+      },
+      {
+        "name": "JD Cloud",
+        "code": "jdcloud",
+        "configuration": {
+          "credentials": {
+            "JDCLOUD_ACCESS_KEY_ID": "Access key ID",
+            "JDCLOUD_ACCESS_KEY_SECRET": "Access key secret"
+          },
+          "additional": {
+            "JDCLOUD_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "JDCLOUD_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "JDCLOUD_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "JDCLOUD_REGION_ID": "Region ID (Default: cn-north-1)",
+            "JDCLOUD_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://docs.jdcloud.com/cn/jd-cloud-dns/api/overview",
+          "go_client": "https://github.com/jdcloud-api/jdcloud-sdk-go"
+        }
+      },
+      {
+        "name": "Joker",
+        "code": "joker",
+        "configuration": {
+          "credentials": {
+            "JOKER_API_KEY": "API key (only with DMAPI mode)",
+            "JOKER_API_MODE": "'DMAPI' or 'SVC'. DMAPI is for resellers accounts. (Default: DMAPI)",
+            "JOKER_PASSWORD": "Joker.com password",
+            "JOKER_USERNAME": "Joker.com username"
+          },
+          "additional": {
+            "JOKER_HTTP_TIMEOUT": "API request timeout in seconds (Default: 60)",
+            "JOKER_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "JOKER_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 120)",
+            "JOKER_SEQUENCE_INTERVAL": "Time between sequential requests in seconds (Default: 60), only with 'SVC' mode",
+            "JOKER_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://joker.com/faq/category/39/22-dmapi.html"
+        }
+      },
+      {
+        "name": "Joohoi's ACME-DNS",
+        "code": "acmedns",
+        "configuration": {
+          "credentials": {
+            "ACME_DNS_API_BASE": "The ACME-DNS API address",
+            "ACME_DNS_STORAGE_BASE_URL": "The ACME-DNS JSON account data server.",
+            "ACME_DNS_STORAGE_PATH": "The ACME-DNS JSON account data file. A per-domain account will be registered/persisted to this file and used for TXT updates."
+          },
+          "additional": {
+            "ACME_DNS_ALLOWLIST": "Source networks using CIDR notation (multiple values should be separated with a comma)."
+          }
+        },
+        "links": {
+          "api": "https://github.com/joohoi/acme-dns#api",
+          "go_client": "https://github.com/nrdcg/goacmedns"
+        }
+      },
+      {
+        "name": "Katapult",
+        "code": "katapult",
+        "configuration": {
+          "credentials": {
+            "KATAPULT_API_KEY": "API key"
+          },
+          "additional": {
+            "KATAPULT_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "KATAPULT_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "KATAPULT_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "KATAPULT_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://docs.katapult.io/docs/api/core/post-dns-zone-records",
+          "go_client": "https://github.com/krystal/go-katapult"
+        }
+      },
+      {
+        "name": "KeyHelp",
+        "code": "keyhelp",
+        "configuration": {
+          "credentials": {
+            "KEYHELP_API_KEY": "API key",
+            "KEYHELP_BASE_URL": "Server URL"
+          },
+          "additional": {
+            "KEYHELP_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "KEYHELP_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "KEYHELP_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "KEYHELP_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://app.swaggerhub.com/apis-docs/keyhelp/api/"
+        }
+      },
+      {
+        "name": "Leaseweb",
+        "code": "leaseweb",
+        "configuration": {
+          "credentials": {
+            "LEASEWEB_API_KEY": "API key"
+          },
+          "additional": {
+            "LEASEWEB_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "LEASEWEB_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "LEASEWEB_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "LEASEWEB_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://developer.leaseweb.com/docs/#tag/DNS"
+        }
+      },
+      {
+        "name": "Liara",
+        "code": "liara",
+        "configuration": {
+          "credentials": {
+            "LIARA_API_KEY": "The API key"
+          },
+          "additional": {
+            "LIARA_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "LIARA_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "LIARA_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "LIARA_TEAM_ID": "The team ID to access services in a team",
+            "LIARA_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 3600)"
+          }
+        },
+        "links": {
+          "api": "https://openapi.liara.ir/?urls.primaryName=DNS"
+        }
+      },
+      {
+        "name": "Lima-City",
+        "code": "limacity",
+        "configuration": {
+          "credentials": {
+            "LIMACITY_API_KEY": "The API key"
+          },
+          "additional": {
+            "LIMACITY_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "LIMACITY_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 80)",
+            "LIMACITY_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 480)",
+            "LIMACITY_SEQUENCE_INTERVAL": "Time between sequential requests in seconds (Default: 90)",
+            "LIMACITY_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 60)"
+          }
+        },
+        "links": {
+          "api": "https://www.lima-city.de/hilfe/lima-city-api"
+        }
+      },
+      {
+        "name": "Linode (v4)",
+        "code": "linode",
+        "configuration": {
+          "credentials": {
+            "LINODE_TOKEN": "API token"
+          },
+          "additional": {
+            "LINODE_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "LINODE_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 15)",
+            "LINODE_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 120)",
+            "LINODE_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 300)"
+          }
+        },
+        "links": {
+          "api": "https://developers.linode.com/api/v4",
+          "go_client": "https://github.com/linode/linodego"
+        }
+      },
+      {
+        "name": "Liquid Web",
+        "code": "liquidweb",
+        "configuration": {
+          "credentials": {
+            "LWAPI_PASSWORD": "Liquid Web API Password",
+            "LWAPI_USERNAME": "Liquid Web API Username"
+          },
+          "additional": {
+            "LWAPI_HTTP_TIMEOUT": "API request timeout in seconds (Default: 60)",
+            "LWAPI_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "LWAPI_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 120)",
+            "LWAPI_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 300)",
+            "LWAPI_URL": "Liquid Web API endpoint",
+            "LWAPI_ZONE": "DNS Zone"
+          }
+        },
+        "links": {
+          "api": "https://api.liquidweb.com/docs/",
+          "go_client": "https://github.com/liquidweb/liquidweb-go"
+        }
+      },
+      {
+        "name": "Loopia",
+        "code": "loopia",
+        "configuration": {
+          "credentials": {
+            "LOOPIA_API_PASSWORD": "API password",
+            "LOOPIA_API_USER": "API username"
+          },
+          "additional": {
+            "LOOPIA_API_URL": "API endpoint. Ex: https://api.loopia.se/RPCSERV or https://api.loopia.rs/RPCSERV",
+            "LOOPIA_HTTP_TIMEOUT": "API request timeout in seconds (Default: 60)",
+            "LOOPIA_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2400)",
+            "LOOPIA_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "LOOPIA_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 300)"
+          }
+        },
+        "links": {
+          "api": "https://www.loopia.com/api"
+        }
+      },
+      {
+        "name": "LuaDNS",
+        "code": "luadns",
+        "configuration": {
+          "credentials": {
+            "LUADNS_API_TOKEN": "API token",
+            "LUADNS_API_USERNAME": "Username (your email)"
+          },
+          "additional": {
+            "LUADNS_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "LUADNS_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "LUADNS_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 120)",
+            "LUADNS_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 300)"
+          }
+        },
+        "links": {
+          "api": "https://luadns.com/api.html"
+        }
+      },
+      {
+        "name": "Mail-in-a-Box",
+        "code": "mailinabox",
+        "configuration": {
+          "credentials": {
+            "MAILINABOX_BASE_URL": "Base API URL (ex: https://box.example.com)",
+            "MAILINABOX_EMAIL": "User email",
+            "MAILINABOX_PASSWORD": "User password"
+          },
+          "additional": {
+            "MAILINABOX_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "MAILINABOX_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 4)",
+            "MAILINABOX_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://mailinabox.email/api-docs.html"
+        }
+      },
+      {
+        "name": "ManageEngine CloudDNS",
+        "code": "manageengine",
+        "configuration": {
+          "credentials": {
+            "MANAGEENGINE_CLIENT_ID": "Client ID",
+            "MANAGEENGINE_CLIENT_SECRET": "Client Secret"
+          },
+          "additional": {
+            "MANAGEENGINE_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "MANAGEENGINE_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "MANAGEENGINE_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://pitstop.manageengine.com/portal/en/kb/articles/manageengine-clouddns-rest-api-documentation"
+        }
+      },
+      {
+        "name": "Manual",
+        "code": "manual",
+        "configuration": {
+          "additional": {
+            "MANUAL_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "MANUAL_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)"
+          }
+        }
+      },
+      {
+        "name": "Metaname",
+        "code": "metaname",
+        "configuration": {
+          "credentials": {
+            "METANAME_ACCOUNT_REFERENCE": "The four-digit reference of a Metaname account",
+            "METANAME_API_KEY": "API Key"
+          },
+          "additional": {
+            "METANAME_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "METANAME_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "METANAME_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://metaname.net/api/1.1/doc",
+          "go_client": "https://github.com/nzdjb/go-metaname"
+        }
+      },
+      {
+        "name": "Metaregistrar",
+        "code": "metaregistrar",
+        "configuration": {
+          "credentials": {
+            "METAREGISTRAR_API_TOKEN": "The API token"
+          },
+          "additional": {
+            "METAREGISTRAR_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "METAREGISTRAR_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "METAREGISTRAR_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "METAREGISTRAR_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://metaregistrar.dev/docu/metaapi/"
+        }
+      },
+      {
+        "name": "mijn.host",
+        "code": "mijnhost",
+        "configuration": {
+          "credentials": {
+            "MIJNHOST_API_KEY": "The API key"
+          },
+          "additional": {
+            "MIJNHOST_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "MIJNHOST_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "MIJNHOST_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "MIJNHOST_SEQUENCE_INTERVAL": "Time between sequential requests in seconds (Default: 60)",
+            "MIJNHOST_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://mijn.host/api/doc/"
+        }
+      },
+      {
+        "name": "Mittwald",
+        "code": "mittwald",
+        "configuration": {
+          "credentials": {
+            "MITTWALD_TOKEN": "API token"
+          },
+          "additional": {
+            "MITTWALD_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "MITTWALD_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 10)",
+            "MITTWALD_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 120)",
+            "MITTWALD_SEQUENCE_INTERVAL": "Time between sequential requests in seconds (Default: 120)",
+            "MITTWALD_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 300)"
+          }
+        },
+        "links": {
+          "api": "https://api.mittwald.de/v2/docs/"
+        }
+      },
+      {
+        "name": "myaddr.{tools,dev,io}",
+        "code": "myaddr",
+        "configuration": {
+          "credentials": {
+            "MYADDR_PRIVATE_KEYS_MAPPING": "Mapping between subdomains and private keys. The format is: `<subdomain1>:<private_key1>,<subdomain2>:<private_key2>,<subdomain3>:<private_key3>`"
+          },
+          "additional": {
+            "MYADDR_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "MYADDR_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "MYADDR_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "MYADDR_SEQUENCE_INTERVAL": "Time between sequential requests in seconds (Default: 2)",
+            "MYADDR_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://myaddr.tools/"
+        }
+      },
+      {
+        "name": "MyDNS.jp",
+        "code": "mydnsjp",
+        "configuration": {
+          "credentials": {
+            "MYDNSJP_MASTER_ID": "Master ID",
+            "MYDNSJP_PASSWORD": "Password"
+          },
+          "additional": {
+            "MYDNSJP_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "MYDNSJP_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "MYDNSJP_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://www.mydns.jp/?MENU=030"
+        }
+      },
+      {
+        "name": "Myra",
+        "code": "myra",
+        "configuration": {
+          "credentials": {
+            "MYRA_API_KEY": "API key",
+            "MYRA_API_SECRET": "API secret"
+          },
+          "additional": {
+            "MYRA_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 20)",
+            "MYRA_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 600)",
+            "MYRA_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://docs.myracloud.com/en/api/general/using-the-myra-api/",
+          "go_client": "https://github.com/Myra-Security-GmbH/myrasec-go"
+        }
+      },
+      {
+        "name": "MythicBeasts",
+        "code": "mythicbeasts",
+        "configuration": {
+          "credentials": {
+            "MYTHICBEASTS_PASSWORD": "Password",
+            "MYTHICBEASTS_USERNAME": "User name"
+          },
+          "additional": {
+            "MYTHICBEASTS_API_ENDPOINT": "The endpoint for the API (must implement v2)",
+            "MYTHICBEASTS_AUTH_API_ENDPOINT": "The endpoint for Mythic Beasts' Authentication",
+            "MYTHICBEASTS_HTTP_TIMEOUT": "API request timeout in seconds (Default: 10)",
+            "MYTHICBEASTS_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "MYTHICBEASTS_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "MYTHICBEASTS_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://www.mythic-beasts.com/support/api/dnsv2"
+        }
+      },
+      {
+        "name": "Name.com",
+        "code": "namedotcom",
+        "configuration": {
+          "credentials": {
+            "NAMECOM_API_TOKEN": "API token",
+            "NAMECOM_USERNAME": "Username"
+          },
+          "additional": {
+            "NAMECOM_HTTP_TIMEOUT": "API request timeout in seconds (Default: 10)",
+            "NAMECOM_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 20)",
+            "NAMECOM_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 900)",
+            "NAMECOM_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 300)"
+          }
+        },
+        "links": {
+          "api": "https://www.name.com/api-docs/DNS",
+          "go_client": "https://github.com/namedotcom/go"
+        }
+      },
+      {
+        "name": "Namecheap",
+        "code": "namecheap",
+        "configuration": {
+          "credentials": {
+            "NAMECHEAP_API_KEY": "API key",
+            "NAMECHEAP_API_USER": "API user"
+          },
+          "additional": {
+            "NAMECHEAP_HTTP_TIMEOUT": "API request timeout in seconds (Default: 60)",
+            "NAMECHEAP_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 15)",
+            "NAMECHEAP_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 3600)",
+            "NAMECHEAP_SANDBOX": "Activate the sandbox (boolean)",
+            "NAMECHEAP_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://www.namecheap.com/support/api/methods.aspx"
+        }
+      },
+      {
+        "name": "Namesilo",
+        "code": "namesilo",
+        "configuration": {
+          "credentials": {
+            "NAMESILO_API_KEY": "Client ID"
+          },
+          "additional": {
+            "NAMESILO_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "NAMESILO_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60), it is better to set larger than 15 minutes",
+            "NAMESILO_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 3600), should be in [3600, 2592000]"
+          }
+        },
+        "links": {
+          "api": "https://www.namesilo.com/api_reference.php",
+          "go_client": "https://github.com/nrdcg/namesilo"
+        }
+      },
+      {
+        "name": "NearlyFreeSpeech.NET",
+        "code": "nearlyfreespeech",
+        "configuration": {
+          "credentials": {
+            "NEARLYFREESPEECH_API_KEY": "API Key for API requests",
+            "NEARLYFREESPEECH_LOGIN": "Username for API requests"
+          },
+          "additional": {
+            "NEARLYFREESPEECH_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "NEARLYFREESPEECH_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "NEARLYFREESPEECH_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "NEARLYFREESPEECH_SEQUENCE_INTERVAL": "Time between sequential requests in seconds (Default: 60)",
+            "NEARLYFREESPEECH_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 3600)"
+          }
+        },
+        "links": {
+          "api": "https://members.nearlyfreespeech.net/wiki/API/Reference"
+        }
+      },
+      {
+        "name": "NederHost",
+        "code": "nederhost",
+        "configuration": {
+          "credentials": {
+            "NEDERHOST_API_KEY": "API key"
+          },
+          "additional": {
+            "NEDERHOST_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "NEDERHOST_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "NEDERHOST_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "NEDERHOST_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://www.nederhost.nl/kennisbank/domeinnamen/DNS/REST_DNS-API"
+        }
+      },
+      {
+        "name": "Neodigit",
+        "code": "neodigit",
+        "configuration": {
+          "credentials": {
+            "NEODIGIT_TOKEN": "API token"
+          },
+          "additional": {
+            "NEODIGIT_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "NEODIGIT_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 10)",
+            "NEODIGIT_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 300)",
+            "NEODIGIT_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://developers.neodigit.net/#dns"
+        }
+      },
+      {
+        "name": "Netcup",
+        "code": "netcup",
+        "configuration": {
+          "credentials": {
+            "NETCUP_API_KEY": "API key",
+            "NETCUP_API_PASSWORD": "API password",
+            "NETCUP_CUSTOMER_NUMBER": "Customer number"
+          },
+          "additional": {
+            "NETCUP_HTTP_TIMEOUT": "API request timeout in seconds (Default: 10)",
+            "NETCUP_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 30)",
+            "NETCUP_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 900)"
+          }
+        },
+        "links": {
+          "api": "https://www.netcup-wiki.de/wiki/DNS_API"
+        }
+      },
+      {
+        "name": "Netlify",
+        "code": "netlify",
+        "configuration": {
+          "credentials": {
+            "NETLIFY_TOKEN": "Token"
+          },
+          "additional": {
+            "NETLIFY_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "NETLIFY_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "NETLIFY_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "NETLIFY_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 300)"
+          }
+        },
+        "links": {
+          "api": "https://open-api.netlify.com/"
+        }
+      },
+      {
+        "name": "Netnod",
+        "code": "netnod",
+        "configuration": {
+          "credentials": {
+            "NETNOD_TOKEN": "API token"
+          },
+          "additional": {
+            "NETNOD_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "NETNOD_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "NETNOD_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "NETNOD_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://docs.google.com/document/d/1GfpCZjhdniWzM3fjTSS73D0uCUnK478IzcXBIOYOemQ/edit?usp=sharing"
+        }
+      },
+      {
+        "name": "NexDNS",
+        "code": "nexdns",
+        "configuration": {
+          "credentials": {
+            "NEXDNS_API_TOKEN": "API token"
+          },
+          "additional": {
+            "NEXDNS_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "NEXDNS_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "NEXDNS_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "NEXDNS_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://nexdns.tech/docs/api"
+        }
+      },
+      {
+        "name": "Ngenix",
+        "code": "ngenix",
+        "configuration": {
+          "credentials": {
+            "NGENIX_CUSTOMER_ID": "Customer ID",
+            "NGENIX_TOKEN": "API token",
+            "NGENIX_USERNAME": "Username"
+          },
+          "additional": {
+            "NGENIX_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "NGENIX_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 20)",
+            "NGENIX_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 600)"
+          }
+        },
+        "links": {
+          "api": "https://help.ngenix.net/articles/#!apidocs/upravlenie-dns"
+        }
+      },
+      {
+        "name": "Nicmanager",
+        "code": "nicmanager",
+        "configuration": {
+          "credentials": {
+            "NICMANAGER_API_EMAIL": "Email-based login",
+            "NICMANAGER_API_LOGIN": "Login, used for Username-based login",
+            "NICMANAGER_API_PASSWORD": "Password, always required",
+            "NICMANAGER_API_USERNAME": "Username, used for Username-based login"
+          },
+          "additional": {
+            "NICMANAGER_API_MODE": "mode: 'anycast' or 'zones' (for FreeDNS) (default: 'anycast')",
+            "NICMANAGER_API_OTP": "TOTP Secret (optional)",
+            "NICMANAGER_HTTP_TIMEOUT": "API request timeout in seconds (Default: 10)",
+            "NICMANAGER_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "NICMANAGER_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 300)",
+            "NICMANAGER_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 900)"
+          }
+        },
+        "links": {
+          "api": "https://api.nicmanager.com/docs/v1/"
+        }
+      },
+      {
+        "name": "NIFCloud",
+        "code": "nifcloud",
+        "configuration": {
+          "credentials": {
+            "NIFCLOUD_ACCESS_KEY_ID": "Access key",
+            "NIFCLOUD_SECRET_ACCESS_KEY": "Secret access key"
+          },
+          "additional": {
+            "NIFCLOUD_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "NIFCLOUD_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "NIFCLOUD_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "NIFCLOUD_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://mbaas.nifcloud.com/doc/current/rest/common/format.html"
+        }
+      },
+      {
+        "name": "Njalla",
+        "code": "njalla",
+        "configuration": {
+          "credentials": {
+            "NJALLA_TOKEN": "API token"
+          },
+          "additional": {
+            "NJALLA_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "NJALLA_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "NJALLA_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "NJALLA_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 300)"
+          }
+        },
+        "links": {
+          "api": "https://njal.la/api/"
+        }
+      },
+      {
+        "name": "Nodion",
+        "code": "nodion",
+        "configuration": {
+          "credentials": {
+            "NODION_API_TOKEN": "The API token"
+          },
+          "additional": {
+            "NODION_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "NODION_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "NODION_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 120)",
+            "NODION_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://www.nodion.com/en/docs/dns/api/"
+        }
+      },
+      {
+        "name": "NS1",
+        "code": "ns1",
+        "configuration": {
+          "credentials": {
+            "NS1_API_KEY": "API key"
+          },
+          "additional": {
+            "NS1_HTTP_TIMEOUT": "API request timeout in seconds (Default: 10)",
+            "NS1_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "NS1_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "NS1_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://ns1.com/api",
+          "go_client": "https://github.com/ns1/ns1-go"
+        }
+      },
+      {
+        "name": "Octenium",
+        "code": "octenium",
+        "configuration": {
+          "credentials": {
+            "OCTENIUM_API_KEY": "API key"
+          },
+          "additional": {
+            "OCTENIUM_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "OCTENIUM_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "OCTENIUM_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "OCTENIUM_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://octenium.com/api#tag/Domains-DNS"
+        }
+      },
+      {
+        "name": "omg.lol",
+        "code": "omglol",
+        "configuration": {
+          "credentials": {
+            "OMGLOL_API_KEY": "API key"
+          },
+          "additional": {
+            "OMGLOL_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "OMGLOL_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "OMGLOL_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "OMGLOL_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://api.omg.lol/#dns"
+        }
+      },
+      {
+        "name": "Online.net",
+        "code": "onlinenet",
+        "configuration": {
+          "credentials": {
+            "ONLINENET_API_TOKEN": "API token"
+          },
+          "additional": {
+            "ONLINENET_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "ONLINENET_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 15)",
+            "ONLINENET_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 240)",
+            "ONLINENET_SEQUENCE_INTERVAL": "Time between sequential requests in seconds (Default: 60)",
+            "ONLINENET_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://console.online.net/en/api/"
+        }
+      },
+      {
+        "name": "Open Telekom Cloud",
+        "code": "otc",
+        "configuration": {
+          "credentials": {
+            "OTC_DOMAIN_NAME": "Domain name",
+            "OTC_PASSWORD": "Password",
+            "OTC_PROJECT_NAME": "Project name",
+            "OTC_USER_NAME": "User name"
+          },
+          "additional": {
+            "OTC_HTTP_TIMEOUT": "API request timeout in seconds (Default: 10)",
+            "OTC_IDENTITY_ENDPOINT": "Identity endpoint URL (default: https://iam.eu-de.otc.t-systems.com:443/v3/auth/tokens)",
+            "OTC_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "OTC_PRIVATE_ZONE": "Set to true to use private zones only (default: use public zones only)",
+            "OTC_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "OTC_SEQUENCE_INTERVAL": "Time between sequential requests in seconds (Default: 60)",
+            "OTC_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 300)"
+          }
+        },
+        "links": {
+          "api": "https://docs.otc.t-systems.com/domain-name-service/api-ref/index.html"
+        }
+      },
+      {
+        "name": "Openprovider",
+        "code": "openprovider",
+        "configuration": {
+          "credentials": {
+            "OPENPROVIDER_PASSWORD": "The user's password",
+            "OPENPROVIDER_USERNAME": "The user's name"
+          },
+          "additional": {
+            "OPENPROVIDER_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "OPENPROVIDER_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 10)",
+            "OPENPROVIDER_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 600)",
+            "OPENPROVIDER_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 600)"
+          }
+        },
+        "links": {
+          "api": "https://docs.openprovider.com/doc/all"
+        }
+      },
+      {
+        "name": "OpusDNS",
+        "code": "opusdns",
+        "configuration": {
+          "credentials": {
+            "OPUSDNS_API_KEY": "API key (format: opk_...)"
+          },
+          "additional": {
+            "OPUSDNS_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "OPUSDNS_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 4)",
+            "OPUSDNS_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 120)",
+            "OPUSDNS_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 60)"
+          }
+        },
+        "links": {
+          "api": "https://developers.opusdns.com/products/dns/manage-records"
+        }
+      },
+      {
+        "name": "Oracle Cloud",
+        "code": "oraclecloud",
+        "configuration": {
+          "credentials": {
+            "OCI_COMPARTMENT_OCID": "Compartment OCID",
+            "OCI_FINGERPRINT": "Public key fingerprint (ignored if `OCI_AUTH_TYPE` is not empty)",
+            "OCI_PRIVATE_KEY_PASSWORD": "Private key password (ignored if `OCI_AUTH_TYPE` is not empty)",
+            "OCI_PRIVATE_KEY_PATH": "Private key file (ignored if `OCI_AUTH_TYPE` is not empty)",
+            "OCI_REGION": "Region (it can be empty if `OCI_AUTH_TYPE` is not empty).",
+            "OCI_TENANCY_OCID": "Tenancy OCID (ignored if `OCI_AUTH_TYPE` is not empty)",
+            "OCI_USER_OCID": "User OCID (ignored if `OCI_AUTH_TYPE` is not empty)"
+          },
+          "additional": {
+            "OCI_AUTH_TYPE": "Authorization type. Possible values: 'instance_principal', 'user_principal', ''. (Default: '')",
+            "OCI_CONFIG_FILE": "Path to the configuration file. (only for `OCI_AUTH_TYPE=user_principal`)",
+            "OCI_HTTP_TIMEOUT": "API request timeout in seconds (Default: 60)",
+            "OCI_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "OCI_PROFILE": "Profile name. (only for `OCI_AUTH_TYPE=user_principal`)",
+            "OCI_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "OCI_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)",
+            "TF_VAR_fingerprint": "Alias on `OCI_FINGERPRINT`",
+            "TF_VAR_private_key_path": "Alias on `OCI_PRIVATE_KEY_PATH`",
+            "TF_VAR_region": "Alias on `OCI_REGION`",
+            "TF_VAR_tenancy_ocid": "Alias on `OCI_TENANCY_OCID`",
+            "TF_VAR_user_ocid": "Alias on `OCI_USER_OCID`"
+          }
+        },
+        "links": {
+          "api": "https://docs.cloud.oracle.com/iaas/Content/DNS/Concepts/dnszonemanagement.htm",
+          "go_client": "https://github.com/oracle/oci-go-sdk"
+        }
+      },
+      {
+        "name": "OVH",
+        "code": "ovh",
+        "configuration": {
+          "credentials": {
+            "OVH_ACCESS_TOKEN": "Access token",
+            "OVH_APPLICATION_KEY": "Application key (Application Key authentication)",
+            "OVH_APPLICATION_SECRET": "Application secret (Application Key authentication)",
+            "OVH_CLIENT_ID": "Client ID (OAuth2)",
+            "OVH_CLIENT_SECRET": "Client secret (OAuth2)",
+            "OVH_CONSUMER_KEY": "Consumer key (Application Key authentication)",
+            "OVH_ENDPOINT": "Endpoint URL (ovh-eu or ovh-ca)"
+          },
+          "additional": {
+            "OVH_HTTP_TIMEOUT": "API request timeout in seconds (Default: 180)",
+            "OVH_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "OVH_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "OVH_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://eu.api.ovh.com/",
+          "go_client": "https://github.com/ovh/go-ovh"
+        }
+      },
+      {
+        "name": "plesk.com",
+        "code": "plesk",
+        "configuration": {
+          "credentials": {
+            "PLESK_PASSWORD": "API password",
+            "PLESK_SERVER_BASE_URL": "Base URL of the server (ex: https://plesk.myserver.com:8443)",
+            "PLESK_USERNAME": "API username"
+          },
+          "additional": {
+            "PLESK_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "PLESK_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "PLESK_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "PLESK_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 300)"
+          }
+        },
+        "links": {
+          "api": "https://docs.plesk.com/en-US/obsidian/api-rpc/about-xml-api/reference.28784/"
+        }
+      },
+      {
+        "name": "PointDNS/PointHQ",
+        "code": "pointdns",
+        "configuration": {
+          "credentials": {
+            "POINTDNS_PASSWORD": "Password",
+            "POINTDNS_USERNAME": "Username"
+          },
+          "additional": {
+            "POINTDNS_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "POINTDNS_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "POINTDNS_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "POINTDNS_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://w.pointhq.com/api/docs"
+        }
+      },
+      {
+        "name": "Porkbun",
+        "code": "porkbun",
+        "configuration": {
+          "credentials": {
+            "PORKBUN_API_KEY": "API key",
+            "PORKBUN_SECRET_API_KEY": "secret API key"
+          },
+          "additional": {
+            "PORKBUN_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "PORKBUN_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 10)",
+            "PORKBUN_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 600)",
+            "PORKBUN_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 300)"
+          }
+        },
+        "links": {
+          "api": "https://porkbun.com/api/json/v3/documentation"
+        }
+      },
+      {
+        "name": "Poweradmin",
+        "code": "poweradmin",
+        "configuration": {
+          "credentials": {
+            "POWERADMIN_API_KEY": "API key",
+            "POWERADMIN_BASE_URL": "Base URL"
+          },
+          "additional": {
+            "POWERADMIN_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "POWERADMIN_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "POWERADMIN_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "POWERADMIN_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://docs.poweradmin.org/configuration/api/"
+        }
+      },
+      {
+        "name": "PowerDNS",
+        "code": "pdns",
+        "configuration": {
+          "credentials": {
+            "PDNS_API_KEY": "API key",
+            "PDNS_API_URL": "API URL"
+          },
+          "additional": {
+            "PDNS_API_VERSION": "Skip API version autodetection and use the provided version number.",
+            "PDNS_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "PDNS_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "PDNS_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 120)",
+            "PDNS_SERVER_NAME": "Name of the server in the URL, 'localhost' by default",
+            "PDNS_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://doc.powerdns.com/md/httpapi/README/"
+        }
+      },
+      {
+        "name": "Rackspace",
+        "code": "rackspace",
+        "configuration": {
+          "credentials": {
+            "RACKSPACE_API_KEY": "API key",
+            "RACKSPACE_USER": "API user"
+          },
+          "additional": {
+            "RACKSPACE_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "RACKSPACE_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 3)",
+            "RACKSPACE_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "RACKSPACE_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 300)"
+          }
+        },
+        "links": {
+          "api": "https://developer.rackspace.com/docs/cloud-dns/v1/"
+        }
+      },
+      {
+        "name": "Rage4",
+        "code": "rage4",
+        "configuration": {
+          "credentials": {
+            "RAGE4_PASSWORD": "Password",
+            "RAGE4_USERNAME": "Username"
+          },
+          "additional": {
+            "RAGE4_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "RAGE4_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "RAGE4_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "RAGE4_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://rage4.com/swagger/index.html?urls.primaryName=dns-legacy#/DNS"
+        }
+      },
+      {
+        "name": "Rain Yun/雨云",
+        "code": "rainyun",
+        "configuration": {
+          "credentials": {
+            "RAINYUN_API_KEY": "API key"
+          },
+          "additional": {
+            "RAINYUN_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "RAINYUN_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "RAINYUN_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 120)",
+            "RAINYUN_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://www.apifox.cn/apidoc/shared-a4595cc8-44c5-4678-a2a3-eed7738dab03/api-151416609"
+        }
+      },
+      {
+        "name": "RcodeZero",
+        "code": "rcodezero",
+        "configuration": {
+          "credentials": {
+            "RCODEZERO_API_TOKEN": "API token"
+          },
+          "additional": {
+            "RCODEZERO_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "RCODEZERO_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 10)",
+            "RCODEZERO_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 240)",
+            "RCODEZERO_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://my.rcodezero.at/openapi"
+        }
+      },
+      {
+        "name": "reg.ru",
+        "code": "regru",
+        "configuration": {
+          "credentials": {
+            "REGRU_PASSWORD": "API password",
+            "REGRU_USERNAME": "API username"
+          },
+          "additional": {
+            "REGRU_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "REGRU_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "REGRU_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "REGRU_TLS_CERT": "authentication certificate",
+            "REGRU_TLS_KEY": "authentication private key",
+            "REGRU_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 300)"
+          }
+        },
+        "links": {
+          "api": "https://www.reg.ru/support/help/api2"
+        }
+      },
+      {
+        "name": "Regfish",
+        "code": "regfish",
+        "configuration": {
+          "credentials": {
+            "REGFISH_API_KEY": "API key"
+          },
+          "additional": {
+            "REGFISH_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "REGFISH_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "REGFISH_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "REGFISH_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://regfish.readme.io/",
+          "go_client": "https://github.com/regfish/regfish-dnsapi-go"
+        }
+      },
+      {
+        "name": "RimuHosting",
+        "code": "rimuhosting",
+        "configuration": {
+          "credentials": {
+            "RIMUHOSTING_API_KEY": "User API key"
+          },
+          "additional": {
+            "RIMUHOSTING_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "RIMUHOSTING_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "RIMUHOSTING_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "RIMUHOSTING_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 3600)"
+          }
+        },
+        "links": {
+          "api": "https://rimuhosting.com/dns/dyndns.jsp"
+        }
+      },
+      {
+        "name": "RU CENTER",
+        "code": "nicru",
+        "configuration": {
+          "credentials": {
+            "NICRU_PASSWORD": "Password for an account in RU CENTER",
+            "NICRU_SECRET": "Secret for application in DNS-hosting RU CENTER",
+            "NICRU_SERVICE_ID": "Service ID for application in DNS-hosting RU CENTER",
+            "NICRU_USER": "Agreement for an account in RU CENTER"
+          },
+          "additional": {
+            "NICRU_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 60)",
+            "NICRU_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 600)",
+            "NICRU_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 30)"
+          }
+        },
+        "links": {
+          "api": "https://www.nic.ru/help/api-dns-hostinga_3643.html"
+        }
+      },
+      {
+        "name": "Sakura Cloud",
+        "code": "sakuracloud",
+        "configuration": {
+          "credentials": {
+            "SAKURACLOUD_ACCESS_TOKEN": "Access token",
+            "SAKURACLOUD_ACCESS_TOKEN_SECRET": "Access token secret"
+          },
+          "additional": {
+            "SAKURACLOUD_HTTP_TIMEOUT": "API request timeout in seconds (Default: 10)",
+            "SAKURACLOUD_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "SAKURACLOUD_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "SAKURACLOUD_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://developer.sakura.ad.jp/cloud/api/1.1/",
+          "go_client": "https://github.com/sacloud/iaas-api-go"
+        }
+      },
+      {
+        "name": "Scaleway",
+        "code": "scaleway",
+        "configuration": {
+          "credentials": {
+            "SCW_PROJECT_ID": "Project to use (optional)",
+            "SCW_SECRET_KEY": "Secret key"
+          },
+          "additional": {
+            "SCW_ACCESS_KEY": "Access key",
+            "SCW_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "SCW_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 10)",
+            "SCW_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 120)",
+            "SCW_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 60)"
+          }
+        },
+        "links": {
+          "api": "https://developers.scaleway.com/en/products/domain/dns/api/"
+        }
+      },
+      {
+        "name": "ScanNet",
+        "code": "scannet",
+        "configuration": {
+          "credentials": {
+            "SCANNET_API_KEY": "API key"
+          },
+          "additional": {
+            "SCANNET_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "SCANNET_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "SCANNET_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "SCANNET_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://api.scannet.dk/dns/swagger/index.html"
+        }
+      },
+      {
+        "name": "Selectel",
+        "code": "selectel",
+        "configuration": {
+          "credentials": {
+            "SELECTEL_API_TOKEN": "API token"
+          },
+          "additional": {
+            "SELECTEL_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "SELECTEL_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "SELECTEL_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 120)",
+            "SELECTEL_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 60)"
+          }
+        },
+        "links": {
+          "api": "https://kb.selectel.com/23136054.html"
+        }
+      },
+      {
+        "name": "Selectel v2",
+        "code": "selectelv2",
+        "configuration": {
+          "credentials": {
+            "SELECTELV2_ACCOUNT_ID": "Selectel account ID (INT)",
+            "SELECTELV2_PASSWORD": "Openstack username's password",
+            "SELECTELV2_PROJECT_ID": "Cloud project ID (UUID)",
+            "SELECTELV2_USERNAME": "Openstack username"
+          },
+          "additional": {
+            "SELECTELV2_AUTH_REGION": "Location for auth endpoint like ResellAPI or Keystone (default: 'ru-1')",
+            "SELECTELV2_AUTH_URL": "Identity endpoint (default: 'https://cloud.api.selcloud.ru/identity/v3/')",
+            "SELECTELV2_BASE_URL": "API endpoint URL",
+            "SELECTELV2_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "SELECTELV2_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 5)",
+            "SELECTELV2_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 120)",
+            "SELECTELV2_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 60)",
+            "SELECTELV2_USER_DOMAIN_NAME": "To specify the domain name (account ID) where the user is located. (default: SELECTELV2_ACCOUNT_ID)"
+          }
+        },
+        "links": {
+          "api": "https://developers.selectel.ru/docs/cloud-services/dns_api/dns_api_actual/",
+          "go_client": "https://github.com/selectel/domains-go"
+        }
+      },
+      {
+        "name": "SelfHost.(de|eu)",
+        "code": "selfhostde",
+        "configuration": {
+          "credentials": {
+            "SELFHOSTDE_PASSWORD": "Password",
+            "SELFHOSTDE_RECORDS_MAPPING": "Record IDs mapping with domains (ex: example.com:123:456,example.org:789,foo.example.com:147)",
+            "SELFHOSTDE_USERNAME": "Username"
+          },
+          "additional": {
+            "SELFHOSTDE_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "SELFHOSTDE_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 30)",
+            "SELFHOSTDE_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 240)",
+            "SELFHOSTDE_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        }
+      },
+      {
+        "name": "Servercow",
+        "code": "servercow",
+        "configuration": {
+          "credentials": {
+            "SERVERCOW_PASSWORD": "API password",
+            "SERVERCOW_USERNAME": "API username"
+          },
+          "additional": {
+            "SERVERCOW_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "SERVERCOW_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "SERVERCOW_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "SERVERCOW_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://wiki.servercow.de/en/domains/dns_api/api-syntax/"
+        }
+      },
+      {
+        "name": "Shellrent",
+        "code": "shellrent",
+        "configuration": {
+          "credentials": {
+            "SHELLRENT_TOKEN": "Token",
+            "SHELLRENT_USERNAME": "Username"
+          },
+          "additional": {
+            "SHELLRENT_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "SHELLRENT_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 10)",
+            "SHELLRENT_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 300)",
+            "SHELLRENT_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 3600)"
+          }
+        },
+        "links": {
+          "api": "https://api.shellrent.com/section/api2"
+        }
+      },
+      {
+        "name": "Simply.com",
+        "code": "simply",
+        "configuration": {
+          "credentials": {
+            "SIMPLY_ACCOUNT_NAME": "Account name",
+            "SIMPLY_API_KEY": "API key"
+          },
+          "additional": {
+            "SIMPLY_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "SIMPLY_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 10)",
+            "SIMPLY_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 300)",
+            "SIMPLY_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://www.simply.com/en/docs/api/"
+        }
+      },
+      {
+        "name": "Sonic",
+        "code": "sonic",
+        "configuration": {
+          "credentials": {
+            "SONIC_API_KEY": "API Key",
+            "SONIC_USER_ID": "User ID"
+          },
+          "additional": {
+            "SONIC_HTTP_TIMEOUT": "API request timeout in seconds (Default: 10)",
+            "SONIC_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "SONIC_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "SONIC_SEQUENCE_INTERVAL": "Time between sequential requests in seconds (Default: 60)",
+            "SONIC_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://public-api.sonic.net/dyndns/"
+        }
+      },
+      {
+        "name": "Spaceship",
+        "code": "spaceship",
+        "configuration": {
+          "credentials": {
+            "SPACESHIP_API_KEY": "API key",
+            "SPACESHIP_API_SECRET": "API secret"
+          },
+          "additional": {
+            "SPACESHIP_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "SPACESHIP_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "SPACESHIP_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "SPACESHIP_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://docs.spaceship.dev/#tag/DNS-records"
+        }
+      },
+      {
+        "name": "Stackpath (Deprecated)",
+        "code": "stackpath",
+        "configuration": {
+          "credentials": {
+            "STACKPATH_CLIENT_ID": "Client ID",
+            "STACKPATH_CLIENT_SECRET": "Client secret",
+            "STACKPATH_STACK_ID": "Stack ID"
+          },
+          "additional": {
+            "STACKPATH_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "STACKPATH_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "STACKPATH_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        }
+      },
+      {
+        "name": "Syse",
+        "code": "syse",
+        "configuration": {
+          "credentials": {
+            "SYSE_CREDENTIALS": "Comma-separated list of `zone:password` credential pairs"
+          },
+          "additional": {
+            "SYSE_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "SYSE_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 10)",
+            "SYSE_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 1200)",
+            "SYSE_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://www.syse.no/api/dns"
+        }
+      },
+      {
+        "name": "Technitium",
+        "code": "technitium",
+        "configuration": {
+          "credentials": {
+            "TECHNITIUM_API_TOKEN": "API token",
+            "TECHNITIUM_SERVER_BASE_URL": "Server base URL"
+          },
+          "additional": {
+            "TECHNITIUM_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "TECHNITIUM_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "TECHNITIUM_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "TECHNITIUM_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://github.com/TechnitiumSoftware/DnsServer/blob/0f83d23e605956b66ac76921199e241d9cc061bd/APIDOCS.md"
+        }
+      },
+      {
+        "name": "Tele3",
+        "code": "tele3",
+        "configuration": {
+          "credentials": {
+            "TELE3_KEY": "Key",
+            "TELE3_SECRET": "Secret"
+          },
+          "additional": {
+            "TELE3_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "TELE3_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "TELE3_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "TELE3_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://www.tele3.cz/system-acme-api.html"
+        }
+      },
+      {
+        "name": "Tencent Cloud DNS",
+        "code": "tencentcloud",
+        "configuration": {
+          "credentials": {
+            "TENCENTCLOUD_SECRET_ID": "Access key ID",
+            "TENCENTCLOUD_SECRET_KEY": "Access Key secret"
+          },
+          "additional": {
+            "TENCENTCLOUD_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "TENCENTCLOUD_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "TENCENTCLOUD_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "TENCENTCLOUD_REGION": "Region",
+            "TENCENTCLOUD_SESSION_TOKEN": "Access Key token",
+            "TENCENTCLOUD_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 600)"
+          }
+        },
+        "links": {
+          "api": "https://cloud.tencent.com/document/product/1427/56153",
+          "go_client": "https://github.com/tencentcloud/tencentcloud-sdk-go"
+        }
+      },
+      {
+        "name": "Tencent EdgeOne",
+        "code": "edgeone",
+        "configuration": {
+          "credentials": {
+            "EDGEONE_SECRET_ID": "Access key ID",
+            "EDGEONE_SECRET_KEY": "Access Key secret"
+          },
+          "additional": {
+            "EDGEONE_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "EDGEONE_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 30)",
+            "EDGEONE_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 1200)",
+            "EDGEONE_REGION": "Region",
+            "EDGEONE_SESSION_TOKEN": "Access Key token",
+            "EDGEONE_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 60)",
+            "EDGEONE_ZONES_MAPPING": "Mapping between DNS zones and site IDs. (ex: 'example.org:id1,example.com:id2')"
+          }
+        },
+        "links": {
+          "api": "https://edgeone.ai/document/50454#dns-record-apis",
+          "go_client": "https://github.com/tencentcloud/tencentcloud-sdk-go"
+        }
+      },
+      {
+        "name": "Timeweb Cloud",
+        "code": "timewebcloud",
+        "configuration": {
+          "credentials": {
+            "TIMEWEBCLOUD_AUTH_TOKEN": "Authentication token"
+          },
+          "additional": {
+            "TIMEWEBCLOUD_HTTP_TIMEOUT": "API request timeout in seconds (Default: 10)",
+            "TIMEWEBCLOUD_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "TIMEWEBCLOUD_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)"
+          }
+        },
+        "links": {
+          "api": "https://timeweb.cloud/api-docs"
+        }
+      },
+      {
+        "name": "TodayNIC/时代互联",
+        "code": "todaynic",
+        "configuration": {
+          "credentials": {
+            "TODAYNIC_API_KEY": "API key",
+            "TODAYNIC_AUTH_USER_ID": "account ID"
+          },
+          "additional": {
+            "TODAYNIC_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "TODAYNIC_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "TODAYNIC_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "TODAYNIC_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 600)"
+          }
+        },
+        "links": {
+          "api": "https://www.todaynic.com/partner/mode_Http_Api_detail.php"
+        }
+      },
+      {
+        "name": "TransIP",
+        "code": "transip",
+        "configuration": {
+          "credentials": {
+            "TRANSIP_ACCOUNT_NAME": "Account name",
+            "TRANSIP_PRIVATE_KEY_PATH": "Private key path"
+          },
+          "additional": {
+            "TRANSIP_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "TRANSIP_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 10)",
+            "TRANSIP_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 600)",
+            "TRANSIP_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 10)"
+          }
+        },
+        "links": {
+          "api": "https://api.transip.eu/rest/docs.html",
+          "go_client": "https://github.com/transip/gotransip"
+        }
+      },
+      {
+        "name": "UCloud",
+        "code": "ucloud",
+        "configuration": {
+          "credentials": {
+            "UCLOUD_PRIVATE_KEY": "Private key",
+            "UCLOUD_PUBLIC_KEY": "Public key"
+          },
+          "additional": {
+            "UCLOUD_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "UCLOUD_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "UCLOUD_PROJECT_ID": "Project ID",
+            "UCLOUD_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "UCLOUD_REGION": "Region",
+            "UCLOUD_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 600)"
+          }
+        },
+        "links": {
+          "api": "https://docs.ucloud.cn/api/udnr-api/README",
+          "go_client": "https://github.com/ucloud/ucloud-sdk-go"
+        }
+      },
+      {
+        "name": "Ultradns",
+        "code": "ultradns",
+        "configuration": {
+          "credentials": {
+            "ULTRADNS_PASSWORD": "API Password",
+            "ULTRADNS_USERNAME": "API Username"
+          },
+          "additional": {
+            "ULTRADNS_ENDPOINT": "API endpoint URL, defaults to https://api.ultradns.com/",
+            "ULTRADNS_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 4)",
+            "ULTRADNS_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 120)",
+            "ULTRADNS_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://ultra-portalstatic.ultradns.com/static/docs/REST-API_User_Guide.pdf",
+          "go_client": "https://github.com/ultradns/ultradns-go-sdk"
+        }
+      },
+      {
+        "name": "United-Domains",
+        "code": "uniteddomains",
+        "configuration": {
+          "credentials": {
+            "UNITEDDOMAINS_API_KEY": "API key `<prefix>.<secret>` https://www.united-domains.de/help/faq-article/getting-started-with-the-united-domains-dns-api/"
+          },
+          "additional": {
+            "UNITEDDOMAINS_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "UNITEDDOMAINS_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "UNITEDDOMAINS_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 900)",
+            "UNITEDDOMAINS_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 300)"
+          }
+        },
+        "links": {
+          "api": "https://www.united-domains.de/dns-apidoc/"
+        }
+      },
+      {
+        "name": "Variomedia",
+        "code": "variomedia",
+        "configuration": {
+          "credentials": {
+            "VARIOMEDIA_API_TOKEN": "API token"
+          },
+          "additional": {
+            "VARIOMEDIA_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "VARIOMEDIA_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "VARIOMEDIA_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "VARIOMEDIA_SEQUENCE_INTERVAL": "Time between sequential requests in seconds (Default: 60)",
+            "VARIOMEDIA_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 300)"
+          }
+        },
+        "links": {
+          "api": "https://api.variomedia.de/docs/dns-records.html"
+        }
+      },
+      {
+        "name": "Veesp",
+        "code": "veesp",
+        "configuration": {
+          "credentials": {
+            "VEESP_PASSWORD": "Password",
+            "VEESP_USERNAME": "Username"
+          },
+          "additional": {
+            "VEESP_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "VEESP_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "VEESP_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "VEESP_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://secure.veesp.com/userapi#dns-96"
+        }
+      },
+      {
+        "name": "VegaDNS",
+        "code": "vegadns",
+        "configuration": {
+          "credentials": {
+            "SECRET_VEGADNS_KEY": "API key",
+            "SECRET_VEGADNS_SECRET": "API secret",
+            "VEGADNS_URL": "API endpoint URL"
+          },
+          "additional": {
+            "VEGADNS_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 60)",
+            "VEGADNS_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 720)",
+            "VEGADNS_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 10)"
+          }
+        },
+        "links": {
+          "api": "https://github.com/shupp/VegaDNS-API",
+          "go_client": "https://github.com/OpenDNS/vegadns2client"
+        }
+      },
+      {
+        "name": "Vercel",
+        "code": "vercel",
+        "configuration": {
+          "credentials": {
+            "VERCEL_API_TOKEN": "Authentication token"
+          },
+          "additional": {
+            "VERCEL_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "VERCEL_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 5)",
+            "VERCEL_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "VERCEL_TEAM_ID": "Team ID (ex: team_xxxxxxxxxxxxxxxxxxxxxxxx)",
+            "VERCEL_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 60)"
+          }
+        },
+        "links": {
+          "api": "https://vercel.com/docs/rest-api#endpoints/dns"
+        }
+      },
+      {
+        "name": "Versio.[nl|eu|uk]",
+        "code": "versio",
+        "configuration": {
+          "credentials": {
+            "VERSIO_PASSWORD": "Basic authentication password",
+            "VERSIO_USERNAME": "Basic authentication username"
+          },
+          "additional": {
+            "VERSIO_ENDPOINT": "The endpoint URL of the API Server",
+            "VERSIO_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "VERSIO_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 5)",
+            "VERSIO_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "VERSIO_SEQUENCE_INTERVAL": "Time between sequential requests in seconds (Default: 60)",
+            "VERSIO_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 300)"
+          }
+        },
+        "links": {
+          "api": "https://www.versio.nl/RESTapidoc/"
+        }
+      },
+      {
+        "name": "VinylDNS",
+        "code": "vinyldns",
+        "configuration": {
+          "credentials": {
+            "VINYLDNS_ACCESS_KEY": "The VinylDNS API key",
+            "VINYLDNS_HOST": "The VinylDNS API URL",
+            "VINYLDNS_SECRET_KEY": "The VinylDNS API Secret key"
+          },
+          "additional": {
+            "VINYLDNS_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "VINYLDNS_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 4)",
+            "VINYLDNS_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 120)",
+            "VINYLDNS_QUOTE_VALUE": "Adds quotes around the TXT record value (Default: false)",
+            "VINYLDNS_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 30)"
+          }
+        },
+        "links": {
+          "api": "https://www.vinyldns.io/api/",
+          "go_client": "https://github.com/vinyldns/go-vinyldns"
+        }
+      },
+      {
+        "name": "Virtualname",
+        "code": "virtualname",
+        "configuration": {
+          "credentials": {
+            "VIRTUALNAME_TOKEN": "API token"
+          },
+          "additional": {
+            "VIRTUALNAME_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "VIRTUALNAME_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 10)",
+            "VIRTUALNAME_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 300)",
+            "VIRTUALNAME_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://developers.virtualname.net/#dns"
+        }
+      },
+      {
+        "name": "VK Cloud",
+        "code": "vkcloud",
+        "configuration": {
+          "credentials": {
+            "VK_CLOUD_PASSWORD": "Password for VK Cloud account",
+            "VK_CLOUD_PROJECT_ID": "String ID of project in VK Cloud",
+            "VK_CLOUD_USERNAME": "Email of VK Cloud account"
+          },
+          "additional": {
+            "VK_CLOUD_DNS_ENDPOINT": "URL of DNS API. Defaults to https://mcs.mail.ru/public-dns but can be changed for usage with private clouds",
+            "VK_CLOUD_DOMAIN_NAME": "Openstack users domain name. Defaults to `users` but can be changed for usage with private clouds",
+            "VK_CLOUD_IDENTITY_ENDPOINT": "URL of OpenStack Auth API, Defaults to https://infra.mail.ru:35357/v3/ but can be changed for usage with private clouds",
+            "VK_CLOUD_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "VK_CLOUD_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "VK_CLOUD_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 60)"
+          }
+        },
+        "links": {
+          "api": "https://mcs.mail.ru/docs/networks/vnet/networks/publicdns/api"
+        }
+      },
+      {
+        "name": "Volcano Engine/火山引擎",
+        "code": "volcengine",
+        "configuration": {
+          "credentials": {
+            "VOLC_ACCESSKEY": "Access Key ID (AK)",
+            "VOLC_SECRETKEY": "Secret Access Key (SK)"
+          },
+          "additional": {
+            "VOLC_HOST": "API host",
+            "VOLC_HTTP_TIMEOUT": "API request timeout in seconds (Default: 15)",
+            "VOLC_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 10)",
+            "VOLC_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 240)",
+            "VOLC_REGION": "Region",
+            "VOLC_SCHEME": "API scheme",
+            "VOLC_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 600)"
+          }
+        },
+        "links": {
+          "api": "https://www.volcengine.com/docs/6758/155086",
+          "go_client": "https://github.com/volcengine/volc-sdk-golang"
+        }
+      },
+      {
+        "name": "Vscale",
+        "code": "vscale",
+        "configuration": {
+          "credentials": {
+            "VSCALE_API_TOKEN": "API token"
+          },
+          "additional": {
+            "VSCALE_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "VSCALE_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "VSCALE_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 120)",
+            "VSCALE_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 60)"
+          }
+        },
+        "links": {
+          "api": "https://developers.vscale.io/documentation/api/v1/#api-Domains_Records"
+        }
+      },
+      {
+        "name": "Vultr",
+        "code": "vultr",
+        "configuration": {
+          "credentials": {
+            "VULTR_API_KEY": "API key"
+          },
+          "additional": {
+            "VULTR_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "VULTR_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "VULTR_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "VULTR_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://www.vultr.com/api/#dns",
+          "go_client": "https://github.com/vultr/govultr"
+        }
+      },
+      {
+        "name": "Wannafind",
+        "code": "wannafind",
+        "configuration": {
+          "credentials": {
+            "WANNAFIND_API_KEY": "API key"
+          },
+          "additional": {
+            "WANNAFIND_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "WANNAFIND_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "WANNAFIND_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "WANNAFIND_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://api.wannafind.dk/dns/swagger/index.html"
+        }
+      },
+      {
+        "name": "Webglobe",
+        "code": "webglobe",
+        "configuration": {
+          "credentials": {
+            "WEBGLOBE_API_KEY": "API token",
+            "WEBGLOBE_LOGIN": "Username"
+          },
+          "additional": {
+            "WEBGLOBE_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "WEBGLOBE_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "WEBGLOBE_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "WEBGLOBE_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://api.webglobe.com/doc"
+        }
+      },
+      {
+        "name": "webnames.ca",
+        "code": "webnamesca",
+        "configuration": {
+          "credentials": {
+            "WEBNAMESCA_API_KEY": "API key",
+            "WEBNAMESCA_API_USER": "API username"
+          },
+          "additional": {
+            "WEBNAMESCA_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "WEBNAMESCA_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "WEBNAMESCA_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "WEBNAMESCA_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://www.webnames.ca/_/swagger/index.html"
+        }
+      },
+      {
+        "name": "webnames.ru",
+        "code": "webnamesru",
+        "configuration": {
+          "credentials": {
+            "WEBNAMESRU_API_KEY": "Domain API key"
+          },
+          "additional": {
+            "WEBNAMESRU_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "WEBNAMESRU_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "WEBNAMESRU_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)"
+          }
+        },
+        "links": {
+          "api": "https://github.com/regtime-ltd/certbot-dns-webnames"
+        }
+      },
+      {
+        "name": "Websupport",
+        "code": "websupport",
+        "configuration": {
+          "credentials": {
+            "WEBSUPPORT_API_KEY": "API key",
+            "WEBSUPPORT_SECRET": "API secret"
+          },
+          "additional": {
+            "WEBSUPPORT_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "WEBSUPPORT_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "WEBSUPPORT_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "WEBSUPPORT_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 600)"
+          }
+        },
+        "links": {
+          "api": "https://rest.websupport.sk/v2/docs"
+        }
+      },
+      {
+        "name": "WEDOS",
+        "code": "wedos",
+        "configuration": {
+          "credentials": {
+            "WEDOS_USERNAME": "Username is the same as for the admin account",
+            "WEDOS_WAPI_PASSWORD": "Password needs to be generated and IP allowed in the admin interface"
+          },
+          "additional": {
+            "WEDOS_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "WEDOS_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 10)",
+            "WEDOS_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 600)",
+            "WEDOS_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 300)"
+          }
+        },
+        "links": {
+          "api": "https://kb.wedos.com/en/kategorie/wapi-api-interface/wdns-en/"
+        }
+      },
+      {
+        "name": "West.cn/西部数码",
+        "code": "westcn",
+        "configuration": {
+          "credentials": {
+            "WESTCN_PASSWORD": "API password",
+            "WESTCN_USERNAME": "Username"
+          },
+          "additional": {
+            "WESTCN_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "WESTCN_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 10)",
+            "WESTCN_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 120)",
+            "WESTCN_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 60)"
+          }
+        },
+        "links": {
+          "api": "https://www.west.cn/CustomerCenter/doc/domain_v2.html"
+        }
+      },
+      {
+        "name": "Xinnet",
+        "code": "xinnet",
+        "configuration": {
+          "credentials": {
+            "XINNET_AGENT_ID": "Agent ID",
+            "XINNET_SECRET": "Application secret"
+          },
+          "additional": {
+            "XINNET_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "XINNET_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "XINNET_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "XINNET_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://apidoc.xin.cn/"
+        }
+      },
+      {
+        "name": "Yandex 360",
+        "code": "yandex360",
+        "configuration": {
+          "credentials": {
+            "YANDEX360_OAUTH_TOKEN": "The OAuth Token",
+            "YANDEX360_ORG_ID": "The organization ID"
+          },
+          "additional": {
+            "YANDEX360_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "YANDEX360_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "YANDEX360_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "YANDEX360_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 21600)"
+          }
+        },
+        "links": {
+          "api": "https://yandex.ru/dev/api360/doc/ref/DomainDNSService/"
+        }
+      },
+      {
+        "name": "Yandex Cloud",
+        "code": "yandexcloud",
+        "configuration": {
+          "credentials": {
+            "YANDEX_CLOUD_FOLDER_ID": "The string id of folder (aka project) in Yandex Cloud",
+            "YANDEX_CLOUD_IAM_TOKEN": "The base64 encoded json which contains information about iam token of service account with `dns.admin` permissions"
+          },
+          "additional": {
+            "YANDEX_CLOUD_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "YANDEX_CLOUD_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "YANDEX_CLOUD_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 60)"
+          }
+        },
+        "links": {
+          "api": "https://cloud.yandex.com/en/docs/dns/quickstart"
+        }
+      },
+      {
+        "name": "Yandex PDD",
+        "code": "yandex",
+        "configuration": {
+          "credentials": {
+            "YANDEX_PDD_TOKEN": "Basic authentication username"
+          },
+          "additional": {
+            "YANDEX_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "YANDEX_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "YANDEX_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "YANDEX_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 21600)"
+          }
+        },
+        "links": {
+          "api": "https://yandex.com/dev/domain/doc/concepts/api-dns.html"
+        }
+      },
+      {
+        "name": "Zilore",
+        "code": "zilore",
+        "configuration": {
+          "credentials": {
+            "ZILORE_ACCESS_KEY": "Access key"
+          },
+          "additional": {
+            "ZILORE_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "ZILORE_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "ZILORE_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "ZILORE_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 120)"
+          }
+        },
+        "links": {
+          "api": "https://zilore.com/en/help/api"
+        }
+      },
+      {
+        "name": "Zone.ee",
+        "code": "zoneee",
+        "configuration": {
+          "credentials": {
+            "ZONEEE_API_KEY": "API key",
+            "ZONEEE_API_USER": "API user"
+          },
+          "additional": {
+            "ZONEEE_ENDPOINT": "API endpoint URL",
+            "ZONEEE_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "ZONEEE_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 5)",
+            "ZONEEE_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 300)"
+          }
+        },
+        "links": {
+          "api": "https://api.zone.eu/v2"
+        }
+      },
+      {
+        "name": "ZoneEdit",
+        "code": "zoneedit",
+        "configuration": {
+          "credentials": {
+            "ZONEEDIT_AUTH_TOKEN": "Authentication token",
+            "ZONEEDIT_USER": "User ID"
+          },
+          "additional": {
+            "ZONEEDIT_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "ZONEEDIT_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "ZONEEDIT_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)"
+          }
+        },
+        "links": {
+          "api": "https://support.zoneedit.com/en/knowledgebase/article/changes-to-dynamic-dns"
+        }
+      },
+      {
+        "name": "Zonomi",
+        "code": "zonomi",
+        "configuration": {
+          "credentials": {
+            "ZONOMI_API_KEY": "User API key"
+          },
+          "additional": {
+            "ZONOMI_HTTP_TIMEOUT": "API request timeout in seconds (Default: 30)",
+            "ZONOMI_POLLING_INTERVAL": "Time between DNS propagation check in seconds (Default: 2)",
+            "ZONOMI_PROPAGATION_TIMEOUT": "Maximum waiting time for DNS propagation in seconds (Default: 60)",
+            "ZONOMI_TTL": "The TTL of the TXT record used for the DNS challenge in seconds (Default: 3600)"
+          }
+        },
+        "links": {
+          "api": "https://zonomi.com/app/dns/dyndns.jsp"
+        }
+      }
+    ]
+  },
+  "settings_schema": {
+    "settings": [
+      {
+        "key": "recursive_nameservers",
+        "type": "text",
+        "display_name": "Recursive nameservers",
+        "help_text": "Comma separated host:port list used for the DNS propagation check. Empty means the system resolvers."
+      },
+      {
+        "key": "default_propagation_timeout_seconds",
+        "type": "number",
+        "display_name": "Default propagation timeout (seconds)",
+        "help_text": "Applied to providers that do not report a propagation timeout of their own.",
+        "default": 120
+      }
+    ]
+  }
+}
