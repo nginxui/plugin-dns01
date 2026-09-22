@@ -3,6 +3,7 @@
   "name": "DNS-01 Challenge",
   "version": "1.0.0",
   "description": "Solve the ACME DNS-01 challenge with any of the DNS providers supported by lego.",
+  "icon_path": "webapp/dist/icon.svg",
   "api_version": 1,
   "min_nginx_ui_version": "2.7.0",
   "server": {

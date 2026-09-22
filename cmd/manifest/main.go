@@ -83,6 +83,7 @@ func Build() (*protocol.Manifest, error) {
 			Lifecycle:          protocol.LifecycleOnDemand,
 			IdleTimeoutSeconds: IdleTimeout,
 		},
+		IconPath: "webapp/dist/icon.svg",
 		Webapp: &protocol.ManifestWebapp{
 			BundlePath: "webapp/dist/main.js",
 			StylePath:  "webapp/dist/style.css",
