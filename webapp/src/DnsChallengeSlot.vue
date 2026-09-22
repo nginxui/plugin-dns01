@@ -25,8 +25,6 @@ interface DnsChallengeOptions {
   code?: string
   provider?: string
   provider_code?: string
-  lego_disable_cname_support?: boolean
-  disable_authoritative_ns_propagation?: boolean
   challenge_config?: Record<string, unknown>
   [key: string]: unknown
 }
@@ -150,27 +148,12 @@ function filterOption(input: string, option?: FilterOption) {
   return label.includes(needle) || value.includes(needle)
 }
 
-/** Initialises the switches from challenge_config, falling back to the legacy top-level fields. */
+/** Initialises the switches from challenge_config. */
 function initSwitches() {
-  const options = props.context.options
-  const config = options.challenge_config
-
-  const hasPluginConfig = !!config && (
-    'disable_cname' in config
-    || 'disable_authoritative_ns_propagation' in config
-    || 'disable_recursive_ns_propagation' in config
-  )
-
-  if (hasPluginConfig && config) {
-    disableCname.value = Boolean(config.disable_cname)
-    disableAuthoritativeNsPropagation.value = Boolean(config.disable_authoritative_ns_propagation)
-    disableRecursiveNsPropagation.value = Boolean(config.disable_recursive_ns_propagation)
-    return
-  }
-
-  disableCname.value = Boolean(options.lego_disable_cname_support)
-  disableAuthoritativeNsPropagation.value = Boolean(options.disable_authoritative_ns_propagation)
-  disableRecursiveNsPropagation.value = false
+  const config = props.context.options.challenge_config ?? {}
+  disableCname.value = Boolean(config.disable_cname)
+  disableAuthoritativeNsPropagation.value = Boolean(config.disable_authoritative_ns_propagation)
+  disableRecursiveNsPropagation.value = Boolean(config.disable_recursive_ns_propagation)
 }
 
 // Mirrors the switches and the selected credential into challenge_config, the
