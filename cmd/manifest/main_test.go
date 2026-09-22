@@ -109,3 +109,53 @@ func TestManifestShape(t *testing.T) {
 		}
 	}
 }
+
+func TestFilterPlatformKeepsOnlyOneExecutable(t *testing.T) {
+	full, err := Render()
+	if err != nil {
+		t.Fatalf("render: %v", err)
+	}
+
+	for _, p := range platforms {
+		key := p.OS + "-" + p.Arch
+		narrowed, err := FilterPlatform(full, key)
+		if err != nil {
+			t.Fatalf("filter %s: %v", key, err)
+		}
+
+		var m protocol.Manifest
+		if err := json.Unmarshal(narrowed, &m); err != nil {
+			t.Fatalf("unmarshal %s: %v", key, err)
+		}
+		if len(m.Server.Executables) != 1 || m.Server.Executables[key] != ExecutablePath(p.OS, p.Arch) {
+			t.Fatalf("executables for %s = %v", key, m.Server.Executables)
+		}
+
+		// Everything but the executables map survives byte for byte.
+		restored, err := restoreExecutables(narrowed)
+		if err != nil {
+			t.Fatalf("restore %s: %v", key, err)
+		}
+		if !bytes.Equal(restored, full) {
+			t.Fatalf("the %s manifest differs from plugin.json beyond server.executables", key)
+		}
+	}
+
+	if _, err := FilterPlatform(full, "plan9-386"); err == nil {
+		t.Fatal("an undeclared platform must be refused")
+	}
+}
+
+// restoreExecutables puts the full executables map back into a narrowed
+// manifest, so the rest of the document can be compared.
+func restoreExecutables(data []byte) ([]byte, error) {
+	var m protocol.Manifest
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	m.Server.Executables = make(map[string]string, len(platforms))
+	for _, p := range platforms {
+		m.Server.Executables[p.OS+"-"+p.Arch] = ExecutablePath(p.OS, p.Arch)
+	}
+	return encode(&m)
+}

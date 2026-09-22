@@ -4,11 +4,18 @@
 //
 // The generated file is committed, so the plugin can be packaged without
 // running the generator.
+//
+// With -platform it writes the plugin.json of one per-platform package
+// instead: the committed manifest with server.executables narrowed to that
+// platform, which is what build.sh puts into each archive.
+//
+//	go run ./cmd/manifest -platform linux-amd64 -out dist/stage/linux-amd64/plugin.json
 package main
 
 import (
 	"bytes"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -172,7 +179,11 @@ func Render() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+	return encode(manifest)
+}
 
+// encode writes a manifest in the committed layout.
+func encode(manifest *protocol.Manifest) ([]byte, error) {
 	var buf bytes.Buffer
 	enc := json.NewEncoder(&buf)
 	enc.SetIndent("", "  ")
@@ -181,6 +192,26 @@ func Render() ([]byte, error) {
 		return nil, err
 	}
 	return buf.Bytes(), nil
+}
+
+// FilterPlatform narrows a rendered manifest to one "<goos>-<goarch>"
+// executable. A per-platform package must declare exactly the platform it
+// ships, see the plugin spec PKG-12, while the catalog release keeps the full
+// map in its manifest snapshot.
+func FilterPlatform(data []byte, platform string) ([]byte, error) {
+	var manifest protocol.Manifest
+	if err := json.Unmarshal(data, &manifest); err != nil {
+		return nil, fmt.Errorf("decode manifest: %w", err)
+	}
+	if manifest.Server == nil {
+		return nil, fmt.Errorf("the manifest has no server block")
+	}
+	executable, ok := manifest.Server.Executables[platform]
+	if !ok {
+		return nil, fmt.Errorf("the manifest declares no executable for %s", platform)
+	}
+	manifest.Server.Executables = map[string]string{platform: executable}
+	return encode(&manifest)
 }
 
 // repoRoot resolves the module root from this file's location.
@@ -193,23 +224,50 @@ func repoRoot() (string, error) {
 }
 
 func main() {
-	data, err := Render()
-	if err != nil {
+	platform := flag.String("platform", "", `write the manifest of the "<goos>-<goarch>" package instead of regenerating plugin.json`)
+	in := flag.String("in", "", "manifest to narrow with -platform (default: the committed plugin.json)")
+	out := flag.String("out", "", "output file (default: the committed plugin.json, required with -platform)")
+	flag.Parse()
+
+	if err := run(*platform, *in, *out); err != nil {
 		fmt.Fprintln(os.Stderr, "manifest:", err)
 		os.Exit(1)
 	}
+}
 
+func run(platform, in, out string) error {
 	root, err := repoRoot()
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "manifest:", err)
-		os.Exit(1)
+		return err
 	}
 
-	out := filepath.Join(root, "plugin.json")
-	if err := os.WriteFile(out, data, 0o644); err != nil {
-		fmt.Fprintln(os.Stderr, "manifest:", err)
-		os.Exit(1)
+	var data []byte
+	switch {
+	case platform == "":
+		if data, err = Render(); err != nil {
+			return err
+		}
+		if out == "" {
+			out = filepath.Join(root, "plugin.json")
+		}
+	case out == "":
+		return fmt.Errorf("-platform needs -out, the committed plugin.json keeps every platform")
+	default:
+		if in == "" {
+			in = filepath.Join(root, "plugin.json")
+		}
+		source, err := os.ReadFile(in)
+		if err != nil {
+			return err
+		}
+		if data, err = FilterPlatform(source, platform); err != nil {
+			return err
+		}
 	}
 
+	if err = os.WriteFile(out, data, 0o644); err != nil {
+		return err
+	}
 	fmt.Printf("wrote %s (%d bytes)\n", out, len(data))
+	return nil
 }

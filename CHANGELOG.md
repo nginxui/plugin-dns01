@@ -4,6 +4,23 @@ All notable changes to this plugin are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [semantic versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+
+- `build.sh` packages every platform separately as
+  `com.nginxui.dns01-<version>-<goos>-<goarch>.tar.gz`, with a `plugin.json`
+  that declares only that platform's executable and a `.sha256` file next to
+  each archive. The six-platform archive is gone: it unpacked to about
+  345 MiB, over the 256 MiB package limit of the host, and made every node
+  download binaries it never runs.
+- `./build.sh --host-only` now also writes the package of the current
+  platform, and the build prints the list of files it produced.
+- `cmd/manifest -platform <goos>-<goarch> -out <file>` writes the narrowed
+  `plugin.json` of one per-platform package.
+- `webapp/dist/manifest.webapp.json` is no longer copied into the package, it
+  only feeds `cmd/manifest`.
+
 ## [1.0.0] - 2026-09-22
 
 ### Added

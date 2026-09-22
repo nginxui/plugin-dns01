@@ -87,7 +87,8 @@ reports the name of the offending field, not its value.
 | Windows | amd64, arm64 |
 
 The binaries are statically linked (`CGO_ENABLED=0`) and built with
-`-trimpath -ldflags "-s -w"`.
+`-trimpath -ldflags "-s -w"`. Each platform ships as its own package, see
+[Packaging](#packaging).
 
 ## What data leaves the machine
 
@@ -135,6 +136,50 @@ go run ./cmd/manifest
 directory exists, so a plugin built without Bun still works, minus the custom
 DNS-01 form (the host falls back to its own generic DNS challenge UI).
 
+## Packaging
+
+One binary is 54 to 61 MiB. An archive with all six would unpack to about
+345 MiB, more than the 256 MiB a host accepts (spec PKG-7), and every node
+would download five binaries it never runs. The release is therefore split
+into one package per platform:
+
+```text
+dist/com.nginxui.dns01-<version>-linux-amd64.tar.gz
+dist/com.nginxui.dns01-<version>-linux-amd64.tar.gz.sha256
+dist/com.nginxui.dns01-<version>-linux-arm64.tar.gz
+...
+dist/com.nginxui.dns01-<version>-windows-arm64.tar.gz
+```
+
+Every package holds one binary under `server/dist/`, the web bundle, the
+documentation and a `plugin.json` whose `server.executables` names only that
+platform, as the plugin spec requires for a per-platform package (PKG-12). The
+committed `plugin.json` keeps all six platforms; it is what the catalog
+publishes as the release manifest snapshot. `go run ./cmd/manifest -platform
+<goos>-<goarch> -out <file>` writes the narrowed copy, which is what
+`build.sh` puts into each archive.
+
+The `.sha256` file next to each archive is in `sha256sum` format and feeds the
+`downloads` map of the catalog release:
+
+```json
+{
+  "downloads": {
+    "linux-amd64": {
+      "url": "<release asset base url>/com.nginxui.dns01-1.0.0-linux-amd64.tar.gz",
+      "sha256": "<digest from the .sha256 file>"
+    }
+  }
+}
+```
+
+NGINX UI picks the package of the platform it runs on; cluster sync fetches
+the package of each child node's platform when that node cannot reach the
+catalog itself. For an offline node, `nginx-ui plugin fetch com.nginxui.dns01
+--platform <goos>-<goarch>` (or `--platform all`) downloads the packages to
+carry over, and dropping them into the node's `plugins/packages/` directory
+installs the one matching that node.
+
 ## Development
 
 ```bash
@@ -142,8 +187,8 @@ go run ./cmd/lego_config          # refresh catalog/data from the latest lego re
 (cd webapp && bun install && bun run build)  # optional: build the webapp bundle first
 go run ./cmd/manifest             # regenerate plugin.json
 go test -race -count=1 ./...      # run the tests
-./build.sh --host-only            # build for the current platform
-./build.sh                        # cross compile and package dist/com.nginxui.dns01-<version>.tar.gz
+./build.sh --host-only            # build and package the current platform only
+./build.sh                        # cross compile, one package per platform
 ```
 
 The plugin depends on
