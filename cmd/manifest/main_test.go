@@ -71,6 +71,11 @@ func TestManifestShape(t *testing.T) {
 	if m.MinNginxUIVersion != MinNginxUIVersion {
 		t.Fatalf("min_nginx_ui_version = %q", m.MinNginxUIVersion)
 	}
+	for _, locale := range []string{"zh_CN", "zh_TW", "ja_JP"} {
+		if tr := m.I18n[locale]; tr.Name == "" || tr.Description == "" {
+			t.Fatalf("i18n[%s] = %+v", locale, tr)
+		}
+	}
 	if m.Server == nil || m.Server.Lifecycle != protocol.LifecycleOnDemand || m.Server.IdleTimeoutSeconds != IdleTimeout {
 		t.Fatalf("server = %+v", m.Server)
 	}

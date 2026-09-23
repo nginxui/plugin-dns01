@@ -37,6 +37,23 @@ const (
 	IdleTimeout       = 300
 )
 
+// translations are the name and description in every language the plugin
+// ships besides English, keyed by host locale code.
+var translations = map[string]protocol.ManifestI18n{
+	"zh_CN": {
+		Name:        "DNS-01 验证",
+		Description: "使用 lego 支持的任意 DNS 服务商完成 ACME DNS-01 验证。",
+	},
+	"zh_TW": {
+		Name:        "DNS-01 驗證",
+		Description: "使用 lego 支援的任一 DNS 服務商完成 ACME DNS-01 驗證。",
+	},
+	"ja_JP": {
+		Name:        "DNS-01 チャレンジ",
+		Description: "lego が対応する任意の DNS プロバイダーで ACME DNS-01 チャレンジを解決します。",
+	},
+}
+
 // platforms are the targets build.sh cross compiles, in manifest order.
 var platforms = []struct{ OS, Arch string }{
 	{"linux", "amd64"},
@@ -85,6 +102,7 @@ func Build() (*protocol.Manifest, error) {
 		Description:       PluginDescription,
 		APIVersion:        protocol.APIVersion,
 		MinNginxUIVersion: MinNginxUIVersion,
+		I18n:              translations,
 		Server: &protocol.ManifestServer{
 			Executables:        executables,
 			Lifecycle:          protocol.LifecycleOnDemand,
