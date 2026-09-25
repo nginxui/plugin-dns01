@@ -1,6 +1,6 @@
 // Captures the registry handed to setup() so slot components can reach
 // registry.coreHttp: registerSlot does not pass the registry down as a prop.
-import type { CoreHttpClient, PluginHostState, PluginRegistry } from '@nginx-ui/plugin-sdk'
+import type { CoreHttpClient, PluginHostState, PluginRegistry } from '@nginxui/plugin-sdk'
 
 let activeRegistry: PluginRegistry | undefined
 

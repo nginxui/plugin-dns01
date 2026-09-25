@@ -137,7 +137,7 @@ func Build() (*protocol.Manifest, error) {
 	}, nil
 }
 
-// webappManifestFragment is the shape @nginx-ui/plugin-sdk/vite writes to
+// webappManifestFragment is the shape @nginxui/plugin-sdk/vite writes to
 // webapp/dist/manifest.webapp.json. Only Shared is consumed here: bundle_path
 // and style_path are fixed by the layout build.sh packages.
 type webappManifestFragment struct {

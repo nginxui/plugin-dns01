@@ -109,7 +109,7 @@ plugin.
 ## Web bundle
 
 `webapp/` is a small Vue 3 + TypeScript project, built with
-[@nginx-ui/plugin-sdk](https://github.com/nginxui/plugin-sdk-web),
+[@nginxui/plugin-sdk](https://github.com/nginxui/plugin-sdk-web),
 that replaces the host's built-in DNS-01 challenge form
 (`certificate.challenge.form:dns01`) with one that also exposes the plugin's
 own per-certificate options: disabling CNAME following, and skipping the

@@ -1,7 +1,7 @@
 // Entry point for the dns01 webapp bundle. Built as an IIFE by vite.config.ts
 // and loaded by the host after login; see app/src/plugin/loader.ts.
-import type { NginxUIPlugin, PluginRegistry } from '@nginx-ui/plugin-sdk'
-import { registerPlugin } from '@nginx-ui/plugin-sdk'
+import type { NginxUIPlugin, PluginRegistry } from '@nginxui/plugin-sdk'
+import { registerPlugin } from '@nginxui/plugin-sdk'
 import DnsChallengeSlot from './DnsChallengeSlot.vue'
 import { setRegistry } from './host'
 import ja_JP from './locales/ja_JP'

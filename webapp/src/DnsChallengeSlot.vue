@@ -4,7 +4,7 @@
 // app/src/components/AutoCertForm/AutoCertForm.vue and DNSChallenge.vue in
 // the nginx-ui repo for the contract this component must keep.
 import { InfoCircleOutlined } from '@antdv-next/icons'
-import { useShared } from '@nginx-ui/plugin-sdk'
+import { useShared } from '@nginxui/plugin-sdk'
 import {
   Alert as AAlert,
   Button as AButton,
