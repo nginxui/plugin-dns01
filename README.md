@@ -159,8 +159,30 @@ publishes as the release manifest snapshot. `go run ./cmd/manifest -platform
 <goos>-<goarch> -out <file>` writes the narrowed copy, which is what
 `build.sh` puts into each archive.
 
+Every package also carries these files at its root, right after `plugin.json`:
+
+* `plugin.sums` lists the sha256 of every file of the package except itself
+  and the signature, one `<sha256>  <path>` line each, sorted by path. Running
+  `sha256sum -c plugin.sums` inside an extracted package checks it.
+* `plugin.sums.minisig`, in a signed package, is the minisign signature over
+  `plugin.sums`. NGINX UI derives the trust level of the package from the key
+  that made it.
+
+`build.sh` signs only when `MINISIGN_KEY` names a minisign secret key file:
+
+```bash
+MINISIGN_KEY=/path/to/plugin.key ./build.sh
+```
+
+Without it the packages are unsigned, and a host installs them only in
+developer mode. minisign asks for the key password once per package, so CI
+uses a key created without a password (`minisign -G -W`) or answers the prompt
+with an expect wrapper. The signature lives inside the archive, so a release
+publishes no `.minisig` files.
+
 The `.sha256` file next to each archive is in `sha256sum` format and feeds the
-`downloads` map of the catalog release:
+`downloads` map of the catalog release, where it serves as a download
+integrity check:
 
 ```json
 {
@@ -189,6 +211,7 @@ go run ./cmd/manifest             # regenerate plugin.json
 go test -race -count=1 ./...      # run the tests
 ./build.sh --host-only            # build and package the current platform only
 ./build.sh                        # cross compile, one package per platform
+MINISIGN_KEY=plugin.key ./build.sh  # the same, with signed packages
 ```
 
 The plugin depends on

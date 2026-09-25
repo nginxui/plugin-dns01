@@ -14,6 +14,18 @@
 # The package layout matches what nginx-ui expects when it installs a plugin:
 # plugin.json sits at the root of the archive, next to server/, webapp/ and the
 # documentation.
+#
+# Every package also carries plugin.sums at its root: the sha256 of each file
+# of the package in sha256sum format, sorted by path. When MINISIGN_KEY names a
+# minisign secret key file, plugin.sums is signed into plugin.sums.minisig and
+# nginx-ui derives the trust level from the signing key. Without MINISIGN_KEY
+# the packages are unsigned, and a host installs them only in developer mode.
+#
+#   MINISIGN_KEY=/path/to/plugin.key ./build.sh
+#
+# minisign asks for the key password once per package. CI uses a key created
+# without a password (minisign -G -W) or answers the prompt with an expect
+# wrapper.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -42,6 +54,20 @@ for arg in "$@"; do
       ;;
   esac
 done
+
+# The key path is resolved before the cd below, so a relative path works.
+MINISIGN_KEY="${MINISIGN_KEY:-}"
+if [[ -n "${MINISIGN_KEY}" ]]; then
+  if [[ ! -f "${MINISIGN_KEY}" ]]; then
+    echo "MINISIGN_KEY does not name a file: ${MINISIGN_KEY}" >&2
+    exit 1
+  fi
+  if ! command -v minisign >/dev/null 2>&1; then
+    echo "MINISIGN_KEY is set but minisign is not installed" >&2
+    exit 1
+  fi
+  MINISIGN_KEY="$(cd "$(dirname "${MINISIGN_KEY}")" && pwd)/$(basename "${MINISIGN_KEY}")"
+fi
 
 cd "${ROOT}"
 
@@ -73,14 +99,20 @@ fi
 # Keep macOS tar from adding AppleDouble "._*" entries for extended attributes.
 export COPYFILE_DISABLE=1
 
+# sha256_hex prints the lowercase hex sha256 of one file. The file is read from
+# stdin so its name cannot change the output.
+sha256_hex() {
+  if command -v sha256sum >/dev/null 2>&1; then
+    sha256sum <"$1" | cut -d ' ' -f 1
+  else
+    shasum -a 256 <"$1" | cut -d ' ' -f 1
+  fi
+}
+
 # sha256_line prints "<digest>  <file name>", the format sha256sum -c reads.
 sha256_line() {
   local file="$1"
-  if command -v sha256sum >/dev/null 2>&1; then
-    (cd "$(dirname "${file}")" && sha256sum "$(basename "${file}")")
-  else
-    (cd "$(dirname "${file}")" && shasum -a 256 "$(basename "${file}")")
-  fi
+  printf '%s  %s\n' "$(sha256_hex "${file}")" "$(basename "${file}")"
 }
 
 # binary_name is the packaged file name of one platform's executable.
@@ -110,12 +142,39 @@ stage_common() {
   done
 }
 
-# package_dir writes one archive with plugin.json as its first entry. The top
-# level entries are listed explicitly so the archive has no "./" root entry.
+# write_sums writes plugin.sums at the root of a staged package: one
+# "<sha256>  <path>" line per regular file, with the path relative to the root
+# and the lines sorted bytewise by path. plugin.sums and plugin.sums.minisig
+# are not listed. The list is written next to the directory first so find
+# never sees it.
+write_sums() {
+  local dir="$1" file
+  rm -f "${dir}/plugin.sums" "${dir}/plugin.sums.minisig"
+  (
+    cd "${dir}"
+    find . -type f | sed 's|^\./||' | LC_ALL=C sort | while IFS= read -r file; do
+      printf '%s  %s\n' "$(sha256_hex "${file}")" "${file}"
+    done
+  ) >"${dir}.sums"
+  mv "${dir}.sums" "${dir}/plugin.sums"
+}
+
+# sign_sums signs plugin.sums into plugin.sums.minisig when MINISIGN_KEY is set.
+sign_sums() {
+  local dir="$1"
+  if [[ -z "${MINISIGN_KEY}" ]]; then
+    return 0
+  fi
+  (cd "${dir}" && minisign -S -m plugin.sums -x plugin.sums.minisig -s "${MINISIGN_KEY}" -t "${PLUGIN_ID} ${VERSION}")
+}
+
+# package_dir writes one archive with plugin.json as its first entry and the
+# signature files right after it. The top level entries are listed explicitly
+# so the archive has no "./" root entry.
 package_dir() {
   local dir="$1" archive="$2"
-  local entries=(plugin.json)
-  for entry in README.md LICENSE CHANGELOG.md server webapp; do
+  local entries=(plugin.json plugin.sums)
+  for entry in plugin.sums.minisig README.md LICENSE CHANGELOG.md server webapp; do
     if [[ -e "${dir}/${entry}" ]]; then
       entries+=("${entry}")
     fi
@@ -135,6 +194,9 @@ MANIFEST_TOOL="${DIST}/.manifest-tool"
 GOWORK=off go build -o "${MANIFEST_TOOL}" ./cmd/manifest
 
 echo "building ${PLUGIN_ID} ${VERSION}"
+if [[ -z "${MINISIGN_KEY}" ]]; then
+  echo "MINISIGN_KEY is not set, the packages are unsigned"
+fi
 
 OUTPUTS=()
 for platform in "${PLATFORMS[@]}"; do
@@ -154,6 +216,8 @@ for platform in "${PLATFORMS[@]}"; do
   stage_common "${dir}"
   "${MANIFEST_TOOL}" -in "${ROOT}/plugin.json" -platform "${key}" -out "${dir}/plugin.json" >/dev/null
 
+  write_sums "${dir}"
+  sign_sums "${dir}"
   package_dir "${dir}" "${DIST}/${PLUGIN_ID}-${VERSION}-${key}.tar.gz"
 done
 
