@@ -1,9 +1,9 @@
-module github.com/0xJacky/nginx-ui-plugin-dns01
+module github.com/nginxui/plugin-dns01
 
 go 1.27.1
 
 require (
-	github.com/0xJacky/nginx-ui-plugin-sdk-go v0.0.0-00010101000000-000000000000
+	github.com/nginxui/plugin-sdk-go v0.0.0-00010101000000-000000000000
 	github.com/BurntSushi/toml v1.6.0
 	github.com/go-acme/lego/v5 v5.4.1
 	github.com/miekg/dns v1.1.73
@@ -206,4 +206,4 @@ require (
 )
 
 // Local path until the SDK is published.
-replace github.com/0xJacky/nginx-ui-plugin-sdk-go => ../nginx-ui-plugin-sdk-go
+replace github.com/nginxui/plugin-sdk-go => ../plugin-sdk-go

@@ -109,7 +109,7 @@ plugin.
 ## Web bundle
 
 `webapp/` is a small Vue 3 + TypeScript project, built with
-[@nginx-ui/plugin-sdk](https://github.com/0xJacky/nginx-ui-plugin-sdk-web),
+[@nginx-ui/plugin-sdk](https://github.com/nginxui/plugin-sdk-web),
 that replaces the host's built-in DNS-01 challenge form
 (`certificate.challenge.form:dns01`) with one that also exposes the plugin's
 own per-certificate options: disabling CNAME following, and skipping the
@@ -215,11 +215,11 @@ MINISIGN_KEY=plugin.key ./build.sh  # the same, with signed packages
 ```
 
 The plugin depends on
-[nginx-ui-plugin-sdk-go](https://github.com/0xJacky/nginx-ui-plugin-sdk-go)
+[plugin-sdk-go](https://github.com/nginxui/plugin-sdk-go)
 through a local `replace` directive until the SDK is published. The webapp
 depends on
-[nginx-ui-plugin-sdk-web](https://github.com/0xJacky/nginx-ui-plugin-sdk-web)
-the same way, through `"file:../../nginx-ui-plugin-sdk-web"` in
+[plugin-sdk-web](https://github.com/nginxui/plugin-sdk-web)
+the same way, through `"file:../../plugin-sdk-web"` in
 `webapp/package.json`.
 
 ## Support

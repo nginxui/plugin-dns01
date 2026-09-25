@@ -1,5 +1,5 @@
 {
-  "name": "nginx-ui-plugin-dns01-webapp",
+  "name": "plugin-dns01-webapp",
   "private": true,
   "type": "module",
   "version": "1.0.0",
@@ -10,7 +10,7 @@
     "typecheck": "vue-tsc --noEmit"
   },
   "dependencies": {
-    "@nginx-ui/plugin-sdk": "file:../../nginx-ui-plugin-sdk-web"
+    "@nginx-ui/plugin-sdk": "file:../../plugin-sdk-web"
   },
   "devDependencies": {
     "@antdv-next/icons": "^1.1.2",

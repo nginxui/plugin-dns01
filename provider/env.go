@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/0xJacky/nginx-ui-plugin-dns01/catalog"
+	"github.com/nginxui/plugin-dns01/catalog"
 )
 
 // envScope sets the environment variables a lego provider reads and restores

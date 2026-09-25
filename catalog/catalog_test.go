@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/0xJacky/nginx-ui-plugin-dns01/catalog"
+	"github.com/nginxui/plugin-dns01/catalog"
 )
 
 // wantProviders is the number of TOML files lego ships for the pinned version.

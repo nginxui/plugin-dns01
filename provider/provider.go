@@ -13,14 +13,14 @@ import (
 	"sync"
 	"time"
 
-	sdk "github.com/0xJacky/nginx-ui-plugin-sdk-go"
-	"github.com/0xJacky/nginx-ui-plugin-sdk-go/protocol"
 	"github.com/go-acme/lego/v5/challenge"
 	"github.com/go-acme/lego/v5/challenge/dns01"
 	dnsproviders "github.com/go-acme/lego/v5/providers/dns"
+	sdk "github.com/nginxui/plugin-sdk-go"
+	"github.com/nginxui/plugin-sdk-go/protocol"
 
-	"github.com/0xJacky/nginx-ui-plugin-dns01/catalog"
-	"github.com/0xJacky/nginx-ui-plugin-dns01/check"
+	"github.com/nginxui/plugin-dns01/catalog"
+	"github.com/nginxui/plugin-dns01/check"
 )
 
 // envDisableCNAME makes lego stop following CNAMEs when deriving the

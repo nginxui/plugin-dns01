@@ -21,9 +21,9 @@ import (
 	"path/filepath"
 	"runtime"
 
-	"github.com/0xJacky/nginx-ui-plugin-sdk-go/protocol"
+	"github.com/nginxui/plugin-sdk-go/protocol"
 
-	"github.com/0xJacky/nginx-ui-plugin-dns01/catalog"
+	"github.com/nginxui/plugin-dns01/catalog"
 )
 
 // Plugin identity. Version is the single source of truth for the release

@@ -9,7 +9,7 @@ import (
 
 	"github.com/miekg/dns"
 
-	"github.com/0xJacky/nginx-ui-plugin-dns01/check"
+	"github.com/nginxui/plugin-dns01/check"
 )
 
 const (

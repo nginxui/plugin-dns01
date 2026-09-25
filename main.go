@@ -6,9 +6,9 @@ package main
 import (
 	"context"
 
-	sdk "github.com/0xJacky/nginx-ui-plugin-sdk-go"
+	sdk "github.com/nginxui/plugin-sdk-go"
 
-	"github.com/0xJacky/nginx-ui-plugin-dns01/provider"
+	"github.com/nginxui/plugin-dns01/provider"
 )
 
 func main() {

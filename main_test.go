@@ -7,11 +7,11 @@ import (
 	"testing"
 	"time"
 
-	sdk "github.com/0xJacky/nginx-ui-plugin-sdk-go"
-	"github.com/0xJacky/nginx-ui-plugin-sdk-go/jsonrpc"
-	"github.com/0xJacky/nginx-ui-plugin-sdk-go/protocol"
+	sdk "github.com/nginxui/plugin-sdk-go"
+	"github.com/nginxui/plugin-sdk-go/jsonrpc"
+	"github.com/nginxui/plugin-sdk-go/protocol"
 
-	"github.com/0xJacky/nginx-ui-plugin-dns01/provider"
+	"github.com/nginxui/plugin-dns01/provider"
 )
 
 // TestEndToEnd drives the real plugin wiring over in-memory pipes: handshake,

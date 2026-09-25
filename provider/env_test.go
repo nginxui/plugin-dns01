@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/0xJacky/nginx-ui-plugin-dns01/catalog"
+	"github.com/nginxui/plugin-dns01/catalog"
 )
 
 func TestEnvScopeRoundTrip(t *testing.T) {

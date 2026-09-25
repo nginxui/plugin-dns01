@@ -16,10 +16,10 @@ import (
 	"strings"
 	"time"
 
-	sdk "github.com/0xJacky/nginx-ui-plugin-sdk-go"
-	"github.com/0xJacky/nginx-ui-plugin-sdk-go/protocol"
 	"github.com/go-acme/lego/v5/challenge/dns01"
 	"github.com/miekg/dns"
+	sdk "github.com/nginxui/plugin-sdk-go"
+	"github.com/nginxui/plugin-sdk-go/protocol"
 )
 
 // DefaultQueryTimeout bounds a single DNS exchange.
