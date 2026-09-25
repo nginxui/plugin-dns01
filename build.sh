@@ -23,9 +23,11 @@
 #
 #   MINISIGN_KEY=/path/to/plugin.key ./build.sh
 #
-# minisign asks for the key password once per package. CI uses a key created
-# without a password (minisign -G -W) or answers the prompt with an expect
-# wrapper.
+# minisign asks for the key password once per package. MINISIGN_PASSWORD
+# answers the prompt without a terminal, which is how the release workflow
+# signs; a key created without a password (minisign -G -W) never asks.
+#
+#   MINISIGN_KEY=/path/to/plugin.key MINISIGN_PASSWORD=... ./build.sh
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -57,6 +59,7 @@ done
 
 # The key path is resolved before the cd below, so a relative path works.
 MINISIGN_KEY="${MINISIGN_KEY:-}"
+MINISIGN_PASSWORD="${MINISIGN_PASSWORD:-}"
 if [[ -n "${MINISIGN_KEY}" ]]; then
   if [[ ! -f "${MINISIGN_KEY}" ]]; then
     echo "MINISIGN_KEY does not name a file: ${MINISIGN_KEY}" >&2
@@ -165,7 +168,15 @@ sign_sums() {
   if [[ -z "${MINISIGN_KEY}" ]]; then
     return 0
   fi
-  (cd "${dir}" && minisign -S -m plugin.sums -x plugin.sums.minisig -s "${MINISIGN_KEY}" -t "${PLUGIN_ID} ${VERSION}")
+  (
+    cd "${dir}"
+    if [[ -n "${MINISIGN_PASSWORD}" ]]; then
+      printf '%s\n' "${MINISIGN_PASSWORD}" \
+        | minisign -S -m plugin.sums -x plugin.sums.minisig -s "${MINISIGN_KEY}" -t "${PLUGIN_ID} ${VERSION}"
+    else
+      minisign -S -m plugin.sums -x plugin.sums.minisig -s "${MINISIGN_KEY}" -t "${PLUGIN_ID} ${VERSION}"
+    fi
+  )
 }
 
 # package_dir writes one archive with plugin.json as its first entry and the

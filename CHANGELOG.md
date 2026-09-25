@@ -19,6 +19,9 @@ All notable changes to this plugin are documented here. The format follows
   names a minisign secret key. NGINX UI derives the trust level from this
   signature, so the release assets no longer include `.minisig` files. The
   `.sha256` file next to each archive stays as a download integrity check.
+- `build.sh` reads the signing key password from `MINISIGN_PASSWORD` when it
+  is set, and `.github/workflows/release.yml` builds, signs and publishes the
+  packages of a `v<version>` tag as a GitHub Release.
 - `./build.sh --host-only` now also writes the package of the current
   platform, and the build prints the list of files it produced.
 - `cmd/manifest -platform <goos>-<goarch> -out <file>` writes the narrowed

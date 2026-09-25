@@ -175,10 +175,10 @@ MINISIGN_KEY=/path/to/plugin.key ./build.sh
 ```
 
 Without it the packages are unsigned, and a host installs them only in
-developer mode. minisign asks for the key password once per package, so CI
-uses a key created without a password (`minisign -G -W`) or answers the prompt
-with an expect wrapper. The signature lives inside the archive, so a release
-publishes no `.minisig` files.
+developer mode. minisign asks for the key password once per package;
+`MINISIGN_PASSWORD` answers the prompt without a terminal, and a key created
+without a password (`minisign -G -W`) never asks. The signature lives inside
+the archive, so a release publishes no `.minisig` files.
 
 The `.sha256` file next to each archive is in `sha256sum` format and feeds the
 `downloads` map of the catalog release, where it serves as a download
@@ -201,6 +201,16 @@ catalog itself. For an offline node, `nginx-ui plugin fetch com.nginxui.dns01
 --platform <goos>-<goarch>` (or `--platform all`) downloads the packages to
 carry over, and dropping them into the node's `plugins/packages/` directory
 installs the one matching that node.
+
+## Releasing
+
+Set the version in `cmd/manifest`, regenerate `plugin.json`, move the
+`Unreleased` notes in `CHANGELOG.md` under the new version, then push a tag
+`v<version>` that matches `plugin.json`. `.github/workflows/release.yml`
+rebuilds the webapp, runs the tests, signs the six packages with the key kept
+in the `release` environment and publishes them as a GitHub Release with the
+changelog section as its notes. The catalog polls this repository's releases
+and opens a pull request for the new version on its own.
 
 ## Development
 

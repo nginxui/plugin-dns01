@@ -1,0 +1,85 @@
+name: CI
+
+# Runs on every pull request and on main. The plugin still depends on the
+# SDKs through local paths (a `replace` to ../plugin-sdk-go and a
+# `file:../../plugin-sdk-web` dependency), so both SDK repositories are
+# checked out next to this one. Drop those checkouts once the SDKs are
+# published and the local paths are gone.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: plugin-dns01
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: plugin-dns01
+
+      - uses: actions/checkout@v4
+        with:
+          repository: nginxui/plugin-sdk-go
+          path: plugin-sdk-go
+
+      - uses: actions/checkout@v4
+        with:
+          repository: nginxui/plugin-sdk-web
+          path: plugin-sdk-web
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: plugin-dns01/go.mod
+          cache-dependency-path: plugin-dns01/go.sum
+
+      - uses: oven-sh/setup-bun@v2
+
+      # The webapp resolves @nginxui/plugin-sdk to the SDK checkout, whose
+      # package exports point at dist/, so the SDK is built first.
+      - name: Build the web SDK
+        working-directory: plugin-sdk-web
+        run: |
+          bun install --frozen-lockfile
+          bun run build
+
+      - name: Build the webapp bundle
+        working-directory: plugin-dns01/webapp
+        run: |
+          bun install --frozen-lockfile
+          bun run typecheck
+          bun run build
+
+      - name: gofmt
+        run: |
+          files=$(gofmt -l .)
+          if [ -n "${files}" ]; then
+            echo "gofmt would change:"
+            echo "${files}"
+            exit 1
+          fi
+
+      - run: go vet ./...
+
+      - run: go test -race -count=1 ./...
+
+      # plugin.json is committed and the catalog reads it from the release
+      # tag, so it must be what cmd/manifest generates from the code and the
+      # webapp fragment.
+      - name: plugin.json is up to date
+        run: |
+          go run ./cmd/manifest -out "${RUNNER_TEMP}/plugin.json" >/dev/null
+          diff -u plugin.json "${RUNNER_TEMP}/plugin.json"
+
+      - name: Package the runner's platform
+        run: ./build.sh --host-only
