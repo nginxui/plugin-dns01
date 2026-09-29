@@ -93,7 +93,7 @@ func ParseSettings(raw map[string]any) Settings {
 	var s Settings
 
 	if v, ok := raw["recursive_nameservers"]; ok {
-		s.RecursiveNameservers = splitNameservers(fmt.Sprint(v))
+		s.RecursiveNameservers = parseNameservers(v)
 	}
 	if v, ok := raw["default_propagation_timeout_seconds"]; ok {
 		if seconds := toSeconds(v); seconds > 0 {
@@ -101,6 +101,38 @@ func ParseSettings(raw map[string]any) Settings {
 		}
 	}
 	return s
+}
+
+// parseNameservers accepts the list setting (a JSON array of strings) and the
+// older comma separated string.
+func parseNameservers(v any) []string {
+	switch value := v.(type) {
+	case nil:
+		return nil
+	case string:
+		return splitNameservers(value)
+	case []string:
+		return appendNameservers(nil, value...)
+	case []any:
+		var out []string
+		for _, item := range value {
+			if str, ok := item.(string); ok {
+				out = appendNameservers(out, str)
+			}
+		}
+		return out
+	default:
+		return splitNameservers(fmt.Sprint(value))
+	}
+}
+
+// appendNameservers adds the trimmed, non empty entries. An entry may itself
+// hold a comma separated list.
+func appendNameservers(out []string, entries ...string) []string {
+	for _, entry := range entries {
+		out = append(out, splitNameservers(entry)...)
+	}
+	return out
 }
 
 func splitNameservers(raw string) []string {

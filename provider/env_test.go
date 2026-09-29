@@ -2,6 +2,7 @@ package provider
 
 import (
 	"os"
+	"reflect"
 	"testing"
 
 	"github.com/nginxui/plugin-dns01/catalog"
@@ -108,6 +109,30 @@ func TestParseSettings(t *testing.T) {
 	empty := ParseSettings(nil)
 	if empty.RecursiveNameservers != nil || empty.DefaultPropagationTimeout != 0 {
 		t.Fatalf("empty settings = %+v", empty)
+	}
+}
+
+func TestParseSettingsNameserverList(t *testing.T) {
+	cases := []struct {
+		name string
+		raw  any
+		want []string
+	}{
+		{"json array", []any{"1.1.1.1:53", " 8.8.8.8 ", "", 42}, []string{"1.1.1.1:53", "8.8.8.8"}},
+		{"string slice", []string{"9.9.9.9:53"}, []string{"9.9.9.9:53"}},
+		{"legacy string", "1.1.1.1:53,8.8.8.8", []string{"1.1.1.1:53", "8.8.8.8"}},
+		{"empty array", []any{}, nil},
+		{"empty string", "", nil},
+		{"null", nil, nil},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			got := ParseSettings(map[string]any{"recursive_nameservers": tc.raw}).RecursiveNameservers
+			if !reflect.DeepEqual(got, tc.want) {
+				t.Fatalf("nameservers = %#v, want %#v", got, tc.want)
+			}
+		})
 	}
 }
 
