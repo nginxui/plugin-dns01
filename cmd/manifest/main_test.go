@@ -25,6 +25,9 @@ func TestRenderIsStable(t *testing.T) {
 	if !bytes.Equal(first, second) {
 		t.Fatal("Render() is not deterministic")
 	}
+	if bytes.Contains(first, []byte(`"configuration"`)) || bytes.Contains(first, []byte(`"go_client"`)) {
+		t.Fatal("the manifest still carries configuration or go_client")
+	}
 	if !bytes.HasSuffix(first, []byte("\n")) {
 		t.Fatal("the rendered manifest has no trailing newline")
 	}
@@ -111,6 +114,9 @@ func TestManifestShape(t *testing.T) {
 	for i, p := range m.DNS01.Providers {
 		if p.Name != list[i].Name || p.Code != list[i].Code {
 			t.Fatalf("provider %d = %s/%s, want %s/%s", i, p.Name, p.Code, list[i].Name, list[i].Code)
+		}
+		if p.Form.Fields == nil {
+			t.Fatalf("provider %s has no form fields array", p.Code)
 		}
 	}
 }

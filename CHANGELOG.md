@@ -6,6 +6,19 @@ All notable changes to this plugin are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- Every provider in `plugin.json` describes its credential form: short labels
+  in plain words instead of variable names, the ways to sign in where there
+  is more than one (Cloudflare, Alibaba Cloud, OVH and others, with the
+  recommended one marked), defaults and units, optional and secret fields,
+  and provider settings kept apart from the credentials. Alias variables are
+  left out. The labels, help texts and method names ship in Simplified
+  Chinese, Traditional Chinese and Japanese.
+- `plugin.json` no longer carries `configuration` or `links.go_client`; the
+  `form` replaces the raw variable list. An error about a missing value names
+  the key the form shows, also when the provider reported an alias.
+
 ### Changed
 
 - The DNS challenge form follows the compact row layout of the certificate

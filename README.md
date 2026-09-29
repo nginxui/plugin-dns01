@@ -63,8 +63,8 @@ Per-certificate options travel with the request rather than the settings:
 ## Credential fields
 
 Each provider declares its own environment variables. They are listed in
-`plugin.json` under `dns01.providers[].configuration` and rendered by NGINX UI
-as a form, so there is nothing to memorise. For example, Cloudflare accepts
+`plugin.json` under `dns01.providers[].form` and rendered by NGINX UI as a
+form, so there is nothing to memorise. For example, Cloudflare accepts
 either `CF_API_EMAIL` plus `CF_API_KEY`, or `CF_DNS_API_TOKEN` (optionally with
 `CF_ZONE_API_TOKEN`).
 
@@ -131,6 +131,24 @@ Build the webapp **before** regenerating the manifest:
 (cd webapp && bun install && bun run build)
 go run ./cmd/manifest
 ```
+
+### Credential form
+
+Every provider in `plugin.json` carries a `form` (plugin spec DNS01-14), the
+only description of the values it accepts: plain labels instead of variable
+names, the ways to sign in, defaults, units and which fields are secret or
+optional. `cmd/manifest` derives it from the catalog descriptions and the
+examples in `catalog/data`. What the rules cannot work out lives in
+`catalog/overrides.json`: `phrases` maps a cleaned upstream description to a
+better label and help for every provider, `providers` corrects single fields
+and names the sign-in methods.
+
+Labels, help texts and method names are English source strings. Their
+translations are in `catalog/i18n/<locale>.json`, which the webapp registers
+with the host. The tests fail when a phrase has no translation or a
+translation is no longer used; `go run ./cmd/manifest -report` lists long or
+uncleaned labels and the coverage per language, which is where to look after
+refreshing the catalog.
 
 `build.sh` copies `webapp/dist` into the package automatically when the
 directory exists, so a plugin built without Bun still works, minus the custom
@@ -218,6 +236,7 @@ and opens a pull request for the new version on its own.
 go run ./cmd/lego_config          # refresh catalog/data from the latest lego release
 (cd webapp && bun install && bun run build)  # optional: build the webapp bundle first
 go run ./cmd/manifest             # regenerate plugin.json
+go run ./cmd/manifest -report     # form texts to review, translation coverage
 go test -race -count=1 ./...      # run the tests
 ./build.sh --host-only            # build and package the current platform only
 ./build.sh                        # cross compile, one package per platform

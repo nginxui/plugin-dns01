@@ -1,6 +1,10 @@
 // Traditional Chinese. Keys are the English source strings from DnsChallengeSlot.vue
-// and the plugin settings schema in cmd/manifest.
+// and the plugin settings schema in cmd/manifest. The DNS provider form
+// phrases come from catalog/i18n, where cmd/manifest checks their coverage.
+import providerPhrases from '../../../catalog/i18n/zh_TW.json'
+
 export default {
+  ...providerPhrases,
   'DNS Credential': 'DNS 憑證',
   'Select Credential': '選擇憑證',
   'Manage': '管理',

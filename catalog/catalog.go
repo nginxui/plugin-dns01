@@ -31,8 +31,7 @@ type Configuration struct {
 
 // Links points at the vendor documentation.
 type Links struct {
-	API      string `json:"api,omitempty" toml:"API"`
-	GoClient string `json:"go_client,omitempty" toml:"GoClient"`
+	API string `json:"api,omitempty" toml:"API"`
 }
 
 // Config describes one DNS provider.
@@ -41,6 +40,12 @@ type Config struct {
 	Code          string         `json:"code" toml:"Code"`
 	Configuration *Configuration `json:"configuration,omitempty" toml:"Configuration"`
 	Links         *Links         `json:"links,omitempty" toml:"Links"`
+	// Example is the upstream usage sample, read to find the ways to sign in.
+	Example string `json:"-" toml:"Example"`
+
+	// credentialOrder and additionalOrder keep the keys in file order.
+	credentialOrder []string
+	additionalOrder []string
 }
 
 var (
@@ -73,10 +78,12 @@ func load() {
 		}
 
 		var c Config
-		if err := toml.Unmarshal(raw, &c); err != nil {
+		meta, err := toml.Decode(string(raw), &c)
+		if err != nil {
 			loadErr = fmt.Errorf("catalog: parse %s: %w", name, err)
 			return
 		}
+		c.credentialOrder, c.additionalOrder = keyOrder(meta)
 		if c.Code == "" {
 			loadErr = fmt.Errorf("catalog: %s has no Code", name)
 			return
@@ -154,4 +161,20 @@ func sortedKeys(m map[string]string) []string {
 	}
 	sort.Strings(out)
 	return out
+}
+
+// keyOrder returns the credential and additional keys in file order.
+func keyOrder(meta toml.MetaData) (credentials, additional []string) {
+	for _, key := range meta.Keys() {
+		if len(key) != 3 || key[0] != "Configuration" {
+			continue
+		}
+		switch key[1] {
+		case "Credentials":
+			credentials = append(credentials, key[2])
+		case "Additional":
+			additional = append(additional, key[2])
+		}
+	}
+	return credentials, additional
 }

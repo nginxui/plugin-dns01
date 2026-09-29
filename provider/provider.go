@@ -369,15 +369,18 @@ func missingField(cfg catalog.Config, config map[string]string, err error) strin
 		rest = strings.SplitN(rest, ":", 2)[0]
 		for _, name := range strings.Split(rest, ",") {
 			if trimmed := strings.TrimSpace(name); trimmed != "" {
-				return trimmed
+				// The form lists canonical keys only, so name that one.
+				return cfg.CanonicalKey(trimmed)
 			}
 		}
 	}
 
-	// Fall back to the first declared credential the user left empty.
-	for _, key := range cfg.CredentialKeys() {
-		if strings.TrimSpace(config[key]) == "" {
-			return key
+	// Fall back to the first required credential of the form left empty.
+	if form := cfg.Form(); form != nil {
+		for _, f := range form.Fields {
+			if f.Group == protocol.DNS01FieldGroupCredential && !f.Optional && strings.TrimSpace(config[f.Key]) == "" {
+				return f.Key
+			}
 		}
 	}
 	return ""

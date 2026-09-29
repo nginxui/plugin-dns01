@@ -10,6 +10,11 @@
 // platform, which is what build.sh puts into each archive.
 //
 //	go run ./cmd/manifest -platform linux-amd64 -out dist/stage/linux-amd64/plugin.json
+//
+// With -report it lists the credential form texts that need a look (long or
+// uncleaned labels) and the phrases missing a translation.
+//
+//	go run ./cmd/manifest -report
 package main
 
 import (
@@ -174,16 +179,20 @@ func dns01Providers() ([]protocol.DNS01Provider, error) {
 
 	out := make([]protocol.DNS01Provider, 0, len(list))
 	for _, c := range list {
-		entry := protocol.DNS01Provider{Name: c.Name, Code: c.Code}
-
-		if c.Configuration != nil {
-			entry.Configuration = &protocol.DNS01ProviderConfig{
-				Credentials: c.Configuration.Credentials,
-				Additional:  c.Configuration.Additional,
-			}
+		form := c.Form()
+		if form == nil {
+			form = &protocol.DNS01ProviderForm{}
 		}
-		if c.Links != nil {
-			entry.Links = &protocol.DNS01ProviderLinks{API: c.Links.API, GoClient: c.Links.GoClient}
+		if form.Fields == nil {
+			form.Fields = []protocol.DNS01ProviderField{}
+		}
+		if err := catalog.Validate(form); err != nil {
+			return nil, fmt.Errorf("provider %s: %w", c.Code, err)
+		}
+
+		entry := protocol.DNS01Provider{Name: c.DisplayName(), Code: c.Code, Form: *form}
+		if c.Links != nil && c.Links.API != "" {
+			entry.Links = &protocol.DNS01ProviderLinks{API: c.Links.API}
 		}
 
 		out = append(out, entry)
@@ -246,7 +255,16 @@ func main() {
 	platform := flag.String("platform", "", `write the manifest of the "<goos>-<goarch>" package instead of regenerating plugin.json`)
 	in := flag.String("in", "", "manifest to narrow with -platform (default: the committed plugin.json)")
 	out := flag.String("out", "", "output file (default: the committed plugin.json, required with -platform)")
+	review := flag.Bool("report", false, "list form texts that need a look and missing translations, write nothing")
 	flag.Parse()
+
+	if *review {
+		if err := report(os.Stdout); err != nil {
+			fmt.Fprintln(os.Stderr, "manifest:", err)
+			os.Exit(1)
+		}
+		return
+	}
 
 	if err := run(*platform, *in, *out); err != nil {
 		fmt.Fprintln(os.Stderr, "manifest:", err)

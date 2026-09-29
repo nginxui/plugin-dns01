@@ -163,10 +163,21 @@ func TestMissingFieldFromLegoError(t *testing.T) {
 		t.Fatalf("missingField = %q, want CF_API_EMAIL", got)
 	}
 
+	// An alias in the message names the canonical key the form shows.
+	alias := errString("cloudflare: some credentials information are missing: CLOUDFLARE_EMAIL,CLOUDFLARE_API_KEY")
+	if got := missingField(cfg, map[string]string{}, alias); got != "CF_API_EMAIL" {
+		t.Fatalf("missingField for an alias = %q, want CF_API_EMAIL", got)
+	}
+
 	// Without a recognizable message, the first empty credential wins.
 	other := errString("cloudflare: something else went wrong")
 	if got := missingField(cfg, map[string]string{}, other); got != "CF_API_EMAIL" {
 		t.Fatalf("missingField fallback = %q", got)
+	}
+	// Optional fields are skipped.
+	filled := map[string]string{"CF_API_EMAIL": "a", "CF_API_KEY": "b", "CF_DNS_API_TOKEN": "c"}
+	if got := missingField(cfg, filled, other); got != "" {
+		t.Fatalf("missingField with only optional fields empty = %q", got)
 	}
 }
 

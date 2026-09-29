@@ -1,6 +1,10 @@
 // Japanese. Keys are the English source strings from DnsChallengeSlot.vue
-// and the plugin settings schema in cmd/manifest.
+// and the plugin settings schema in cmd/manifest. The DNS provider form
+// phrases come from catalog/i18n, where cmd/manifest checks their coverage.
+import providerPhrases from '../../../catalog/i18n/ja_JP.json'
+
 export default {
+  ...providerPhrases,
   'DNS Credential': 'DNS 認証情報',
   'Select Credential': '認証情報を選択',
   'Manage': '管理',
