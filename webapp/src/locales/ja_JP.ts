@@ -1,15 +1,26 @@
-// Japanese. Keys are the English source strings from DnsChallengeSlot.vue.
+// Japanese. Keys are the English source strings from DnsChallengeSlot.vue
+// and the plugin settings schema in cmd/manifest.
 export default {
-  'Credential': '認証情報',
-  'Please create DNS credentials first in DNS > Credentials': '先に DNS > 認証情報 で DNS 認証情報を作成してください',
+  'DNS Credential': 'DNS 認証情報',
   'Select Credential': '認証情報を選択',
-  'Go to DNS > Credentials to create or manage credentials': 'DNS > 認証情報 で認証情報を作成・管理する',
+  'Manage': '管理',
+  'New credential': '認証情報を新規作成',
   'Unknown Provider': '不明なプロバイダー',
-  'Disable CNAME following': 'CNAME の追跡を無効にする',
-  'If your domain has CNAME records and you cannot obtain certificates, enable this option.': 'ドメインに CNAME レコードがあり証明書を取得できない場合は、このオプションを有効にしてください。',
-  'Skip authoritative nameserver propagation check': '権威ネームサーバーの伝播チェックをスキップ',
-  'Skip the authoritative nameserver check and wait 60 seconds before asking the certificate authority to validate the record.': '権威ネームサーバーのチェックをスキップし、60 秒待ってから認証局にレコードの検証を依頼します。',
-  'Skip recursive nameserver propagation check': '再帰ネームサーバーの伝播チェックをスキップ',
-  'Skip the recursive nameserver check against your configured resolvers.': '設定済みのリゾルバーに対する再帰ネームサーバーチェックをスキップします。',
-  'Propagation checks run inside the DNS-01 plugin process.': '伝播チェックは DNS-01 プラグインのプロセス内で実行されます。',
+  'The previous credential was deleted. Select another one.': '以前の認証情報は削除されました。別の認証情報を選択してください。',
+  'Advanced options': '詳細オプション',
+  'All default': 'すべてデフォルト',
+  'Follow CNAME': 'CNAME を追跡',
+  'Keep on when the validation record of a domain is delegated to another domain.': 'ドメインの検証レコードを別のドメインに委任している場合はオンのままにしてください。',
+  'CNAME following off': 'CNAME 追跡オフ',
+  'Check authoritative servers': '権威サーバーを確認',
+  'When off, waits a fixed 60 seconds before asking for validation.': 'オフにすると、60 秒待ってから検証を依頼します。',
+  'Authoritative server check off': '権威サーバー確認オフ',
+  'Check public resolvers': 'パブリックリゾルバーを確認',
+  'Confirms the record is visible through the recursive DNS servers set in the plugin settings.': 'プラグイン設定の再帰 DNS サーバーからレコードが見えることを確認します。',
+  'Public resolver check off': 'パブリックリゾルバー確認オフ',
+  // Settings schema
+  'Recursive DNS servers': '再帰 DNS サーバー',
+  'Used to check that DNS records are visible. Empty means the system resolvers.': 'DNS レコードが見えるかどうかの確認に使います。空欄の場合はシステムのリゾルバーを使います。',
+  'Default wait time (seconds)': 'デフォルトの待機時間（秒）',
+  'How long to wait at most for a record to become visible when the provider does not say.': 'プロバイダーが指定しない場合に、レコードが見えるようになるまで待つ最大時間です。',
 }

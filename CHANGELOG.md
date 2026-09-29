@@ -8,6 +8,19 @@ All notable changes to this plugin are documented here. The format follows
 
 ### Changed
 
+- The DNS challenge form follows the compact row layout of the certificate
+  form. The credential select has a Manage button next to it and a New
+  credential entry in its list, and it asks for another credential when the
+  saved one was deleted instead of showing a bare number.
+- The three validation switches moved under Advanced options, collapsed by
+  default with a summary of what was changed. They now read as positive
+  statements (Follow CNAME, Check authoritative servers, Check public
+  resolvers) and are on by default. The saved options keep their meaning.
+- The recursive DNS servers setting is a list. A comma separated value saved
+  by an earlier version is still read.
+- Clearer names and help for the plugin settings and a plugin description
+  that no longer names the underlying library.
+
 - `build.sh` packages every platform separately as
   `com.nginxui.dns01-<version>-<goos>-<goarch>.tar.gz`, with a `plugin.json`
   that declares only that platform's executable and a `.sha256` file next to

@@ -32,7 +32,7 @@ const (
 	PluginID          = "com.nginxui.dns01"
 	PluginName        = "DNS-01 Challenge"
 	PluginVersion     = "1.0.0"
-	PluginDescription = "Solve the ACME DNS-01 challenge with any of the DNS providers supported by lego."
+	PluginDescription = "Validate domains for certificates through DNS records, with more than 200 DNS providers."
 	MinNginxUIVersion = "2.7.0"
 	IdleTimeout       = 300
 )
@@ -42,15 +42,15 @@ const (
 var translations = map[string]protocol.ManifestI18n{
 	"zh_CN": {
 		Name:        "DNS-01 验证",
-		Description: "使用 lego 支持的任意 DNS 服务商完成 ACME DNS-01 验证。",
+		Description: "支持 200 多家 DNS 服务商，用 DNS 记录为证书验证域名。",
 	},
 	"zh_TW": {
 		Name:        "DNS-01 驗證",
-		Description: "使用 lego 支援的任一 DNS 服務商完成 ACME DNS-01 驗證。",
+		Description: "支援 200 多家 DNS 服務商，以 DNS 記錄為憑證驗證網域。",
 	},
 	"ja_JP": {
 		Name:        "DNS-01 チャレンジ",
-		Description: "lego が対応する任意の DNS プロバイダーで ACME DNS-01 チャレンジを解決します。",
+		Description: "200 以上の DNS プロバイダーに対応し、DNS レコードで証明書のドメインを検証します。",
 	},
 }
 
@@ -121,15 +121,16 @@ func Build() (*protocol.Manifest, error) {
 			Settings: []protocol.SettingsField{
 				{
 					Key:         "recursive_nameservers",
-					Type:        "text",
-					DisplayName: "Recursive nameservers",
-					HelpText:    "Comma separated host:port list used for the DNS propagation check. Empty means the system resolvers.",
+					Type:        "list",
+					DisplayName: "Recursive DNS servers",
+					HelpText:    "Used to check that DNS records are visible. Empty means the system resolvers.",
+					Default:     []string{},
 				},
 				{
 					Key:         "default_propagation_timeout_seconds",
 					Type:        "number",
-					DisplayName: "Default propagation timeout (seconds)",
-					HelpText:    "Applied to providers that do not report a propagation timeout of their own.",
+					DisplayName: "Default wait time (seconds)",
+					HelpText:    "How long to wait at most for a record to become visible when the provider does not say.",
 					Default:     120,
 				},
 			},
