@@ -22,23 +22,11 @@ func newEnvScope(cfg catalog.Config) *envScope {
 	return &envScope{cfg: cfg, backup: make(map[string]*string)}
 }
 
-// SetEnv exports the credential and additional values the provider declares.
-// Keys the provider does not declare are ignored. On error the scope is rolled
-// back before returning.
+// SetEnv exports the values of the keys the provider form declares: its
+// fields and the fixed values of its sign-in methods. Other keys are
+// ignored. On error the scope is rolled back before returning.
 func (s *envScope) SetEnv(config map[string]string) error {
-	if s.cfg.Configuration == nil {
-		return nil
-	}
-
-	for _, k := range s.cfg.CredentialKeys() {
-		if value, ok := config[k]; ok {
-			if err := s.set(k, value); err != nil {
-				s.CleanEnv()
-				return err
-			}
-		}
-	}
-	for _, k := range s.cfg.AdditionalKeys() {
+	for _, k := range s.cfg.Keys() {
 		if value, ok := config[k]; ok {
 			if err := s.set(k, value); err != nil {
 				s.CleanEnv()

@@ -26,6 +26,7 @@ type phrase struct {
 type fieldOverride struct {
 	// Hidden leaves the field out of the form.
 	Hidden   bool    `json:"hidden,omitempty"`
+	Group    *string `json:"group,omitempty"`
 	Label    *string `json:"label,omitempty"`
 	Help     *string `json:"help,omitempty"`
 	Optional *bool   `json:"optional,omitempty"`
@@ -35,10 +36,20 @@ type fieldOverride struct {
 	Link     *string `json:"link,omitempty"`
 }
 
+// addedField is a value the provider reads that its description leaves out.
+type addedField struct {
+	Key   string `json:"key"`
+	Group string `json:"group"`
+	fieldOverride
+}
+
 // providerOverride corrects one provider.
 type providerOverride struct {
+	// Hidden leaves the provider out of the plugin.
+	Hidden  bool                           `json:"hidden,omitempty"`
 	Name    string                         `json:"name,omitempty"`
 	Fields  map[string]fieldOverride       `json:"fields,omitempty"`
+	Add     []addedField                   `json:"add,omitempty"`
 	Methods []protocol.DNS01ProviderMethod `json:"methods,omitempty"`
 }
 
@@ -58,6 +69,11 @@ func mustOverrides() overrideSet {
 		panic(fmt.Sprintf("catalog: overrides.json: %v", err))
 	}
 	return set
+}
+
+// hiddenCode reports whether overrides.json leaves a provider out.
+func hiddenCode(code string) bool {
+	return overrides.Providers[code].Hidden
 }
 
 // DisplayName is the provider name shown to people.
@@ -95,16 +111,61 @@ func (c Config) Form() *protocol.DNS01ProviderForm {
 	}
 	add(orderedKeys(c.credentialOrder, c.Configuration.Credentials), c.Configuration.Credentials, protocol.DNS01FieldGroupCredential)
 	add(orderedKeys(c.additionalOrder, c.Configuration.Additional), c.Configuration.Additional, protocol.DNS01FieldGroupSetting)
+	for _, a := range override.Add {
+		field := protocol.DNS01ProviderField{Key: a.Key, Group: a.Group}
+		a.apply(&field)
+		if field.Secret = isSecret(field.Key, field.Label); a.Secret != nil {
+			field.Secret = *a.Secret
+		}
+		form.Fields = append(form.Fields, field)
+	}
+	// Credentials come first, whatever group an override moved a field to.
+	slices.SortStableFunc(form.Fields, func(a, b protocol.DNS01ProviderField) int {
+		return groupRank(a.Group) - groupRank(b.Group)
+	})
 	if len(form.Fields) == 0 {
 		return nil
 	}
 
 	if override.Methods != nil {
-		form.Methods = slices.Clone(override.Methods)
+		form.Methods = make([]protocol.DNS01ProviderMethod, 0, len(override.Methods))
+		for _, m := range override.Methods {
+			m.Fields = append([]string{}, m.Fields...)
+			form.Methods = append(form.Methods, m)
+		}
 	} else {
 		form.Methods = c.exampleMethods(form, aliases)
 	}
 	return form
+}
+
+func groupRank(group string) int {
+	if group == protocol.DNS01FieldGroupCredential {
+		return 0
+	}
+	return 1
+}
+
+// Keys lists every config key the plugin passes on to the provider: the
+// form fields and the fixed values of its methods.
+func (c Config) Keys() []string {
+	form := c.Form()
+	if form == nil {
+		return nil
+	}
+	var keys []string
+	for _, f := range form.Fields {
+		keys = append(keys, f.Key)
+	}
+	for _, m := range form.Methods {
+		for key := range m.Values {
+			if !slices.Contains(keys, key) {
+				keys = append(keys, key)
+			}
+		}
+	}
+	slices.Sort(keys)
+	return keys
 }
 
 // orderedKeys returns the keys of m in file order, falling back to sorted
@@ -183,6 +244,9 @@ func buildField(key, description, group string) protocol.DNS01ProviderField {
 }
 
 func (o fieldOverride) apply(field *protocol.DNS01ProviderField) {
+	if o.Group != nil {
+		field.Group = *o.Group
+	}
 	if o.Label != nil {
 		field.Label = *o.Label
 	}
@@ -291,8 +355,9 @@ func lowerFirst(text string) string {
 }
 
 // Validate checks a form against DNS01-18: unique keys, known groups and
-// units, uniquely named methods over credential fields, at most one
-// recommended method.
+// units, uniquely named methods over credential fields, fixed values that
+// are no field or a credential field only other methods list, no two
+// identical methods, at most one recommended method.
 func Validate(form *protocol.DNS01ProviderForm) error {
 	if form == nil {
 		return nil
@@ -318,9 +383,13 @@ func Validate(form *protocol.DNS01ProviderForm) error {
 	}
 	recommended := 0
 	names := make(map[string]bool)
+	shapes := make(map[string]string)
 	for _, m := range form.Methods {
-		if m.Name == "" || len(m.Fields) == 0 {
-			return fmt.Errorf("method %q has no name or fields", m.Name)
+		if m.Name == "" {
+			return fmt.Errorf("a method has no name")
+		}
+		if m.Fields == nil {
+			return fmt.Errorf("method %q has a nil field list", m.Name)
 		}
 		if names[m.Name] {
 			return fmt.Errorf("method %q is listed twice", m.Name)
@@ -334,9 +403,43 @@ func Validate(form *protocol.DNS01ProviderForm) error {
 				return fmt.Errorf("method %q lists %s, which is not a credential field", m.Name, key)
 			}
 		}
+		for key := range m.Values {
+			if key == "" {
+				return fmt.Errorf("method %q has an empty value key", m.Name)
+			}
+			g, isField := group[key]
+			if !isField {
+				continue
+			}
+			if g != protocol.DNS01FieldGroupCredential {
+				return fmt.Errorf("method %q fixes %s, which is a setting field", m.Name, key)
+			}
+			if slices.Contains(m.Fields, key) {
+				return fmt.Errorf("method %q both lists and fixes %s", m.Name, key)
+			}
+			if !slices.ContainsFunc(form.Methods, func(o protocol.DNS01ProviderMethod) bool { return slices.Contains(o.Fields, key) }) {
+				return fmt.Errorf("method %q fixes field %s, which no method lists", m.Name, key)
+			}
+		}
+		shape := methodShape(m)
+		if other, dup := shapes[shape]; dup {
+			return fmt.Errorf("methods %q and %q have the same fields and values", other, m.Name)
+		}
+		shapes[shape] = m.Name
 	}
 	if recommended > 1 {
 		return fmt.Errorf("%d methods are recommended", recommended)
 	}
 	return nil
+}
+
+// methodShape identifies a method by its sorted fields and values.
+func methodShape(m protocol.DNS01ProviderMethod) string {
+	fields := slices.Sorted(slices.Values(m.Fields))
+	values := make([]string, 0, len(m.Values))
+	for k, v := range m.Values {
+		values = append(values, k+"="+v)
+	}
+	slices.Sort(values)
+	return strings.Join(fields, ",") + "|" + strings.Join(values, ",")
 }

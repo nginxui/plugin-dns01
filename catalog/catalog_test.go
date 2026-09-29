@@ -8,16 +8,20 @@ import (
 	"github.com/nginxui/plugin-dns01/catalog"
 )
 
-// wantProviders is the number of TOML files lego ships for the pinned version.
-const wantProviders = 224
+// wantFiles is the number of TOML files lego ships for the pinned version,
+// wantProviders the number the plugin offers after overrides.json hides some.
+const (
+	wantFiles     = 224
+	wantProviders = 222
+)
 
 func TestListParsesEveryEmbeddedFile(t *testing.T) {
 	files, err := catalog.Files()
 	if err != nil {
 		t.Fatalf("files: %v", err)
 	}
-	if len(files) != wantProviders {
-		t.Fatalf("embedded files = %d, want %d", len(files), wantProviders)
+	if len(files) != wantFiles {
+		t.Fatalf("embedded files = %d, want %d", len(files), wantFiles)
 	}
 
 	list, err := catalog.List()

@@ -381,9 +381,6 @@
       "label": "Maximum wait",
       "unit": "seconds"
     },
-    "Name of the s3 bucket": {
-      "label": "Bucket name"
-    },
     "Name of the secret key as defined in DNS server configuration. To disable TSIG authentication, leave the `DNSUPDATE_TSIG_KEY` variable unset": {
       "help": "As defined in the DNS server configuration. Leave empty to turn off TSIG.",
       "label": "TSIG key name"
@@ -553,7 +550,6 @@
       "label": "TOTP secret"
     },
     "TSIG algorithm. See miekg/dns#tsig.go for supported values. To disable TSIG authentication, leave the `DNSUPDATE_TSIG_KEY` or `DNSUPDATE_TSIG_SECRET` variables unset": {
-      "help": "Leave the TSIG key name and secret empty to turn off TSIG.",
       "label": "TSIG algorithm"
     },
     "TXT record names and tokens": {
@@ -888,8 +884,7 @@
             "ALICLOUD_SECRET_KEY",
             "ALICLOUD_SECURITY_TOKEN"
           ],
-          "name": "AccessKey",
-          "recommended": true
+          "name": "AccessKey"
         },
         {
           "fields": [
@@ -918,8 +913,7 @@
             "ALIESA_SECRET_KEY",
             "ALIESA_SECURITY_TOKEN"
           ],
-          "name": "AccessKey",
-          "recommended": true
+          "name": "AccessKey"
         },
         {
           "fields": [
@@ -929,12 +923,92 @@
         }
       ]
     },
+    "alwaysdata": {
+      "fields": {
+        "ALWAYSDATA_ACCOUNT": {
+          "optional": true
+        }
+      }
+    },
     "autodns": {
       "fields": {
         "AUTODNS_CONTEXT": {
           "default": "4"
         }
       }
+    },
+    "azuredns": {
+      "add": [
+        {
+          "group": "credential",
+          "key": "AZURE_CLIENT_CERTIFICATE_PASSWORD",
+          "label": "Certificate password",
+          "optional": true,
+          "secret": true
+        },
+        {
+          "group": "credential",
+          "help": "A token from an identity provider the app registration trusts.",
+          "key": "AZURE_OIDC_TOKEN",
+          "label": "Federated token",
+          "secret": true
+        }
+      ],
+      "fields": {
+        "AZURE_AUTH_METHOD": {
+          "hidden": true
+        },
+        "AZURE_AUTH_MSI_TIMEOUT": {
+          "optional": true
+        },
+        "AZURE_CLIENT_CERTIFICATE_PATH": {
+          "help": "Path to the certificate file on the server.",
+          "label": "Client certificate file"
+        }
+      },
+      "methods": [
+        {
+          "fields": [
+            "AZURE_TENANT_ID",
+            "AZURE_CLIENT_ID",
+            "AZURE_CLIENT_SECRET"
+          ],
+          "name": "Client secret",
+          "values": {
+            "AZURE_AUTH_METHOD": "env"
+          }
+        },
+        {
+          "fields": [
+            "AZURE_TENANT_ID",
+            "AZURE_CLIENT_ID",
+            "AZURE_CLIENT_CERTIFICATE_PATH",
+            "AZURE_CLIENT_CERTIFICATE_PASSWORD"
+          ],
+          "name": "Client certificate",
+          "values": {
+            "AZURE_AUTH_METHOD": "env"
+          }
+        },
+        {
+          "fields": [
+            "AZURE_TENANT_ID",
+            "AZURE_CLIENT_ID",
+            "AZURE_OIDC_TOKEN"
+          ],
+          "name": "Federated token",
+          "values": {
+            "AZURE_AUTH_METHOD": "oidc"
+          }
+        },
+        {
+          "fields": [],
+          "name": "Managed identity",
+          "values": {
+            "AZURE_AUTH_METHOD": "msi"
+          }
+        }
+      ]
     },
     "cloudflare": {
       "fields": {
@@ -967,8 +1041,25 @@
       "fields": {
         "CLOUDNS_AUTH_PASSWORD": {
           "secret": true
+        },
+        "CLOUDNS_SUB_AUTH_ID": {
+          "group": "credential"
         }
-      }
+      },
+      "methods": [
+        {
+          "fields": [
+            "CLOUDNS_AUTH_ID"
+          ],
+          "name": "API user ID"
+        },
+        {
+          "fields": [
+            "CLOUDNS_SUB_AUTH_ID"
+          ],
+          "name": "API sub-user ID"
+        }
+      ]
     },
     "designate": {
       "fields": {
@@ -989,7 +1080,7 @@
             "OS_PASSWORD",
             "OS_PROJECT_NAME"
           ],
-          "name": "Password"
+          "name": "Username and password"
         },
         {
           "fields": [
@@ -1003,17 +1094,155 @@
     },
     "dnsupdate": {
       "fields": {
+        "DNSUPDATE_TSIG_ALGORITHM": {
+          "default": "hmac-sha1",
+          "group": "credential",
+          "optional": true
+        },
+        "DNSUPDATE_TSIG_FILE": {
+          "group": "credential"
+        },
+        "DNSUPDATE_TSIG_GSS_KEYTAB_FILE": {
+          "group": "credential",
+          "help": "Path to the keytab file on the server."
+        },
+        "DNSUPDATE_TSIG_GSS_PASSWORD": {
+          "group": "credential",
+          "help": ""
+        },
+        "DNSUPDATE_TSIG_GSS_REALM": {
+          "group": "credential",
+          "help": "",
+          "optional": true
+        },
+        "DNSUPDATE_TSIG_GSS_USERNAME": {
+          "group": "credential",
+          "help": ""
+        },
         "DNSUPDATE_TSIG_KEY": {
+          "group": "credential",
+          "help": "As defined in the DNS server configuration.",
           "secret": false
+        },
+        "DNSUPDATE_TSIG_SECRET": {
+          "group": "credential",
+          "help": ""
+        },
+        "DNSUPDATE_ZONES": {
+          "optional": true
+        }
+      },
+      "methods": [
+        {
+          "fields": [
+            "DNSUPDATE_TSIG_KEY",
+            "DNSUPDATE_TSIG_SECRET",
+            "DNSUPDATE_TSIG_ALGORITHM"
+          ],
+          "name": "TSIG key"
+        },
+        {
+          "fields": [
+            "DNSUPDATE_TSIG_FILE",
+            "DNSUPDATE_TSIG_ALGORITHM"
+          ],
+          "name": "TSIG key file"
+        },
+        {
+          "fields": [
+            "DNSUPDATE_TSIG_GSS_REALM",
+            "DNSUPDATE_TSIG_GSS_USERNAME",
+            "DNSUPDATE_TSIG_GSS_PASSWORD"
+          ],
+          "name": "Kerberos password",
+          "values": {
+            "DNSUPDATE_TSIG_ALGORITHM": "gss-tsig"
+          }
+        },
+        {
+          "fields": [
+            "DNSUPDATE_TSIG_GSS_REALM",
+            "DNSUPDATE_TSIG_GSS_USERNAME",
+            "DNSUPDATE_TSIG_GSS_KEYTAB_FILE"
+          ],
+          "name": "Kerberos keytab",
+          "values": {
+            "DNSUPDATE_TSIG_ALGORITHM": "gss-tsig"
+          }
+        },
+        {
+          "fields": [],
+          "name": "No key"
+        }
+      ]
+    },
+    "edgedns": {
+      "fields": {
+        "AKAMAI_ACCOUNT_SWITCH_KEY": {
+          "optional": true
+        },
+        "AKAMAI_EDGERC": {
+          "default": "~/.edgerc",
+          "optional": true
+        },
+        "AKAMAI_EDGERC_SECTION": {
+          "default": "default",
+          "help": "Section of the credentials file to read.",
+          "optional": true
+        }
+      },
+      "methods": [
+        {
+          "fields": [
+            "AKAMAI_HOST",
+            "AKAMAI_CLIENT_TOKEN",
+            "AKAMAI_CLIENT_SECRET",
+            "AKAMAI_ACCESS_TOKEN"
+          ],
+          "name": "API client credentials"
+        },
+        {
+          "fields": [
+            "AKAMAI_EDGERC",
+            "AKAMAI_EDGERC_SECTION"
+          ],
+          "name": "Credentials file on the server"
+        }
+      ]
+    },
+    "exec": {
+      "fields": {
+        "EXEC_MODE": {
+          "group": "setting",
+          "optional": true
+        },
+        "EXEC_PATH": {
+          "help": "Path to the program on the server that adds and removes the records.",
+          "label": "Program path"
         }
       }
     },
     "gandiv5": {
       "fields": {
         "GANDIV5_API_KEY": {
-          "optional": true
+          "help": ""
         }
-      }
+      },
+      "methods": [
+        {
+          "fields": [
+            "GANDIV5_PERSONAL_ACCESS_TOKEN"
+          ],
+          "name": "Personal access token",
+          "recommended": true
+        },
+        {
+          "fields": [
+            "GANDIV5_API_KEY"
+          ],
+          "name": "Legacy API key"
+        }
+      ]
     },
     "gcloud": {
       "fields": {
@@ -1021,17 +1250,32 @@
           "hidden": true
         },
         "GCE_PROJECT": {
+          "help": "Found automatically when left empty.",
           "optional": true
         },
         "GCE_SERVICE_ACCOUNT": {
-          "help": "The JSON key of the service account. Leave both key fields empty to use the credentials of the server.",
-          "optional": true,
+          "help": "The JSON key of the service account.",
           "secret": true
-        },
-        "GCE_SERVICE_ACCOUNT_FILE": {
-          "optional": true
         }
-      }
+      },
+      "methods": [
+        {
+          "fields": [
+            "GCE_SERVICE_ACCOUNT_FILE"
+          ],
+          "name": "Service account key file"
+        },
+        {
+          "fields": [
+            "GCE_SERVICE_ACCOUNT"
+          ],
+          "name": "Service account key"
+        },
+        {
+          "fields": [],
+          "name": "Credentials of the server"
+        }
+      ]
     },
     "gigahostno": {
       "fields": {
@@ -1055,13 +1299,179 @@
         }
       ]
     },
+    "hetzner": {
+      "add": [
+        {
+          "group": "credential",
+          "help": "Deprecated. Use an API token instead.",
+          "key": "HETZNER_API_KEY",
+          "label": "Legacy DNS API key",
+          "secret": true
+        }
+      ],
+      "methods": [
+        {
+          "fields": [
+            "HETZNER_API_TOKEN"
+          ],
+          "name": "API token",
+          "recommended": true
+        },
+        {
+          "fields": [
+            "HETZNER_API_KEY"
+          ],
+          "name": "Legacy DNS API key"
+        }
+      ]
+    },
     "hosttech": {
       "fields": {
         "HOSTTECH_API_KEY": {
           "label": "API token",
           "secret": true
+        },
+        "HOSTTECH_PASSWORD": {
+          "hidden": true
         }
       }
+    },
+    "httpreq": {
+      "fields": {
+        "HTTPREQ_MODE": {
+          "group": "setting",
+          "optional": true
+        },
+        "HTTPREQ_PASSWORD": {
+          "group": "credential",
+          "optional": true
+        },
+        "HTTPREQ_USERNAME": {
+          "group": "credential",
+          "optional": true
+        }
+      }
+    },
+    "hyperone": {
+      "fields": {
+        "HYPERONE_API_URL": {
+          "optional": true
+        },
+        "HYPERONE_LOCATION_ID": {
+          "optional": true
+        },
+        "HYPERONE_PASSPORT_LOCATION": {
+          "group": "credential",
+          "optional": true
+        }
+      }
+    },
+    "inwx": {
+      "fields": {
+        "INWX_SHARED_SECRET": {
+          "group": "credential",
+          "help": "Only when the account uses two-factor authentication.",
+          "optional": true
+        }
+      }
+    },
+    "joker": {
+      "fields": {
+        "JOKER_API_KEY": {
+          "help": ""
+        },
+        "JOKER_API_MODE": {
+          "hidden": true
+        },
+        "JOKER_SEQUENCE_INTERVAL": {
+          "help": "Only with the dynamic DNS credentials."
+        }
+      },
+      "methods": [
+        {
+          "fields": [
+            "JOKER_API_KEY"
+          ],
+          "name": "API key",
+          "values": {
+            "JOKER_API_MODE": "DMAPI"
+          }
+        },
+        {
+          "fields": [
+            "JOKER_USERNAME",
+            "JOKER_PASSWORD"
+          ],
+          "name": "Username and password",
+          "values": {
+            "JOKER_API_MODE": "DMAPI"
+          }
+        },
+        {
+          "fields": [
+            "JOKER_USERNAME",
+            "JOKER_PASSWORD"
+          ],
+          "name": "Dynamic DNS credentials",
+          "values": {
+            "JOKER_API_MODE": "SVC"
+          }
+        }
+      ]
+    },
+    "liara": {
+      "fields": {
+        "LIARA_TEAM_ID": {
+          "optional": true
+        }
+      }
+    },
+    "lightsail": {
+      "add": [
+        {
+          "group": "credential",
+          "help": "Only for temporary access keys.",
+          "key": "AWS_SESSION_TOKEN",
+          "label": "Session token",
+          "optional": true,
+          "secret": true
+        },
+        {
+          "default": "us-east-1",
+          "group": "setting",
+          "key": "LIGHTSAIL_REGION",
+          "label": "Region"
+        }
+      ],
+      "fields": {
+        "AWS_SHARED_CREDENTIALS_FILE": {
+          "optional": true
+        }
+      },
+      "methods": [
+        {
+          "fields": [
+            "AWS_ACCESS_KEY_ID",
+            "AWS_SECRET_ACCESS_KEY",
+            "AWS_SESSION_TOKEN"
+          ],
+          "name": "Access key"
+        },
+        {
+          "fields": [],
+          "name": "Credentials of the server"
+        }
+      ]
+    },
+    "namedotcom": {
+      "add": [
+        {
+          "group": "setting",
+          "key": "NAMECOM_SERVER",
+          "label": "API endpoint URL",
+          "optional": true
+        }
+      ]
     },
     "namesurfer": {
       "fields": {
@@ -1092,6 +1502,94 @@
         }
       ]
     },
+    "nifcloud": {
+      "add": [
+        {
+          "group": "setting",
+          "key": "NIFCLOUD_DNS_ENDPOINT",
+          "label": "API endpoint URL",
+          "optional": true
+        }
+      ]
+    },
+    "oraclecloud": {
+      "add": [
+        {
+          "group": "credential",
+          "help": "Base64 encoded key, used instead of the key file.",
+          "key": "OCI_PRIVATE_KEY",
+          "label": "Private key",
+          "optional": true,
+          "secret": true
+        }
+      ],
+      "fields": {
+        "OCI_AUTH_TYPE": {
+          "hidden": true
+        },
+        "OCI_CONFIG_FILE": {
+          "group": "credential",
+          "help": "Path to the configuration file on the server.",
+          "optional": true
+        },
+        "OCI_FINGERPRINT": {
+          "help": ""
+        },
+        "OCI_PRIVATE_KEY_PASSWORD": {
+          "help": "",
+          "optional": true
+        },
+        "OCI_PRIVATE_KEY_PATH": {
+          "help": "Path to the private key file on the server.",
+          "optional": true
+        },
+        "OCI_PROFILE": {
+          "group": "credential",
+          "help": ""
+        },
+        "OCI_REGION": {
+          "help": ""
+        },
+        "OCI_TENANCY_OCID": {
+          "help": ""
+        },
+        "OCI_USER_OCID": {
+          "help": ""
+        }
+      },
+      "methods": [
+        {
+          "fields": [
+            "OCI_USER_OCID",
+            "OCI_TENANCY_OCID",
+            "OCI_REGION",
+            "OCI_FINGERPRINT",
+            "OCI_PRIVATE_KEY_PATH",
+            "OCI_PRIVATE_KEY",
+            "OCI_PRIVATE_KEY_PASSWORD"
+          ],
+          "name": "API signing key",
+          "recommended": true
+        },
+        {
+          "fields": [],
+          "name": "Instance principal",
+          "values": {
+            "OCI_AUTH_TYPE": "instance_principal"
+          }
+        },
+        {
+          "fields": [
+            "OCI_PROFILE",
+            "OCI_CONFIG_FILE"
+          ],
+          "name": "Session token profile",
+          "values": {
+            "OCI_AUTH_TYPE": "user_principal"
+          }
+        }
+      ]
+    },
     "ovh": {
       "methods": [
         {
@@ -1113,7 +1611,7 @@
             "OVH_CLIENT_ID",
             "OVH_CLIENT_SECRET"
           ],
-          "name": "OAuth2"
+          "name": "OAuth2 client"
         }
       ]
     },
@@ -1125,6 +1623,16 @@
       }
     },
     "route53": {
+      "add": [
+        {
+          "group": "credential",
+          "help": "Only for temporary access keys.",
+          "key": "AWS_SESSION_TOKEN",
+          "label": "Session token",
+          "optional": true,
+          "secret": true
+        }
+      ],
       "fields": {
         "AWS_ASSUME_ROLE_ARN": {
           "optional": true
@@ -1133,42 +1641,66 @@
           "optional": true
         },
         "AWS_HOSTED_ZONE_ID": {
+          "group": "setting",
           "optional": true
         },
         "AWS_PROFILE": {
           "optional": true
         },
         "AWS_REGION": {
+          "group": "setting",
           "optional": true
         },
         "AWS_SDK_LOAD_CONFIG": {
+          "optional": true
+        },
+        "AWS_SHARED_CREDENTIALS_FILE": {
           "optional": true
         },
         "AWS_WAIT_FOR_RECORD_SETS_CHANGED": {
+          "group": "setting",
           "optional": true
         }
-      }
+      },
+      "methods": [
+        {
+          "fields": [
+            "AWS_ACCESS_KEY_ID",
+            "AWS_SECRET_ACCESS_KEY",
+            "AWS_SESSION_TOKEN"
+          ],
+          "name": "Access key"
+        },
+        {
+          "fields": [
+            "AWS_PROFILE",
+            "AWS_SDK_LOAD_CONFIG"
+          ],
+          "name": "Credentials of the server"
+        }
+      ]
     },
     "s3": {
-      "fields": {
-        "AWS_ASSUME_ROLE_ARN": {
-          "optional": true
-        },
-        "AWS_EXTERNAL_ID": {
-          "optional": true
-        },
-        "AWS_PROFILE": {
-          "optional": true
-        },
-        "AWS_SDK_LOAD_CONFIG": {
-          "optional": true
-        }
-      }
+      "hidden": true
     },
     "selectelv2": {
       "fields": {
         "SELECTELV2_USER_DOMAIN_NAME": {
           "default": ""
+        }
+      }
+    },
+    "stackpath": {
+      "hidden": true
+    },
+    "vegadns": {
+      "fields": {
+        "SECRET_VEGADNS_KEY": {
+          "help": "Leave both empty when the server needs no sign-in.",
+          "optional": true
+        },
+        "SECRET_VEGADNS_SECRET": {
+          "optional": true
         }
       }
     },
@@ -1182,6 +1714,21 @@
         },
         "VK_CLOUD_IDENTITY_ENDPOINT": {
           "default": "https://infra.mail.ru:35357/v3/"
+        }
+      }
+    },
+    "webglobe": {
+      "add": [
+        {
+          "group": "credential",
+          "key": "WEBGLOBE_TOKEN",
+          "label": "API token",
+          "secret": true
+        }
+      ],
+      "fields": {
+        "WEBGLOBE_API_KEY": {
+          "hidden": true
         }
       }
     },

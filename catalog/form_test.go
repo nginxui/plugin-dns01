@@ -3,6 +3,7 @@ package catalog
 import (
 	"reflect"
 	"slices"
+	"strings"
 	"testing"
 
 	"github.com/nginxui/plugin-sdk-go/protocol"
@@ -78,7 +79,7 @@ func TestFormCloudflare(t *testing.T) {
 func TestFormAlibabaCloud(t *testing.T) {
 	for _, code := range []string{"alidns", "aliesa"} {
 		form := mustGet(t, code).Form()
-		if len(form.Methods) != 2 || form.Methods[0].Name != "AccessKey" || !form.Methods[0].Recommended || form.Methods[1].Name != "Instance RAM role" {
+		if len(form.Methods) != 2 || form.Methods[0].Name != "AccessKey" || form.Methods[0].Recommended || form.Methods[1].Name != "Instance RAM role" {
 			t.Fatalf("%s methods = %+v", code, form.Methods)
 		}
 		for _, f := range form.Fields {
@@ -133,17 +134,27 @@ func TestEveryFormIsValid(t *testing.T) {
 			withMethods++
 		}
 		aliases := c.aliases()
+		override := overrides.Providers[c.Code]
 		for _, f := range form.Fields {
 			if _, isAlias := aliases[f.Key]; isAlias {
 				t.Errorf("%s lists alias %s", c.Code, f.Key)
 			}
 			_, inCredentials := c.Configuration.Credentials[f.Key]
 			_, inAdditional := c.Configuration.Additional[f.Key]
-			if !inCredentials && !inAdditional {
+			added := slices.ContainsFunc(override.Add, func(a addedField) bool { return a.Key == f.Key })
+			if !inCredentials && !inAdditional && !added {
 				t.Errorf("%s lists undeclared key %s", c.Code, f.Key)
+			}
+			if added || override.Fields[f.Key].Group != nil {
+				continue
 			}
 			if (f.Group == protocol.DNS01FieldGroupCredential) != inCredentials {
 				t.Errorf("%s %s is in group %s", c.Code, f.Key, f.Group)
+			}
+		}
+		for i := 1; i < len(form.Fields); i++ {
+			if groupRank(form.Fields[i-1].Group) > groupRank(form.Fields[i].Group) {
+				t.Errorf("%s lists setting %s before a credential", c.Code, form.Fields[i-1].Key)
 			}
 		}
 	}
@@ -160,9 +171,7 @@ func TestOverridesAreUsed(t *testing.T) {
 		t.Fatal(err)
 	}
 	texts := make(map[string]bool)
-	byCode := make(map[string]Config)
 	for _, c := range list {
-		byCode[c.Code] = c
 		if c.Configuration == nil {
 			continue
 		}
@@ -174,8 +183,13 @@ func TestOverridesAreUsed(t *testing.T) {
 	}
 	for text := range overrides.Phrases {
 		if !texts[text] {
-			t.Errorf("phrase override %q matches no description", text)
+			t.Errorf("phrase override %q matches no description of an offered provider", text)
 		}
+	}
+
+	byCode := make(map[string]Config)
+	for _, c := range everyConfig {
+		byCode[c.Code] = c
 	}
 	for code, o := range overrides.Providers {
 		c, ok := byCode[code]
@@ -188,6 +202,13 @@ func TestOverridesAreUsed(t *testing.T) {
 			_, inAdditional := c.Configuration.Additional[key]
 			if !inCredentials && !inAdditional {
 				t.Errorf("override for unknown field %s of %s", key, code)
+			}
+		}
+		for _, a := range o.Add {
+			_, inCredentials := c.Configuration.Credentials[a.Key]
+			_, inAdditional := c.Configuration.Additional[a.Key]
+			if inCredentials || inAdditional {
+				t.Errorf("%s adds %s, which the catalog already declares", code, a.Key)
 			}
 		}
 	}
@@ -259,5 +280,115 @@ func TestCanonicalKey(t *testing.T) {
 	}
 	if got := (Config{Code: "y"}).CanonicalKey("X"); got != "X" {
 		t.Fatalf("CanonicalKey without configuration = %q", got)
+	}
+}
+
+func TestValidateMethodValues(t *testing.T) {
+	cred := func(key string) protocol.DNS01ProviderField {
+		return protocol.DNS01ProviderField{Key: key, Label: key, Group: protocol.DNS01FieldGroupCredential}
+	}
+	ok := &protocol.DNS01ProviderForm{
+		Fields: []protocol.DNS01ProviderField{cred("A")},
+		Methods: []protocol.DNS01ProviderMethod{
+			{Name: "Key", Fields: []string{"A"}, Values: map[string]string{"MODE": "key"}},
+			{Name: "Same key, other mode", Fields: []string{"A"}, Values: map[string]string{"MODE": "other"}},
+			{Name: "Role", Fields: []string{}, Values: map[string]string{"MODE": "role"}},
+		},
+	}
+	if err := Validate(ok); err != nil {
+		t.Fatalf("Validate = %v", err)
+	}
+
+	// A credential field one method lists and another fixes.
+	shared := &protocol.DNS01ProviderForm{
+		Fields: []protocol.DNS01ProviderField{cred("KEY"), cred("ALG"), cred("USER")},
+		Methods: []protocol.DNS01ProviderMethod{
+			{Name: "Key", Fields: []string{"KEY", "ALG"}},
+			{Name: "Kerberos", Fields: []string{"USER"}, Values: map[string]string{"ALG": "gss-tsig"}},
+		},
+	}
+	if err := Validate(shared); err != nil {
+		t.Fatalf("Validate(shared) = %v", err)
+	}
+
+	bad := map[string][]protocol.DNS01ProviderMethod{
+		"value key is a field no method lists": {{Name: "A", Fields: []string{}, Values: map[string]string{"A": "x"}}, {Name: "B", Fields: []string{}}},
+		"method lists and fixes a field":       {{Name: "A", Fields: []string{"A"}, Values: map[string]string{"A": "x"}}, {Name: "B", Fields: []string{}}},
+		"empty value key":                      {{Name: "A", Fields: []string{}, Values: map[string]string{"": "x"}}, {Name: "B", Fields: []string{"A"}}},
+		"identical methods":                    {{Name: "A", Fields: []string{"A"}, Values: map[string]string{"M": "1"}}, {Name: "B", Fields: []string{"A"}, Values: map[string]string{"M": "1"}}},
+		"nil fields":                           {{Name: "A"}, {Name: "B", Fields: []string{"A"}}},
+	}
+	setting := protocol.DNS01ProviderField{Key: "S", Label: "S", Group: protocol.DNS01FieldGroupSetting}
+	bad["value key is a setting field"] = []protocol.DNS01ProviderMethod{{Name: "A", Fields: []string{"A"}}, {Name: "B", Fields: []string{}, Values: map[string]string{"S": "x"}}}
+	for name, methods := range bad {
+		form := &protocol.DNS01ProviderForm{Fields: []protocol.DNS01ProviderField{cred("A"), setting}, Methods: methods}
+		if Validate(form) == nil {
+			t.Errorf("%s: Validate accepted %+v", name, methods)
+		}
+	}
+}
+
+func TestDocTables(t *testing.T) {
+	doc := "\n## Base Configuration\n\n| Environment Variable Name | Description |\n|---|---|\n| `EXEC_MODE` | `RAW`, none |\n| `EXEC_PATH` | The path of the program. |\n\n## Additional Configuration\n\n| Name | Description |\n|---|---|\n| `EXEC_POLLING_INTERVAL` | Time between DNS propagation check in seconds (Default: 3). |\n\n## Description\n\n| `NOT_A_VARIABLE` | ignored |\n"
+	cfg, credentials, additional := docTables(doc)
+	if cfg == nil || !reflect.DeepEqual(credentials, []string{"EXEC_MODE", "EXEC_PATH"}) || !reflect.DeepEqual(additional, []string{"EXEC_POLLING_INTERVAL"}) {
+		t.Fatalf("docTables = %+v, %v, %v", cfg, credentials, additional)
+	}
+	if cfg.Credentials["EXEC_PATH"] != "The path of the program." {
+		t.Fatalf("EXEC_PATH = %q", cfg.Credentials["EXEC_PATH"])
+	}
+	if c, _, _ := docTables("no tables here"); c != nil {
+		t.Fatal("a document without tables has no configuration")
+	}
+}
+
+func TestFormsFromAudit(t *testing.T) {
+	exec := mustGet(t, "exec").Form()
+	path, ok := fieldByKey(exec, "EXEC_PATH")
+	if !ok || path.Optional || path.Group != protocol.DNS01FieldGroupCredential {
+		t.Fatalf("exec EXEC_PATH = %+v", path)
+	}
+	if mode, _ := fieldByKey(exec, "EXEC_MODE"); mode.Group != protocol.DNS01FieldGroupSetting || !mode.Optional {
+		t.Fatalf("exec EXEC_MODE = %+v", mode)
+	}
+
+	joker := mustGet(t, "joker").Form()
+	if _, listed := fieldByKey(joker, "JOKER_API_MODE"); listed {
+		t.Fatal("joker lists its mode, which the methods fix")
+	}
+	if len(joker.Methods) != 3 || joker.Methods[2].Values["JOKER_API_MODE"] != "SVC" {
+		t.Fatalf("joker methods = %+v", joker.Methods)
+	}
+
+	dnsupdate := mustGet(t, "dnsupdate").Form()
+	if alg, _ := fieldByKey(dnsupdate, "DNSUPDATE_TSIG_ALGORITHM"); alg.Group != protocol.DNS01FieldGroupCredential || alg.Help != "" {
+		t.Fatalf("dnsupdate algorithm = %+v", alg)
+	}
+	for _, m := range dnsupdate.Methods {
+		kerberos := strings.HasPrefix(m.Name, "Kerberos")
+		if kerberos != (m.Values["DNSUPDATE_TSIG_ALGORITHM"] == "gss-tsig") {
+			t.Fatalf("dnsupdate method %q values = %v", m.Name, m.Values)
+		}
+	}
+
+	oracle := mustGet(t, "oraclecloud").Form()
+	if !oracle.Methods[0].Recommended || oracle.Methods[1].Values["OCI_AUTH_TYPE"] != "instance_principal" || len(oracle.Methods[1].Fields) != 0 {
+		t.Fatalf("oraclecloud methods = %+v", oracle.Methods)
+	}
+
+	if _, listed := fieldByKey(mustGet(t, "hosttech").Form(), "HOSTTECH_PASSWORD"); listed {
+		t.Fatal("hosttech lists a password the provider never reads")
+	}
+	if _, listed := fieldByKey(mustGet(t, "webglobe").Form(), "WEBGLOBE_TOKEN"); !listed {
+		t.Fatal("webglobe misses its token")
+	}
+	for _, code := range []string{"s3", "stackpath"} {
+		if _, ok := Get(code); ok {
+			t.Fatalf("%s is offered", code)
+		}
+	}
+	keys := mustGet(t, "joker").Keys()
+	if !slices.Contains(keys, "JOKER_API_MODE") || !slices.Contains(keys, "JOKER_API_KEY") {
+		t.Fatalf("joker keys = %v", keys)
 	}
 }

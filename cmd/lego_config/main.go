@@ -1,7 +1,7 @@
 // Command lego_config refreshes catalog/data from a lego release.
 //
 //	go run ./cmd/lego_config          # latest release
-//	go run ./cmd/lego_config v5.4.1   # a specific tag
+//	go run ./cmd/lego_config v5.5.2   # a specific tag
 //
 // It downloads the lego source archive, copies every providers/*/*.toml file
 // into catalog/data as a plain file and drops the ones the release no longer

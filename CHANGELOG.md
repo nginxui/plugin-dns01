@@ -15,11 +15,35 @@ All notable changes to this plugin are documented here. The format follows
   and provider settings kept apart from the credentials. Alias variables are
   left out. The labels, help texts and method names ship in Simplified
   Chinese, Traditional Chinese and Japanese.
+- More providers offer a choice of how to sign in, checked against the
+  provider code: Azure (client secret, client certificate, federated token,
+  managed identity), Oracle Cloud (API signing key, instance principal,
+  session token profile), Google Cloud, Route 53, Lightsail, Akamai EdgeDNS,
+  RFC 2136 (TSIG key, key file, Kerberos, no key), Joker (API key, account
+  or dynamic DNS credentials), Gandi, Hetzner and ClouDNS. A method can need
+  no input at all and can set a fixed value that selects it, such as the
+  authentication mode.
+- Fields the provider reads but the upstream description left out: session
+  tokens for Route 53 and Lightsail, the Lightsail region, the Hetzner legacy
+  key, the Azure certificate password and federated token, the Oracle
+  private key as text, the Name.com and NIFCLOUD endpoints, and the Webglobe
+  token, which the description misnamed.
+- The external program provider has a form: the program path, its mode and
+  the timing settings.
 - `plugin.json` no longer carries `configuration` or `links.go_client`; the
   `form` replaces the raw variable list. An error about a missing value names
   the key the form shows, also when the provider reported an alias.
 
 ### Changed
+
+- Optional marks and groups follow the provider code: many values that were
+  shown as required are optional (Route 53 and Lightsail keys, ALWAYSDATA
+  account, Liara team, VegaDNS key pair, INWX two-factor secret, HTTP request
+  sign-in), and sign-in values listed as settings moved to the credentials.
+- The Hosttech password is gone; the provider only reads the API token.
+- `s3` (an HTTP-01 solver) and `stackpath` (shut down) are no longer offered.
+- Only a vendor's clearly preferred sign-in method is marked as recommended.
+- lego v5.5.2.
 
 - The DNS challenge form follows the compact row layout of the certificate
   form. The credential select has a Manage button next to it and a New

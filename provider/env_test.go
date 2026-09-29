@@ -169,10 +169,21 @@ func TestMissingFieldFromLegoError(t *testing.T) {
 		t.Fatalf("missingField for an alias = %q, want CF_API_EMAIL", got)
 	}
 
-	// Without a recognizable message, the first empty credential wins.
 	other := errString("cloudflare: something else went wrong")
-	if got := missingField(cfg, map[string]string{}, other); got != "CF_API_EMAIL" {
+	// Without a recognizable message, the recommended method names its first
+	// empty field, or the method the saved values belong to.
+	if got := missingField(cfg, map[string]string{}, other); got != "CF_DNS_API_TOKEN" {
 		t.Fatalf("missingField fallback = %q", got)
+	}
+	if got := missingField(cfg, map[string]string{"CF_API_EMAIL": "a"}, other); got != "CF_API_KEY" {
+		t.Fatalf("missingField fallback for the key method = %q", got)
+	}
+
+	// ClouDNS names two alternatives joined by "or".
+	cloudns, _ := catalog.Get("cloudns")
+	either := errString("cloudns: some credentials information are missing: CLOUDNS_AUTH_ID or CLOUDNS_SUB_AUTH_ID")
+	if got := missingField(cloudns, map[string]string{}, either); got != "CLOUDNS_AUTH_ID" {
+		t.Fatalf("missingField with alternatives = %q", got)
 	}
 	// Optional fields are skipped.
 	filled := map[string]string{"CF_API_EMAIL": "a", "CF_API_KEY": "b", "CF_DNS_API_TOKEN": "c"}
@@ -184,3 +195,46 @@ func TestMissingFieldFromLegoError(t *testing.T) {
 type errString string
 
 func (e errString) Error() string { return string(e) }
+
+func TestEnvScopeExportsFormKeysOnly(t *testing.T) {
+	joker, _ := catalog.Get("joker")
+	webglobe, _ := catalog.Get("webglobe")
+	hosttech, _ := catalog.Get("hosttech")
+	for _, key := range []string{"JOKER_API_MODE", "WEBGLOBE_TOKEN", "WEBGLOBE_API_KEY", "HOSTTECH_PASSWORD"} {
+		t.Setenv(key, "")
+		if err := os.Unsetenv(key); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	cases := []struct {
+		cfg      catalog.Config
+		config   map[string]string
+		exported []string
+		skipped  []string
+	}{
+		// A fixed method value reaches the provider.
+		{joker, map[string]string{"JOKER_API_MODE": "SVC"}, []string{"JOKER_API_MODE"}, nil},
+		// A field the catalog misses is added, a misspelt one is not read.
+		{webglobe, map[string]string{"WEBGLOBE_TOKEN": "t", "WEBGLOBE_API_KEY": "k"}, []string{"WEBGLOBE_TOKEN"}, []string{"WEBGLOBE_API_KEY"}},
+		// A field the provider never reads stays out.
+		{hosttech, map[string]string{"HOSTTECH_PASSWORD": "p"}, nil, []string{"HOSTTECH_PASSWORD"}},
+	}
+	for _, c := range cases {
+		scope := newEnvScope(c.cfg)
+		if err := scope.SetEnv(c.config); err != nil {
+			t.Fatalf("%s: %v", c.cfg.Code, err)
+		}
+		for _, key := range c.exported {
+			if os.Getenv(key) != c.config[key] {
+				t.Errorf("%s: %s was not exported", c.cfg.Code, key)
+			}
+		}
+		for _, key := range c.skipped {
+			if _, ok := os.LookupEnv(key); ok {
+				t.Errorf("%s: %s was exported", c.cfg.Code, key)
+			}
+		}
+		scope.CleanEnv()
+	}
+}

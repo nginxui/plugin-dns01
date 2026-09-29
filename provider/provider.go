@@ -367,7 +367,7 @@ func missingField(cfg catalog.Config, config map[string]string, err error) strin
 		rest := strings.TrimSpace(msg[idx+len(missingCredentialsPrefix):])
 		// lego joins the names with a comma and may append its own context.
 		rest = strings.SplitN(rest, ":", 2)[0]
-		for _, name := range strings.Split(rest, ",") {
+		for _, name := range strings.FieldsFunc(strings.ReplaceAll(rest, " or ", ","), func(r rune) bool { return r == ',' }) {
 			if trimmed := strings.TrimSpace(name); trimmed != "" {
 				// The form lists canonical keys only, so name that one.
 				return cfg.CanonicalKey(trimmed)
@@ -375,13 +375,51 @@ func missingField(cfg catalog.Config, config map[string]string, err error) strin
 		}
 	}
 
-	// Fall back to the first required credential of the form left empty.
+	// Fall back to the first required credential of the form left empty,
+	// skipping the ones that belong to a sign-in method.
 	if form := cfg.Form(); form != nil {
+		inMethod := make(map[string]bool)
+		for _, m := range form.Methods {
+			for _, key := range m.Fields {
+				inMethod[key] = true
+			}
+		}
+		fields := make(map[string]protocol.DNS01ProviderField, len(form.Fields))
 		for _, f := range form.Fields {
-			if f.Group == protocol.DNS01FieldGroupCredential && !f.Optional && strings.TrimSpace(config[f.Key]) == "" {
+			fields[f.Key] = f
+			if f.Group == protocol.DNS01FieldGroupCredential && !f.Optional && !inMethod[f.Key] && strings.TrimSpace(config[f.Key]) == "" {
 				return f.Key
+			}
+		}
+		if m, ok := chosenMethod(form.Methods, config); ok {
+			for _, key := range m.Fields {
+				if !fields[key].Optional && strings.TrimSpace(config[key]) == "" {
+					return key
+				}
 			}
 		}
 	}
 	return ""
+}
+
+// chosenMethod guesses the sign-in method a config was saved for: the first
+// one with a value in its fields, otherwise the recommended one, then the
+// first one.
+func chosenMethod(methods []protocol.DNS01ProviderMethod, config map[string]string) (protocol.DNS01ProviderMethod, bool) {
+	if len(methods) == 0 {
+		return protocol.DNS01ProviderMethod{}, false
+	}
+	for _, m := range methods {
+		for _, key := range m.Fields {
+			if strings.TrimSpace(config[key]) != "" {
+				return m, true
+			}
+		}
+	}
+	for _, m := range methods {
+		if m.Recommended {
+			return m, true
+		}
+	}
+	return methods[0], true
 }

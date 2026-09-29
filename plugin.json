@@ -328,18 +328,24 @@
               "key": "AKAMAI_EDGERC",
               "label": "Credentials file",
               "help": "Path to the .edgerc file on the server.",
-              "group": "credential"
+              "group": "credential",
+              "optional": true,
+              "default": "~/.edgerc"
             },
             {
               "key": "AKAMAI_EDGERC_SECTION",
               "label": "Credentials file section",
-              "group": "credential"
+              "help": "Section of the credentials file to read.",
+              "group": "credential",
+              "optional": true,
+              "default": "default"
             },
             {
               "key": "AKAMAI_ACCOUNT_SWITCH_KEY",
               "label": "Target account ID",
               "help": "Only when the DNS zone and the credentials belong to different accounts.",
-              "group": "setting"
+              "group": "setting",
+              "optional": true
             },
             {
               "key": "AKAMAI_POLLING_INTERVAL",
@@ -361,6 +367,24 @@
               "group": "setting",
               "default": "120",
               "unit": "seconds"
+            }
+          ],
+          "methods": [
+            {
+              "name": "API client credentials",
+              "fields": [
+                "AKAMAI_HOST",
+                "AKAMAI_CLIENT_TOKEN",
+                "AKAMAI_CLIENT_SECRET",
+                "AKAMAI_ACCESS_TOKEN"
+              ]
+            },
+            {
+              "name": "Credentials file on the server",
+              "fields": [
+                "AKAMAI_EDGERC",
+                "AKAMAI_EDGERC_SECTION"
+              ]
             }
           ]
         }
@@ -442,7 +466,6 @@
           "methods": [
             {
               "name": "AccessKey",
-              "recommended": true,
               "fields": [
                 "ALICLOUD_ACCESS_KEY",
                 "ALICLOUD_SECRET_KEY",
@@ -523,7 +546,6 @@
           "methods": [
             {
               "name": "AccessKey",
-              "recommended": true,
               "fields": [
                 "ALIESA_ACCESS_KEY",
                 "ALIESA_SECRET_KEY",
@@ -599,7 +621,8 @@
             {
               "key": "ALWAYSDATA_ACCOUNT",
               "label": "Account name",
-              "group": "setting"
+              "group": "setting",
+              "optional": true
             },
             {
               "key": "ALWAYSDATA_POLLING_INTERVAL",
@@ -654,10 +677,19 @@
               "group": "credential"
             },
             {
+              "key": "AWS_SESSION_TOKEN",
+              "label": "Session token",
+              "help": "Only for temporary access keys.",
+              "group": "credential",
+              "optional": true,
+              "secret": true
+            },
+            {
               "key": "AWS_SHARED_CREDENTIALS_FILE",
               "label": "Credentials file",
               "help": "Path to a shared credentials file on the server.",
-              "group": "setting"
+              "group": "setting",
+              "optional": true
             },
             {
               "key": "LIGHTSAIL_POLLING_INTERVAL",
@@ -672,6 +704,26 @@
               "group": "setting",
               "default": "120",
               "unit": "seconds"
+            },
+            {
+              "key": "LIGHTSAIL_REGION",
+              "label": "Region",
+              "group": "setting",
+              "default": "us-east-1"
+            }
+          ],
+          "methods": [
+            {
+              "name": "Access key",
+              "fields": [
+                "AWS_ACCESS_KEY_ID",
+                "AWS_SECRET_ACCESS_KEY",
+                "AWS_SESSION_TOKEN"
+              ]
+            },
+            {
+              "name": "Credentials of the server",
+              "fields": []
             }
           ]
         }
@@ -694,19 +746,6 @@
               "label": "Secret access key",
               "group": "credential",
               "secret": true
-            },
-            {
-              "key": "AWS_REGION",
-              "label": "Region",
-              "group": "credential",
-              "optional": true
-            },
-            {
-              "key": "AWS_HOSTED_ZONE_ID",
-              "label": "Hosted zone ID",
-              "help": "Set it to skip finding the zone automatically.",
-              "group": "credential",
-              "optional": true
             },
             {
               "key": "AWS_PROFILE",
@@ -737,10 +776,31 @@
               "optional": true
             },
             {
+              "key": "AWS_SESSION_TOKEN",
+              "label": "Session token",
+              "help": "Only for temporary access keys.",
+              "group": "credential",
+              "optional": true,
+              "secret": true
+            },
+            {
+              "key": "AWS_REGION",
+              "label": "Region",
+              "group": "setting",
+              "optional": true
+            },
+            {
+              "key": "AWS_HOSTED_ZONE_ID",
+              "label": "Hosted zone ID",
+              "help": "Set it to skip finding the zone automatically.",
+              "group": "setting",
+              "optional": true
+            },
+            {
               "key": "AWS_WAIT_FOR_RECORD_SETS_CHANGED",
               "label": "Wait for sync",
               "help": "Wait until the change is in sync on every server. It can be unstable.",
-              "group": "credential",
+              "group": "setting",
               "optional": true
             },
             {
@@ -753,7 +813,8 @@
               "key": "AWS_SHARED_CREDENTIALS_FILE",
               "label": "Credentials file",
               "help": "Path to a shared credentials file on the server.",
-              "group": "setting"
+              "group": "setting",
+              "optional": true
             },
             {
               "key": "AWS_MAX_RETRIES",
@@ -782,77 +843,22 @@
               "default": "10",
               "unit": "seconds"
             }
-          ]
-        }
-      },
-      {
-        "name": "Amazon S3",
-        "code": "s3",
-        "links": {
-          "api": "https://docs.aws.amazon.com/AmazonS3/latest/userguide//Welcome.html"
-        },
-        "form": {
-          "fields": [
+          ],
+          "methods": [
             {
-              "key": "AWS_ACCESS_KEY_ID",
-              "label": "Access key ID",
-              "group": "credential"
+              "name": "Access key",
+              "fields": [
+                "AWS_ACCESS_KEY_ID",
+                "AWS_SECRET_ACCESS_KEY",
+                "AWS_SESSION_TOKEN"
+              ]
             },
             {
-              "key": "AWS_SECRET_ACCESS_KEY",
-              "label": "Secret access key",
-              "group": "credential",
-              "secret": true
-            },
-            {
-              "key": "AWS_REGION",
-              "label": "Region",
-              "group": "credential"
-            },
-            {
-              "key": "S3_BUCKET",
-              "label": "Bucket name",
-              "group": "credential"
-            },
-            {
-              "key": "AWS_PROFILE",
-              "label": "Profile",
-              "help": "A named profile from the credentials file on the server.",
-              "group": "credential",
-              "optional": true
-            },
-            {
-              "key": "AWS_SDK_LOAD_CONFIG",
-              "label": "Load shared config",
-              "help": "Set to true to read the region from the config file on the server.",
-              "group": "credential",
-              "optional": true
-            },
-            {
-              "key": "AWS_ASSUME_ROLE_ARN",
-              "label": "Role ARN",
-              "help": "A role to assume for the DNS changes.",
-              "group": "credential",
-              "optional": true
-            },
-            {
-              "key": "AWS_EXTERNAL_ID",
-              "label": "External ID",
-              "help": "Used when assuming the role.",
-              "group": "credential",
-              "optional": true
-            },
-            {
-              "key": "AWS_SHARED_CREDENTIALS_FILE",
-              "label": "Credentials file",
-              "help": "Path to a shared credentials file on the server.",
-              "group": "setting"
-            },
-            {
-              "key": "AWS_MAX_RETRIES",
-              "label": "Maximum retries",
-              "help": "How many times to retry an API request.",
-              "group": "setting"
+              "name": "Credentials of the server",
+              "fields": [
+                "AWS_PROFILE",
+                "AWS_SDK_LOAD_CONFIG"
+              ]
             }
           ]
         }
@@ -1290,6 +1296,20 @@
               "group": "credential"
             },
             {
+              "key": "AZURE_CLIENT_CERTIFICATE_PASSWORD",
+              "label": "Certificate password",
+              "group": "credential",
+              "optional": true,
+              "secret": true
+            },
+            {
+              "key": "AZURE_OIDC_TOKEN",
+              "label": "Federated token",
+              "help": "A token from an identity provider the app registration trusts.",
+              "group": "credential",
+              "secret": true
+            },
+            {
               "key": "AZURE_ENVIRONMENT",
               "label": "Azure environment",
               "help": "One of public, usgovernment or china.",
@@ -1323,14 +1343,10 @@
               "group": "setting"
             },
             {
-              "key": "AZURE_AUTH_METHOD",
-              "label": "Authentication method",
-              "group": "setting"
-            },
-            {
               "key": "AZURE_AUTH_MSI_TIMEOUT",
               "label": "Managed identity timeout",
-              "group": "setting"
+              "group": "setting",
+              "optional": true
             },
             {
               "key": "AZURE_TTL",
@@ -1352,6 +1368,49 @@
               "group": "setting",
               "default": "120",
               "unit": "seconds"
+            }
+          ],
+          "methods": [
+            {
+              "name": "Client secret",
+              "fields": [
+                "AZURE_TENANT_ID",
+                "AZURE_CLIENT_ID",
+                "AZURE_CLIENT_SECRET"
+              ],
+              "values": {
+                "AZURE_AUTH_METHOD": "env"
+              }
+            },
+            {
+              "name": "Client certificate",
+              "fields": [
+                "AZURE_TENANT_ID",
+                "AZURE_CLIENT_ID",
+                "AZURE_CLIENT_CERTIFICATE_PATH",
+                "AZURE_CLIENT_CERTIFICATE_PASSWORD"
+              ],
+              "values": {
+                "AZURE_AUTH_METHOD": "env"
+              }
+            },
+            {
+              "name": "Federated token",
+              "fields": [
+                "AZURE_TENANT_ID",
+                "AZURE_CLIENT_ID",
+                "AZURE_OIDC_TOKEN"
+              ],
+              "values": {
+                "AZURE_AUTH_METHOD": "oidc"
+              }
+            },
+            {
+              "name": "Managed identity",
+              "fields": [],
+              "values": {
+                "AZURE_AUTH_METHOD": "msi"
+              }
             }
           ]
         }
@@ -2092,7 +2151,7 @@
             {
               "key": "CLOUDNS_SUB_AUTH_ID",
               "label": "API sub-user ID",
-              "group": "setting"
+              "group": "credential"
             },
             {
               "key": "CLOUDNS_POLLING_INTERVAL",
@@ -2121,6 +2180,20 @@
               "group": "setting",
               "default": "30",
               "unit": "seconds"
+            }
+          ],
+          "methods": [
+            {
+              "name": "API user ID",
+              "fields": [
+                "CLOUDNS_AUTH_ID"
+              ]
+            },
+            {
+              "name": "API sub-user ID",
+              "fields": [
+                "CLOUDNS_SUB_AUTH_ID"
+              ]
             }
           ]
         }
@@ -2840,7 +2913,7 @@
           ],
           "methods": [
             {
-              "name": "Password",
+              "name": "Username and password",
               "fields": [
                 "OS_USERNAME",
                 "OS_USER_ID",
@@ -3093,59 +3166,58 @@
             {
               "key": "DNSUPDATE_TSIG_ALGORITHM",
               "label": "TSIG algorithm",
-              "help": "Leave the TSIG key name and secret empty to turn off TSIG.",
-              "group": "setting",
+              "group": "credential",
+              "optional": true,
+              "default": "hmac-sha1",
               "link": "https://github.com/miekg/dns/blob/master/tsig.go"
             },
             {
               "key": "DNSUPDATE_TSIG_KEY",
               "label": "TSIG key name",
-              "help": "As defined in the DNS server configuration. Leave empty to turn off TSIG.",
-              "group": "setting"
+              "help": "As defined in the DNS server configuration.",
+              "group": "credential"
             },
             {
               "key": "DNSUPDATE_TSIG_SECRET",
               "label": "TSIG secret",
-              "help": "Leave empty to turn off TSIG.",
-              "group": "setting",
+              "group": "credential",
               "secret": true
             },
             {
               "key": "DNSUPDATE_TSIG_FILE",
               "label": "TSIG key file",
               "help": "Path to a TSIG key file on the server.",
-              "group": "setting"
+              "group": "credential"
             },
             {
               "key": "DNSUPDATE_TSIG_GSS_REALM",
               "label": "Kerberos realm",
-              "help": "Only for the gss-tsig algorithm.",
-              "group": "setting"
+              "group": "credential",
+              "optional": true
             },
             {
               "key": "DNSUPDATE_TSIG_GSS_USERNAME",
               "label": "Kerberos username",
-              "help": "Only for the gss-tsig algorithm.",
-              "group": "setting"
+              "group": "credential"
             },
             {
               "key": "DNSUPDATE_TSIG_GSS_PASSWORD",
               "label": "Kerberos password",
-              "help": "Only for the gss-tsig algorithm.",
-              "group": "setting",
+              "group": "credential",
               "secret": true
             },
             {
               "key": "DNSUPDATE_TSIG_GSS_KEYTAB_FILE",
               "label": "Kerberos keytab file",
-              "help": "Path to the keytab file on the server. Only for the gss-tsig algorithm.",
-              "group": "setting"
+              "help": "Path to the keytab file on the server.",
+              "group": "credential"
             },
             {
               "key": "DNSUPDATE_ZONES",
               "label": "Zones",
               "help": "Zones to try, separated by commas.",
-              "group": "setting"
+              "group": "setting",
+              "optional": true
             },
             {
               "key": "DNSUPDATE_DNS_TIMEOUT",
@@ -3182,6 +3254,49 @@
               "group": "setting",
               "default": "60",
               "unit": "seconds"
+            }
+          ],
+          "methods": [
+            {
+              "name": "TSIG key",
+              "fields": [
+                "DNSUPDATE_TSIG_KEY",
+                "DNSUPDATE_TSIG_SECRET",
+                "DNSUPDATE_TSIG_ALGORITHM"
+              ]
+            },
+            {
+              "name": "TSIG key file",
+              "fields": [
+                "DNSUPDATE_TSIG_FILE",
+                "DNSUPDATE_TSIG_ALGORITHM"
+              ]
+            },
+            {
+              "name": "Kerberos password",
+              "fields": [
+                "DNSUPDATE_TSIG_GSS_REALM",
+                "DNSUPDATE_TSIG_GSS_USERNAME",
+                "DNSUPDATE_TSIG_GSS_PASSWORD"
+              ],
+              "values": {
+                "DNSUPDATE_TSIG_ALGORITHM": "gss-tsig"
+              }
+            },
+            {
+              "name": "Kerberos keytab",
+              "fields": [
+                "DNSUPDATE_TSIG_GSS_REALM",
+                "DNSUPDATE_TSIG_GSS_USERNAME",
+                "DNSUPDATE_TSIG_GSS_KEYTAB_FILE"
+              ],
+              "values": {
+                "DNSUPDATE_TSIG_ALGORITHM": "gss-tsig"
+              }
+            },
+            {
+              "name": "No key",
+              "fields": []
             }
           ]
         }
@@ -4314,7 +4429,43 @@
         "name": "External program",
         "code": "exec",
         "form": {
-          "fields": []
+          "fields": [
+            {
+              "key": "EXEC_PATH",
+              "label": "Program path",
+              "help": "Path to the program on the server that adds and removes the records.",
+              "group": "credential"
+            },
+            {
+              "key": "EXEC_MODE",
+              "label": "Mode",
+              "help": "RAW, or leave empty.",
+              "group": "setting",
+              "optional": true
+            },
+            {
+              "key": "EXEC_POLLING_INTERVAL",
+              "label": "Check interval",
+              "group": "setting",
+              "default": "3",
+              "unit": "seconds"
+            },
+            {
+              "key": "EXEC_PROPAGATION_TIMEOUT",
+              "label": "Maximum wait",
+              "group": "setting",
+              "default": "60",
+              "unit": "seconds"
+            },
+            {
+              "key": "EXEC_SEQUENCE_INTERVAL",
+              "label": "Request interval",
+              "help": "Wait between two challenges on the same account.",
+              "group": "setting",
+              "default": "60",
+              "unit": "seconds"
+            }
+          ]
         }
       },
       {
@@ -4697,9 +4848,7 @@
             {
               "key": "GANDIV5_API_KEY",
               "label": "Legacy API key",
-              "help": "Deprecated. Use a personal access token instead.",
               "group": "credential",
-              "optional": true,
               "secret": true
             },
             {
@@ -4729,6 +4878,21 @@
               "group": "setting",
               "default": "10",
               "unit": "seconds"
+            }
+          ],
+          "methods": [
+            {
+              "name": "Personal access token",
+              "recommended": true,
+              "fields": [
+                "GANDIV5_PERSONAL_ACCESS_TOKEN"
+              ]
+            },
+            {
+              "name": "Legacy API key",
+              "fields": [
+                "GANDIV5_API_KEY"
+              ]
             }
           ]
         }
@@ -5032,15 +5196,13 @@
               "key": "GCE_SERVICE_ACCOUNT_FILE",
               "label": "Service account key file",
               "help": "Path to the JSON key file on the server.",
-              "group": "credential",
-              "optional": true
+              "group": "credential"
             },
             {
               "key": "GCE_SERVICE_ACCOUNT",
               "label": "Service account key",
-              "help": "The JSON key of the service account. Leave both key fields empty to use the credentials of the server.",
+              "help": "The JSON key of the service account.",
               "group": "credential",
-              "optional": true,
               "secret": true
             },
             {
@@ -5088,6 +5250,24 @@
               "group": "setting",
               "default": "120",
               "unit": "seconds"
+            }
+          ],
+          "methods": [
+            {
+              "name": "Service account key file",
+              "fields": [
+                "GCE_SERVICE_ACCOUNT_FILE"
+              ]
+            },
+            {
+              "name": "Service account key",
+              "fields": [
+                "GCE_SERVICE_ACCOUNT"
+              ]
+            },
+            {
+              "name": "Credentials of the server",
+              "fields": []
             }
           ]
         }
@@ -5163,6 +5343,13 @@
               "secret": true
             },
             {
+              "key": "HETZNER_API_KEY",
+              "label": "Legacy DNS API key",
+              "help": "Deprecated. Use an API token instead.",
+              "group": "credential",
+              "secret": true
+            },
+            {
               "key": "HETZNER_POLLING_INTERVAL",
               "label": "Check interval",
               "group": "setting",
@@ -5189,6 +5376,21 @@
               "group": "setting",
               "default": "30",
               "unit": "seconds"
+            }
+          ],
+          "methods": [
+            {
+              "name": "API token",
+              "recommended": true,
+              "fields": [
+                "HETZNER_API_TOKEN"
+              ]
+            },
+            {
+              "name": "Legacy DNS API key",
+              "fields": [
+                "HETZNER_API_KEY"
+              ]
             }
           ]
         }
@@ -5349,12 +5551,6 @@
               "secret": true
             },
             {
-              "key": "HOSTTECH_PASSWORD",
-              "label": "API password",
-              "group": "credential",
-              "secret": true
-            },
-            {
               "key": "HOSTTECH_POLLING_INTERVAL",
               "label": "Check interval",
               "group": "setting",
@@ -5437,12 +5633,6 @@
         "form": {
           "fields": [
             {
-              "key": "HTTPREQ_MODE",
-              "label": "Mode",
-              "help": "RAW, or leave empty.",
-              "group": "credential"
-            },
-            {
               "key": "HTTPREQ_ENDPOINT",
               "label": "Server URL",
               "group": "credential"
@@ -5450,13 +5640,22 @@
             {
               "key": "HTTPREQ_USERNAME",
               "label": "Username",
-              "group": "setting"
+              "group": "credential",
+              "optional": true
             },
             {
               "key": "HTTPREQ_PASSWORD",
               "label": "Password",
-              "group": "setting",
+              "group": "credential",
+              "optional": true,
               "secret": true
+            },
+            {
+              "key": "HTTPREQ_MODE",
+              "label": "Mode",
+              "help": "RAW, or leave empty.",
+              "group": "setting",
+              "optional": true
             },
             {
               "key": "HTTPREQ_POLLING_INTERVAL",
@@ -5647,19 +5846,22 @@
               "key": "HYPERONE_PASSPORT_LOCATION",
               "label": "Passport file",
               "help": "Path to the passport file on the server.",
-              "group": "setting",
+              "group": "credential",
+              "optional": true,
               "default": "~/.h1/passport.json"
             },
             {
               "key": "HYPERONE_API_URL",
               "label": "API endpoint URL",
               "group": "setting",
+              "optional": true,
               "default": "https://api.hyperone.com/v2"
             },
             {
               "key": "HYPERONE_LOCATION_ID",
               "label": "Region",
               "group": "setting",
+              "optional": true,
               "default": "pl-waw-1"
             },
             {
@@ -6003,7 +6205,9 @@
             {
               "key": "INWX_SHARED_SECRET",
               "label": "Two-factor secret",
-              "group": "setting",
+              "help": "Only when the account uses two-factor authentication.",
+              "group": "credential",
+              "optional": true,
               "secret": true
             },
             {
@@ -6343,13 +6547,6 @@
         "form": {
           "fields": [
             {
-              "key": "JOKER_API_MODE",
-              "label": "API mode",
-              "help": "DMAPI is for reseller accounts.",
-              "group": "credential",
-              "default": "DMAPI"
-            },
-            {
               "key": "JOKER_USERNAME",
               "label": "Username",
               "group": "credential"
@@ -6363,7 +6560,6 @@
             {
               "key": "JOKER_API_KEY",
               "label": "API key",
-              "help": "Only for the DMAPI mode.",
               "group": "credential",
               "secret": true
             },
@@ -6398,10 +6594,41 @@
             {
               "key": "JOKER_SEQUENCE_INTERVAL",
               "label": "Request interval",
-              "help": "Only for the SVC mode.",
+              "help": "Only with the dynamic DNS credentials.",
               "group": "setting",
               "default": "60",
               "unit": "seconds"
+            }
+          ],
+          "methods": [
+            {
+              "name": "API key",
+              "fields": [
+                "JOKER_API_KEY"
+              ],
+              "values": {
+                "JOKER_API_MODE": "DMAPI"
+              }
+            },
+            {
+              "name": "Username and password",
+              "fields": [
+                "JOKER_USERNAME",
+                "JOKER_PASSWORD"
+              ],
+              "values": {
+                "JOKER_API_MODE": "DMAPI"
+              }
+            },
+            {
+              "name": "Dynamic DNS credentials",
+              "fields": [
+                "JOKER_USERNAME",
+                "JOKER_PASSWORD"
+              ],
+              "values": {
+                "JOKER_API_MODE": "SVC"
+              }
             }
           ]
         }
@@ -6612,7 +6839,8 @@
             {
               "key": "LIARA_TEAM_ID",
               "label": "Team ID",
-              "group": "setting"
+              "group": "setting",
+              "optional": true
             },
             {
               "key": "LIARA_POLLING_INTERVAL",
@@ -7467,6 +7695,12 @@
               "group": "setting",
               "default": "10",
               "unit": "seconds"
+            },
+            {
+              "key": "NAMECOM_SERVER",
+              "label": "API endpoint URL",
+              "group": "setting",
+              "optional": true
             }
           ]
         }
@@ -8082,6 +8316,12 @@
               "group": "setting",
               "default": "30",
               "unit": "seconds"
+            },
+            {
+              "key": "NIFCLOUD_DNS_ENDPOINT",
+              "label": "API endpoint URL",
+              "group": "setting",
+              "optional": true
             }
           ]
         }
@@ -8556,57 +8796,56 @@
             {
               "key": "OCI_REGION",
               "label": "Region",
-              "help": "Can be empty when an authorization type is set.",
               "group": "credential"
             },
             {
               "key": "OCI_PRIVATE_KEY_PATH",
               "label": "Private key file",
-              "help": "Ignored when an authorization type is set.",
-              "group": "credential"
+              "help": "Path to the private key file on the server.",
+              "group": "credential",
+              "optional": true
             },
             {
               "key": "OCI_PRIVATE_KEY_PASSWORD",
               "label": "Private key password",
-              "help": "Ignored when an authorization type is set.",
               "group": "credential",
+              "optional": true,
               "secret": true
             },
             {
               "key": "OCI_TENANCY_OCID",
               "label": "Tenancy OCID",
-              "help": "Ignored when an authorization type is set.",
               "group": "credential"
             },
             {
               "key": "OCI_USER_OCID",
               "label": "User OCID",
-              "help": "Ignored when an authorization type is set.",
               "group": "credential"
             },
             {
               "key": "OCI_FINGERPRINT",
               "label": "Public key fingerprint",
-              "help": "Ignored when an authorization type is set.",
               "group": "credential"
-            },
-            {
-              "key": "OCI_AUTH_TYPE",
-              "label": "Authorization type",
-              "help": "instance_principal or user_principal. Leave empty to use the user, tenancy and key fields.",
-              "group": "setting"
             },
             {
               "key": "OCI_CONFIG_FILE",
               "label": "Configuration file",
-              "help": "Only for the user_principal authorization type.",
-              "group": "setting"
+              "help": "Path to the configuration file on the server.",
+              "group": "credential",
+              "optional": true
             },
             {
               "key": "OCI_PROFILE",
               "label": "Profile name",
-              "help": "Only for the user_principal authorization type.",
-              "group": "setting"
+              "group": "credential"
+            },
+            {
+              "key": "OCI_PRIVATE_KEY",
+              "label": "Private key",
+              "help": "Base64 encoded key, used instead of the key file.",
+              "group": "credential",
+              "optional": true,
+              "secret": true
             },
             {
               "key": "OCI_POLLING_INTERVAL",
@@ -8635,6 +8874,38 @@
               "group": "setting",
               "default": "60",
               "unit": "seconds"
+            }
+          ],
+          "methods": [
+            {
+              "name": "API signing key",
+              "recommended": true,
+              "fields": [
+                "OCI_USER_OCID",
+                "OCI_TENANCY_OCID",
+                "OCI_REGION",
+                "OCI_FINGERPRINT",
+                "OCI_PRIVATE_KEY_PATH",
+                "OCI_PRIVATE_KEY",
+                "OCI_PRIVATE_KEY_PASSWORD"
+              ]
+            },
+            {
+              "name": "Instance principal",
+              "fields": [],
+              "values": {
+                "OCI_AUTH_TYPE": "instance_principal"
+              }
+            },
+            {
+              "name": "Session token profile",
+              "fields": [
+                "OCI_PROFILE",
+                "OCI_CONFIG_FILE"
+              ],
+              "values": {
+                "OCI_AUTH_TYPE": "user_principal"
+              }
             }
           ]
         }
@@ -8733,7 +9004,7 @@
               ]
             },
             {
-              "name": "OAuth2",
+              "name": "OAuth2 client",
               "fields": [
                 "OVH_CLIENT_ID",
                 "OVH_CLIENT_SECRET"
@@ -10001,51 +10272,6 @@
         }
       },
       {
-        "name": "Stackpath (Deprecated)",
-        "code": "stackpath",
-        "form": {
-          "fields": [
-            {
-              "key": "STACKPATH_CLIENT_ID",
-              "label": "Client ID",
-              "group": "credential"
-            },
-            {
-              "key": "STACKPATH_CLIENT_SECRET",
-              "label": "Client secret",
-              "group": "credential",
-              "secret": true
-            },
-            {
-              "key": "STACKPATH_STACK_ID",
-              "label": "Stack ID",
-              "group": "credential"
-            },
-            {
-              "key": "STACKPATH_POLLING_INTERVAL",
-              "label": "Check interval",
-              "group": "setting",
-              "default": "2",
-              "unit": "seconds"
-            },
-            {
-              "key": "STACKPATH_PROPAGATION_TIMEOUT",
-              "label": "Maximum wait",
-              "group": "setting",
-              "default": "60",
-              "unit": "seconds"
-            },
-            {
-              "key": "STACKPATH_TTL",
-              "label": "TXT record TTL",
-              "group": "setting",
-              "default": "120",
-              "unit": "seconds"
-            }
-          ]
-        }
-      },
-      {
         "name": "Syse",
         "code": "syse",
         "links": {
@@ -10728,13 +10954,16 @@
             {
               "key": "SECRET_VEGADNS_KEY",
               "label": "API key",
+              "help": "Leave both empty when the server needs no sign-in.",
               "group": "credential",
+              "optional": true,
               "secret": true
             },
             {
               "key": "SECRET_VEGADNS_SECRET",
               "label": "API secret",
               "group": "credential",
+              "optional": true,
               "secret": true
             },
             {
@@ -11271,7 +11500,7 @@
               "group": "credential"
             },
             {
-              "key": "WEBGLOBE_API_KEY",
+              "key": "WEBGLOBE_TOKEN",
               "label": "API token",
               "group": "credential",
               "secret": true

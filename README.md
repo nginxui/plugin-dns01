@@ -2,7 +2,7 @@
 
 The official [NGINX UI](https://github.com/0xJacky/nginx-ui) plugin for the
 ACME DNS-01 challenge. It publishes the `_acme-challenge` TXT record through
-any of the 224 DNS providers [lego](https://github.com/go-acme/lego) supports,
+any of the 222 DNS providers [lego](https://github.com/go-acme/lego) supports,
 waits for the record to propagate and cleans it up afterwards.
 
 * Plugin id: `com.nginxui.dns01`
@@ -11,7 +11,7 @@ waits for the record to propagate and cleans it up afterwards.
 
 ## Features
 
-* 224 DNS providers, taken straight from the lego provider catalog, with their
+* 222 DNS providers, taken straight from the lego provider catalog, with their
   credential fields, help text and vendor documentation links.
 * Credential validation without issuing a certificate: the plugin builds the
   provider from the values you entered and reports the first field that is
@@ -141,7 +141,13 @@ optional. `cmd/manifest` derives it from the catalog descriptions and the
 examples in `catalog/data`. What the rules cannot work out lives in
 `catalog/overrides.json`: `phrases` maps a cleaned upstream description to a
 better label and help for every provider, `providers` corrects single fields
-and names the sign-in methods.
+(label, group, optional, hidden), adds the ones the upstream description
+misses, names the sign-in methods with the fixed values that select them on
+the provider side, and hides providers the plugin does not offer (`s3`,
+which serves HTTP-01, and `stackpath`, which has shut down). The overrides
+come from reading the provider code of the pinned lego release, so check
+them again when bumping it. A test fails when a catalog provider is missing
+from lego's registry.
 
 Labels, help texts and method names are English source strings. Their
 translations are in `catalog/i18n/<locale>.json`, which the webapp registers

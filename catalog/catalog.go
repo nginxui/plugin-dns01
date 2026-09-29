@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"io/fs"
 	"path"
+	"regexp"
 	"sort"
 	"strings"
 	"sync"
@@ -42,6 +43,9 @@ type Config struct {
 	Links         *Links         `json:"links,omitempty" toml:"Links"`
 	// Example is the upstream usage sample, read to find the ways to sign in.
 	Example string `json:"-" toml:"Example"`
+	// Doc is the upstream markdown documentation. A provider without a
+	// Configuration table lists its variables there.
+	Doc string `json:"-" toml:"Additional"`
 
 	// credentialOrder and additionalOrder keep the keys in file order.
 	credentialOrder []string
@@ -54,6 +58,8 @@ var (
 	ordered   []Config
 	byCode    map[string]Config
 	loadedAll []string
+	// everyConfig also holds the providers overrides.json hides.
+	everyConfig []Config
 )
 
 func load() {
@@ -84,14 +90,21 @@ func load() {
 			return
 		}
 		c.credentialOrder, c.additionalOrder = keyOrder(meta)
+		if c.Configuration == nil {
+			c.Configuration, c.credentialOrder, c.additionalOrder = docTables(c.Doc)
+		}
 		if c.Code == "" {
 			loadErr = fmt.Errorf("catalog: %s has no Code", name)
 			return
 		}
+		loadedAll = append(loadedAll, name)
+		everyConfig = append(everyConfig, c)
+		if hiddenCode(c.Code) {
+			continue
+		}
 
 		byCode[c.Code] = c
 		ordered = append(ordered, c)
-		loadedAll = append(loadedAll, name)
 	}
 
 	sort.SliceStable(ordered, func(i, j int) bool {
@@ -177,4 +190,42 @@ func keyOrder(meta toml.MetaData) (credentials, additional []string) {
 		}
 	}
 	return credentials, additional
+}
+
+// reDocRow matches a "| `KEY` | description |" row of a markdown table.
+var reDocRow = regexp.MustCompile("^\\|\\s*`([A-Z][A-Z0-9_]*)`\\s*\\|\\s*(.*?)\\s*\\|\\s*$")
+
+// docTables reads the variables of the "Base Configuration" and
+// "Additional Configuration" tables of the markdown documentation, for the
+// few providers that have no Configuration table.
+func docTables(doc string) (*Configuration, []string, []string) {
+	cfg := &Configuration{Credentials: map[string]string{}, Additional: map[string]string{}}
+	var credentials, additional []string
+	var target map[string]string
+	var order *[]string
+	for _, line := range strings.Split(doc, "\n") {
+		trimmed := strings.TrimSpace(line)
+		if strings.HasPrefix(trimmed, "#") {
+			switch strings.ToLower(strings.TrimSpace(strings.TrimLeft(trimmed, "#"))) {
+			case "base configuration":
+				target, order = cfg.Credentials, &credentials
+			case "additional configuration":
+				target, order = cfg.Additional, &additional
+			default:
+				target, order = nil, nil
+			}
+			continue
+		}
+		if target == nil {
+			continue
+		}
+		if m := reDocRow.FindStringSubmatch(trimmed); m != nil {
+			target[m[1]] = m[2]
+			*order = append(*order, m[1])
+		}
+	}
+	if len(credentials) == 0 && len(additional) == 0 {
+		return nil, nil, nil
+	}
+	return cfg, credentials, additional
 }
