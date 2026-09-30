@@ -249,13 +249,20 @@ go test -race -count=1 ./...      # run the tests
 MINISIGN_KEY=plugin.key ./build.sh  # the same, with signed packages
 ```
 
-The plugin depends on
-[plugin-sdk-go](https://github.com/nginxui/plugin-sdk-go)
-through a local `replace` directive until the SDK is published. The webapp
-depends on
-[plugin-sdk-web](https://github.com/nginxui/plugin-sdk-web)
-the same way, through `"file:../../plugin-sdk-web"` in
-`webapp/package.json`.
+The plugin depends on the
+[plugin-sdk-go](https://github.com/nginxui/plugin-sdk-go) module and the
+webapp on `@nginxui/plugin-sdk` from npm
+([plugin-sdk-web](https://github.com/nginxui/plugin-sdk-web)). Until they are
+published, and to work against local checkouts, point at the checkouts next to
+this repository; `go.work` is ignored by git and `bun link` leaves
+`package.json` as it is:
+
+```bash
+go work init . ../plugin-sdk-go
+go work edit -replace=github.com/nginxui/plugin-sdk-go@v0.1.0=../plugin-sdk-go
+(cd ../plugin-sdk-web && bun install && bun run build && bun link)
+(cd webapp && bun link @nginxui/plugin-sdk)
+```
 
 ## Support
 

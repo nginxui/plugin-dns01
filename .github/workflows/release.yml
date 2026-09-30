@@ -10,9 +10,6 @@ name: Release
 # PLUGIN_SIGNING_PUBLIC_KEY variable, the matching public key, lets the run
 # verify what it signed. The catalog (nginxui/plugins) polls this
 # repository's releases and picks the new one up on its own.
-#
-# Like ci.yml, the SDKs are checked out next to this repository until they
-# are published.
 on:
   push:
     tags: ["v*"]
@@ -35,16 +32,6 @@ jobs:
         with:
           path: plugin-dns01
 
-      - uses: actions/checkout@v4
-        with:
-          repository: nginxui/plugin-sdk-go
-          path: plugin-sdk-go
-
-      - uses: actions/checkout@v4
-        with:
-          repository: nginxui/plugin-sdk-web
-          path: plugin-sdk-web
-
       - uses: actions/setup-go@v5
         with:
           go-version-file: plugin-dns01/go.mod
@@ -60,12 +47,6 @@ jobs:
             echo "tag v${tag} does not match plugin.json version ${version}"
             exit 1
           fi
-
-      - name: Build the web SDK
-        working-directory: plugin-sdk-web
-        run: |
-          bun install --frozen-lockfile
-          bun run build
 
       - name: Build the webapp bundle
         working-directory: plugin-dns01/webapp

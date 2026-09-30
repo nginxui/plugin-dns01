@@ -6,7 +6,7 @@ require (
 	github.com/BurntSushi/toml v1.6.0
 	github.com/go-acme/lego/v5 v5.5.2
 	github.com/miekg/dns v1.1.73
-	github.com/nginxui/plugin-sdk-go v0.0.0-00010101000000-000000000000
+	github.com/nginxui/plugin-sdk-go v0.1.0
 )
 
 require (
@@ -206,6 +206,3 @@ require (
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
-
-// Local path until the SDK is published.
-replace github.com/nginxui/plugin-sdk-go => ../plugin-sdk-go

@@ -10,7 +10,7 @@
     "typecheck": "vue-tsc --noEmit"
   },
   "dependencies": {
-    "@nginxui/plugin-sdk": "file:../../plugin-sdk-web"
+    "@nginxui/plugin-sdk": "^0.1.0"
   },
   "devDependencies": {
     "@antdv-next/icons": "^1.1.2",

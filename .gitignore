@@ -9,6 +9,10 @@ dist/
 dns01
 dns01-*
 
+# A local workspace with a checkout of the SDK, see the README
+go.work
+go.work.sum
+
 # Webapp bundle
 node_modules/
 webapp/dist/
