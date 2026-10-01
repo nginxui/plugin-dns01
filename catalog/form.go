@@ -354,7 +354,7 @@ func lowerFirst(text string) string {
 	return strings.ToLower(text[:1]) + text[1:]
 }
 
-// Validate checks a form against DNS01-18: unique keys, known groups and
+// Validate checks a form: unique keys, known groups and
 // units, uniquely named methods over credential fields, fixed values that
 // are no field or a credential field only other methods list, no two
 // identical methods, at most one recommended method.

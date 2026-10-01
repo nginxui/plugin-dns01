@@ -134,7 +134,7 @@ go run ./cmd/manifest
 
 ### Credential form
 
-Every provider in `plugin.json` carries a `form` (plugin spec DNS01-14), the
+Every provider in `plugin.json` carries a `form`, the
 only description of the values it accepts: plain labels instead of variable
 names, the ways to sign in, defaults, units and which fields are secret or
 optional. `cmd/manifest` derives it from the catalog descriptions and the
@@ -163,7 +163,7 @@ DNS-01 form (the host falls back to its own generic DNS challenge UI).
 ## Packaging
 
 One binary is 54 to 61 MiB. An archive with all six would unpack to about
-345 MiB, more than the 256 MiB a host accepts (spec PKG-7), and every node
+345 MiB, more than the 256 MiB a host accepts, and every node
 would download five binaries it never runs. The release is therefore split
 into one package per platform:
 
@@ -177,7 +177,7 @@ dist/com.nginxui.dns01-<version>-windows-arm64.tar.gz
 
 Every package holds one binary under `server/dist/`, the web bundle, the
 documentation and a `plugin.json` whose `server.executables` names only that
-platform, as the plugin spec requires for a per-platform package (PKG-12). The
+platform, as a per-platform package must. The
 committed `plugin.json` keeps all six platforms; it is what the catalog
 publishes as the release manifest snapshot. `go run ./cmd/manifest -platform
 <goos>-<goarch> -out <file>` writes the narrowed copy, which is what

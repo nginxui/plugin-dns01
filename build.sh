@@ -6,10 +6,10 @@
 #
 # Every platform gets its own package, dist/<id>-<version>-<goos>-<goarch>.tar.gz,
 # holding one binary and a plugin.json whose server.executables names only that
-# platform (plugin spec PKG-12). One binary is 54 to 61 MiB: a package with all
-# six would unpack to about 345 MiB, over the 256 MiB a host accepts (PKG-7),
-# and every node would download five binaries it never runs. A <archive>.sha256
-# file sits next to each archive for the catalog.
+# platform, as a per-platform package must. One binary is 54 to 61 MiB: a
+# package with all six would unpack to about 345 MiB, over the 256 MiB a host
+# accepts, and every node would download five binaries it never runs. A
+# <archive>.sha256 file sits next to each archive for the catalog.
 #
 # The package layout matches what nginx-ui expects when it installs a plugin:
 # plugin.json sits at the root of the archive, next to server/, webapp/ and the
