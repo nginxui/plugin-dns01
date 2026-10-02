@@ -111,6 +111,7 @@
 
     "@napi-rs/lzma-linux-x64-gnu": ["@napi-rs/lzma-linux-x64-gnu@1.5.1", "", { "os": "linux", "cpu": "x64" }, "sha512-oTXEIha4SsuXdTA4Iyskj0kpdx2yVXdhd75c2v3xGrHFfVMsbhTPZU/nMPL4sWKo4pBHm3aucLaqGlF696dTyQ=="],
 
+    "@nginxui/plugin-sdk": ["@nginxui/plugin-sdk@0.1.0", "", { "peerDependencies": { "vite": ">=5" }, "optionalPeers": ["vite"] }, "sha512-GC56cVKly72PcaO+RUz7KfkpPVtkBH2A5v+y20cOmkd5GeqVrVbJCDhcCWZIHiuZLpX2qCj0ZwK0yKdrR0ks8A=="],
 
     "@rolldown/pluginutils": ["@rolldown/pluginutils@1.0.1", "", {}, "sha512-2j9bGt5Jh8hj+vPtgzPtl72j0yRxHAyumoo6TNfAjsLB04UtpSvPbPcDcBMxz7n+9CYB0c1GxQFxYRg2jimqGw=="],
 
