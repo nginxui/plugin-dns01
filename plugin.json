@@ -9,15 +9,24 @@
   "i18n": {
     "ja_JP": {
       "name": "DNS-01 チャレンジ",
-      "description": "200 以上の DNS プロバイダーに対応し、DNS レコードで証明書のドメインを検証します。"
+      "description": "200 以上の DNS プロバイダーに対応し、DNS レコードで証明書のドメインを検証します。",
+      "permission_reasons": {
+        "network": "DNS プロバイダーの API を通じて検証用レコードを作成、削除します。"
+      }
     },
     "zh_CN": {
       "name": "DNS-01 验证",
-      "description": "支持 200 多家 DNS 服务商，用 DNS 记录为证书验证域名。"
+      "description": "支持 200 多家 DNS 服务商，用 DNS 记录为证书验证域名。",
+      "permission_reasons": {
+        "network": "通过 DNS 服务商的 API 创建和删除验证记录。"
+      }
     },
     "zh_TW": {
       "name": "DNS-01 驗證",
-      "description": "支援 200 多家 DNS 服務商，以 DNS 記錄為憑證驗證網域。"
+      "description": "支援 200 多家 DNS 服務商，以 DNS 記錄為憑證驗證網域。",
+      "permission_reasons": {
+        "network": "透過 DNS 服務商的 API 建立和刪除驗證記錄。"
+      }
     }
   },
   "server": {
@@ -49,6 +58,9 @@
   "permissions": [
     "network"
   ],
+  "permission_reasons": {
+    "network": "To create and remove the validation records through the API of your DNS provider."
+  },
   "dns01": {
     "providers": [
       {

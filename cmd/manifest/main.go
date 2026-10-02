@@ -48,14 +48,23 @@ var translations = map[string]protocol.ManifestI18n{
 	"zh_CN": {
 		Name:        "DNS-01 验证",
 		Description: "支持 200 多家 DNS 服务商，用 DNS 记录为证书验证域名。",
+		PermissionReasons: map[string]string{
+			protocol.PermissionNetwork: "通过 DNS 服务商的 API 创建和删除验证记录。",
+		},
 	},
 	"zh_TW": {
 		Name:        "DNS-01 驗證",
 		Description: "支援 200 多家 DNS 服務商，以 DNS 記錄為憑證驗證網域。",
+		PermissionReasons: map[string]string{
+			protocol.PermissionNetwork: "透過 DNS 服務商的 API 建立和刪除驗證記錄。",
+		},
 	},
 	"ja_JP": {
 		Name:        "DNS-01 チャレンジ",
 		Description: "200 以上の DNS プロバイダーに対応し、DNS レコードで証明書のドメインを検証します。",
+		PermissionReasons: map[string]string{
+			protocol.PermissionNetwork: "DNS プロバイダーの API を通じて検証用レコードを作成、削除します。",
+		},
 	},
 }
 
@@ -121,7 +130,10 @@ func Build() (*protocol.Manifest, error) {
 		},
 		Capabilities: []string{protocol.CapabilityDNS01},
 		Permissions:  []string{protocol.PermissionNetwork},
-		DNS01:        &protocol.ManifestDNS01{Providers: providers},
+		PermissionReasons: map[string]string{
+			protocol.PermissionNetwork: "To create and remove the validation records through the API of your DNS provider.",
+		},
+		DNS01: &protocol.ManifestDNS01{Providers: providers},
 		SettingsSchema: &protocol.SettingsSchema{
 			Settings: []protocol.SettingsField{
 				{
