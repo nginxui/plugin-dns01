@@ -228,13 +228,13 @@ installs the one matching that node.
 
 ## Releasing
 
-Set the version in `cmd/manifest`, regenerate `plugin.json`, move the
-`Unreleased` notes in `CHANGELOG.md` under the new version, then push a tag
+Set the version in `cmd/manifest`, regenerate `plugin.json`, then push a tag
 `v<version>` that matches `plugin.json`. `.github/workflows/release.yml`
 rebuilds the webapp, runs the tests, signs the six packages with the key kept
-in the `release` environment and publishes them as a GitHub Release with the
-changelog section as its notes. The catalog polls this repository's releases
-and opens a pull request for the new version on its own.
+in the `release` environment and publishes them as a GitHub Release.
+The notes list the features and fixes since the previous tag, generated from
+the commit messages by git-cliff (`cliff.toml`). The catalog polls this
+repository's releases and opens a pull request for the new version on its own.
 
 ## Development
 

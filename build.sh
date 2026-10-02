@@ -138,7 +138,7 @@ stage_common() {
     cp -R "${ROOT}/webapp/dist/." "${dir}/webapp/dist/"
     rm -f "${dir}/webapp/dist/manifest.webapp.json"
   fi
-  for doc in README.md LICENSE CHANGELOG.md; do
+  for doc in README.md LICENSE; do
     if [[ -f "${ROOT}/${doc}" ]]; then
       cp "${ROOT}/${doc}" "${dir}/${doc}"
     fi
@@ -185,7 +185,7 @@ sign_sums() {
 package_dir() {
   local dir="$1" archive="$2"
   local entries=(plugin.json plugin.sums)
-  for entry in plugin.sums.minisig README.md LICENSE CHANGELOG.md server webapp; do
+  for entry in plugin.sums.minisig README.md LICENSE server webapp; do
     if [[ -e "${dir}/${entry}" ]]; then
       entries+=("${entry}")
     fi
