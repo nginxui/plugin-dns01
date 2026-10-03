@@ -6,7 +6,7 @@ any of the 222 DNS providers [lego](https://github.com/go-acme/lego) supports,
 waits for the record to propagate and cleans it up afterwards.
 
 * Plugin id: `com.nginxui.dns01`
-* Requires NGINX UI 2.7.0 or newer
+* Requires NGINX UI 3.0.0 or newer
 * Plugin API version 1
 
 ## Features

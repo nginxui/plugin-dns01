@@ -5,7 +5,7 @@
   "description": "Validate domains for certificates through DNS records, with more than 200 DNS providers.",
   "icon_path": "webapp/dist/icon.svg",
   "api_version": 1,
-  "min_nginx_ui_version": "2.7.0",
+  "min_nginx_ui_version": "3.0.0",
   "i18n": {
     "ja_JP": {
       "name": "DNS-01 チャレンジ",

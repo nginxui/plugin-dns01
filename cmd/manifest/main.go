@@ -38,7 +38,7 @@ const (
 	PluginName        = "DNS-01 Challenge"
 	PluginVersion     = "1.0.0"
 	PluginDescription = "Validate domains for certificates through DNS records, with more than 200 DNS providers."
-	MinNginxUIVersion = "2.7.0"
+	MinNginxUIVersion = "3.0.0"
 	IdleTimeout       = 300
 )
 
