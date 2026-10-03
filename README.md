@@ -184,26 +184,20 @@ publishes as the release manifest snapshot. `go run ./cmd/manifest -platform
 <goos>-<goarch> -out <file>` writes the narrowed copy, which is what
 `build.sh` puts into each archive.
 
-Every package also carries these files at its root, right after `plugin.json`:
+`build.sh` makes unsigned packages, which a host installs only in developer
+mode. The release workflow signs them with the official plugin key through
+[nginxui/plugin-release](https://github.com/nginxui/plugin-release), which
+adds two files at the root of each package, right after `plugin.json`:
 
 * `plugin.sums` lists the sha256 of every file of the package except itself
   and the signature, one `<sha256>  <path>` line each, sorted by path. Running
   `sha256sum -c plugin.sums` inside an extracted package checks it.
-* `plugin.sums.minisig`, in a signed package, is the minisign signature over
-  `plugin.sums`. NGINX UI derives the trust level of the package from the key
-  that made it.
+* `plugin.sums.minisig` is the minisign signature over `plugin.sums`. NGINX UI
+  derives the trust level of the package from the key that made it.
 
-`build.sh` signs only when `MINISIGN_KEY` names a minisign secret key file:
-
-```bash
-MINISIGN_KEY=/path/to/plugin.key ./build.sh
-```
-
-Without it the packages are unsigned, and a host installs them only in
-developer mode. minisign asks for the key password once per package;
-`MINISIGN_PASSWORD` answers the prompt without a terminal, and a key created
-without a password (`minisign -G -W`) never asks. The signature lives inside
-the archive, so a release publishes no `.minisig` files.
+A local build is signed with `nginx-ui plugin sign <package> --key <key>`. The
+signature lives inside the archive, so a release publishes no `.minisig`
+files.
 
 The `.sha256` file next to each archive is in `sha256sum` format and feeds the
 `downloads` map of the catalog release, where it serves as a download
@@ -250,7 +244,6 @@ go test -race -count=1 ./...      # run the tests
 ./build.sh --host-only            # build and package the current platform only
 ./build.sh                        # cross compile, one package per platform
 ./build.sh --prebuilt DIR         # package the executables in DIR instead
-MINISIGN_KEY=plugin.key ./build.sh  # the same, with signed packages
 ```
 
 The plugin depends on the
