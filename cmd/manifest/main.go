@@ -72,10 +72,19 @@ var translations = map[string]protocol.ManifestI18n{
 var platforms = []struct{ OS, Arch string }{
 	{"linux", "amd64"},
 	{"linux", "arm64"},
+	{"linux", "386"},
+	{"linux", "arm"},
+	{"linux", "riscv64"},
+	{"linux", "loong64"},
+	{"linux", "mips"},
+	{"linux", "mipsle"},
+	{"linux", "mips64"},
+	{"linux", "mips64le"},
 	{"darwin", "amd64"},
 	{"darwin", "arm64"},
 	{"windows", "amd64"},
 	{"windows", "arm64"},
+	{"windows", "386"},
 }
 
 // ExecutablePath returns the packaged path of one platform's binary.

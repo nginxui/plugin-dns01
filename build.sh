@@ -1,15 +1,20 @@
 #!/usr/bin/env bash
 # Build the release artifacts of the DNS-01 plugin.
 #
-#   ./build.sh              build every supported platform, one package each
-#   ./build.sh --host-only  build and package the current platform only
+#   ./build.sh                build every supported platform, one package each
+#   ./build.sh --host-only    build and package the current platform only
+#   ./build.sh --prebuilt DIR package every platform from the executables in DIR
 #
 # Every platform gets its own package, dist/<id>-<version>-<goos>-<goarch>.tar.gz,
 # holding one binary and a plugin.json whose server.executables names only that
-# platform, as a per-platform package must. One binary is 54 to 61 MiB: a
-# package with all six would unpack to about 345 MiB, over the 256 MiB a host
-# accepts, and every node would download five binaries it never runs. A
-# <archive>.sha256 file sits next to each archive for the catalog.
+# platform, as a per-platform package must. One binary is 54 to 65 MiB: a
+# package with every one would unpack to more than 800 MiB, far over the 256 MiB
+# a host accepts, and every node would download fourteen binaries it never
+# runs. A <archive>.sha256 file sits next to each archive for the catalog.
+#
+# The release workflow compiles the platforms in parallel jobs and packages
+# the executables with --prebuilt: DIR holds one per platform, named as in the
+# package, dns01-<goos>-<goarch> with .exe on Windows.
 #
 # The package layout matches what nginx-ui expects when it installs a plugin:
 # plugin.json sits at the root of the archive, next to server/, webapp/ and the
@@ -39,13 +44,22 @@ PLUGIN_ID="com.nginxui.dns01"
 BIN_PREFIX="dns01"
 
 usage() {
-  echo "usage: $0 [--host-only]"
+  echo "usage: $0 [--host-only] [--prebuilt DIR]"
 }
 
 HOST_ONLY=0
-for arg in "$@"; do
-  case "${arg}" in
+PREBUILT=""
+while [[ $# -gt 0 ]]; do
+  case "$1" in
     --host-only) HOST_ONLY=1 ;;
+    --prebuilt)
+      if [[ $# -lt 2 || ! -d "$2" ]]; then
+        usage >&2
+        exit 2
+      fi
+      PREBUILT="$(cd "$2" && pwd)"
+      shift
+      ;;
     -h | --help)
       usage
       exit 0
@@ -55,6 +69,7 @@ for arg in "$@"; do
       exit 2
       ;;
   esac
+  shift
 done
 
 # The key path is resolved before the cd below, so a relative path works.
@@ -86,13 +101,26 @@ if [[ -z "${VERSION}" ]]; then
   exit 1
 fi
 
+# The platforms Nginx UI is released for. The host names a platform by GOOS
+# and GOARCH only, so one linux-arm package serves ARMv5 to ARMv7: it is built
+# for ARMv5, which the later ones run. MIPS keeps the hard float default, as
+# Nginx UI does.
 PLATFORMS=(
   "linux/amd64"
   "linux/arm64"
+  "linux/386"
+  "linux/arm"
+  "linux/riscv64"
+  "linux/loong64"
+  "linux/mips"
+  "linux/mipsle"
+  "linux/mips64"
+  "linux/mips64le"
   "darwin/amd64"
   "darwin/arm64"
   "windows/amd64"
   "windows/arm64"
+  "windows/386"
 )
 
 if [[ "${HOST_ONLY}" -eq 1 ]]; then
@@ -217,8 +245,17 @@ for platform in "${PLATFORMS[@]}"; do
   name="$(binary_name "${goos}" "${goarch}")"
 
   echo "  ${goos}/${goarch}"
-  CGO_ENABLED=0 GOOS="${goos}" GOARCH="${goarch}" \
-    go build -trimpath -ldflags "-s -w" -o "${BIN}/${name}" .
+  if [[ -n "${PREBUILT}" ]]; then
+    if [[ ! -f "${PREBUILT}/${name}" ]]; then
+      echo "${PREBUILT}/${name} is missing" >&2
+      exit 1
+    fi
+    cp "${PREBUILT}/${name}" "${BIN}/${name}"
+    chmod +x "${BIN}/${name}"
+  else
+    CGO_ENABLED=0 GOOS="${goos}" GOARCH="${goarch}" GOARM=5 \
+      go build -trimpath -ldflags "-s -w" -o "${BIN}/${name}" .
+  fi
   echo "    ${name} ($(du -h "${BIN}/${name}" | cut -f1 | tr -d '[:space:]'))"
 
   dir="${STAGE}/${key}"

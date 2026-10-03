@@ -82,12 +82,13 @@ reports the name of the offending field, not its value.
 
 | OS | Architectures |
 | --- | --- |
-| Linux | amd64, arm64 |
+| Linux | amd64, arm64, 386, arm, riscv64, loong64, mips, mipsle, mips64, mips64le |
 | macOS | amd64, arm64 |
-| Windows | amd64, arm64 |
+| Windows | amd64, arm64, 386 |
 
-The binaries are statically linked (`CGO_ENABLED=0`) and built with
-`-trimpath -ldflags "-s -w"`. Each platform ships as its own package, see
+These are the platforms Nginx UI is released for. One `linux-arm` package
+serves ARMv5 to ARMv7, it is built for ARMv5. The binaries are statically
+linked (`CGO_ENABLED=0`) and built with `-trimpath -ldflags "-s -w"`. Each platform ships as its own package, see
 [Packaging](#packaging).
 
 ## What data leaves the machine
@@ -162,9 +163,9 @@ DNS-01 form (the host falls back to its own generic DNS challenge UI).
 
 ## Packaging
 
-One binary is 54 to 61 MiB. An archive with all six would unpack to about
-345 MiB, more than the 256 MiB a host accepts, and every node
-would download five binaries it never runs. The release is therefore split
+One binary is 54 to 61 MiB. An archive with all fifteen would unpack to more
+than 800 MiB, far more than the 256 MiB a host accepts, and every node
+would download fourteen binaries it never runs. The release is therefore split
 into one package per platform:
 
 ```text
@@ -178,7 +179,7 @@ dist/com.nginxui.dns01-<version>-windows-arm64.tar.gz
 Every package holds one binary under `server/dist/`, the web bundle, the
 documentation and a `plugin.json` whose `server.executables` names only that
 platform, as a per-platform package must. The
-committed `plugin.json` keeps all six platforms; it is what the catalog
+committed `plugin.json` keeps every platform; it is what the catalog
 publishes as the release manifest snapshot. `go run ./cmd/manifest -platform
 <goos>-<goarch> -out <file>` writes the narrowed copy, which is what
 `build.sh` puts into each archive.
@@ -230,8 +231,10 @@ installs the one matching that node.
 
 Set the version in `cmd/manifest`, regenerate `plugin.json`, then push a tag
 `v<version>` that matches `plugin.json`. `.github/workflows/release.yml`
-rebuilds the webapp, runs the tests, signs the six packages with the key kept
-in the `release` environment and publishes them as a GitHub Release.
+runs the tests while it compiles every platform in a job of its own, then
+rebuilds the webapp, packages the executables with `build.sh --prebuilt`,
+signs the packages with the key kept in the `release` environment and
+publishes them as a GitHub Release.
 The notes list the features and fixes since the previous tag, generated from
 the commit messages by git-cliff (`cliff.toml`). The catalog polls this
 repository's releases and opens a pull request for the new version on its own.
@@ -246,6 +249,7 @@ go run ./cmd/manifest -report     # form texts to review, translation coverage
 go test -race -count=1 ./...      # run the tests
 ./build.sh --host-only            # build and package the current platform only
 ./build.sh                        # cross compile, one package per platform
+./build.sh --prebuilt DIR         # package the executables in DIR instead
 MINISIGN_KEY=plugin.key ./build.sh  # the same, with signed packages
 ```
 
