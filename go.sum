@@ -1361,8 +1361,8 @@ github.com/nats-io/nats.go v1.12.1/go.mod h1:BPko4oXsySz4aSWeFgOHLZs3G4Jq4ZAyE6/
 github.com/nats-io/nkeys v0.2.0/go.mod h1:XdZpAbhgyyODYqjTawOnIOI7VlbKSarI9Gfy1tqEu/s=
 github.com/nats-io/nkeys v0.3.0/go.mod h1:gvUNGjVcM2IPr5rCsRsC6Wb3Hr2CQAm08dsxtV6A5y4=
 github.com/nats-io/nuid v1.0.1/go.mod h1:19wcPz3Ph3q0Jbyiqsd0kePYG7A95tJPxeL+1OSON2c=
-github.com/nginxui/plugin-sdk-go v0.1.0 h1:ti6WFZwjQsenMW0PK/py7ivlXEinVnYIApjQkmM7MrI=
-github.com/nginxui/plugin-sdk-go v0.1.0/go.mod h1:DbtjWzaz23orat7jjiJu5vCGwU+vm1nMoxadAUweQDM=
+github.com/nginxui/plugin-sdk-go v0.1.1 h1:16JoT1Vs1GKPH3s39ilfzRez+/Skcn0gUcX6epNeJDY=
+github.com/nginxui/plugin-sdk-go v0.1.1/go.mod h1:DbtjWzaz23orat7jjiJu5vCGwU+vm1nMoxadAUweQDM=
 github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e/go.mod h1:zD1mROLANZcx1PVRCS0qkT7pwLkGfwJo4zjcN/Tysno=
 github.com/nrdcg/auroradns v1.2.0 h1:Jg407vTdXZvZKsART9CNWMp8rQOyhBk04q0MsOf0YR4=
 github.com/nrdcg/auroradns v1.2.0/go.mod h1:hnByA4Z7MOmV4EPRw5eOmEaNRFavcCIz6kONpNxp9LI=

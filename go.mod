@@ -6,7 +6,7 @@ require (
 	github.com/BurntSushi/toml v1.6.0
 	github.com/go-acme/lego/v5 v5.5.2
 	github.com/miekg/dns v1.1.73
-	github.com/nginxui/plugin-sdk-go v0.1.0
+	github.com/nginxui/plugin-sdk-go v0.1.1
 )
 
 require (
