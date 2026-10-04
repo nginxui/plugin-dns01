@@ -7,6 +7,71 @@
   "api_version": 1,
   "min_nginx_ui_version": "3.0.0",
   "i18n": {
+    "ar": {
+      "name": "تحدي DNS-01",
+      "description": "يتحقق من نطاقات الشهادات عبر سجلات DNS، مع أكثر من 200 مزود DNS.",
+      "permission_reasons": {
+        "network": "لإنشاء سجلات التحقق وإزالتها عبر API مزود DNS لديك."
+      },
+      "screenshot_captions": {
+        "checks": "ضبط طريقة فحص سجلات DNS قبل التحقق",
+        "credentials": "اختيار بيانات اعتماد DNS محفوظة عند إصدار شهادة",
+        "provider-fields": "لا يطلب كل مزود إلا الحقول التي يحتاجها",
+        "providers": "أكثر من 200 مزود DNS للاختيار منها"
+      }
+    },
+    "de_DE": {
+      "name": "DNS-01-Challenge",
+      "description": "Validiert Domains für Zertifikate über DNS-Einträge, mit mehr als 200 DNS-Anbietern.",
+      "permission_reasons": {
+        "network": "Um die Validierungseinträge über die API Ihres DNS-Anbieters anzulegen und zu entfernen."
+      },
+      "screenshot_captions": {
+        "checks": "Festlegen, wie DNS-Einträge vor der Validierung geprüft werden",
+        "credentials": "Beim Ausstellen eines Zertifikats gespeicherte DNS-Zugangsdaten auswählen",
+        "provider-fields": "Jeder Anbieter fragt nur die Felder ab, die er braucht",
+        "providers": "Mehr als 200 DNS-Anbieter zur Auswahl"
+      }
+    },
+    "es": {
+      "name": "Desafío DNS-01",
+      "description": "Valida los dominios de los certificados mediante registros DNS, con más de 200 proveedores DNS.",
+      "permission_reasons": {
+        "network": "Para crear y eliminar los registros de validación a través de la API de su proveedor DNS."
+      },
+      "screenshot_captions": {
+        "checks": "Ajustar cómo se comprueban los registros DNS antes de la validación",
+        "credentials": "Elegir una credencial DNS guardada al emitir un certificado",
+        "provider-fields": "Cada proveedor solo pide los campos que necesita",
+        "providers": "Más de 200 proveedores DNS para elegir"
+      }
+    },
+    "fr_FR": {
+      "name": "Challenge DNS-01",
+      "description": "Valide les domaines des certificats par des enregistrements DNS, avec plus de 200 fournisseurs DNS.",
+      "permission_reasons": {
+        "network": "Pour créer et supprimer les enregistrements de validation via l'API de votre fournisseur DNS."
+      },
+      "screenshot_captions": {
+        "checks": "Régler la vérification des enregistrements DNS avant la validation",
+        "credentials": "Choisir des identifiants DNS enregistrés lors de l'émission d'un certificat",
+        "provider-fields": "Chaque fournisseur ne demande que les champs dont il a besoin",
+        "providers": "Plus de 200 fournisseurs DNS au choix"
+      }
+    },
+    "it_IT": {
+      "name": "Challenge DNS-01",
+      "description": "Convalida i domini dei certificati tramite record DNS, con oltre 200 provider DNS.",
+      "permission_reasons": {
+        "network": "Per creare e rimuovere i record di convalida tramite l'API del provider DNS."
+      },
+      "screenshot_captions": {
+        "checks": "Regolare come vengono controllati i record DNS prima della convalida",
+        "credentials": "Scegliere una credenziale DNS salvata durante l'emissione di un certificato",
+        "provider-fields": "Ogni provider chiede solo i campi di cui ha bisogno",
+        "providers": "Oltre 200 provider DNS tra cui scegliere"
+      }
+    },
     "ja_JP": {
       "name": "DNS-01 チャレンジ",
       "description": "200 以上の DNS プロバイダーに対応し、DNS レコードで証明書のドメインを検証します。",
@@ -18,6 +83,84 @@
         "credentials": "証明書の発行時に保存済みの DNS 認証情報を選択",
         "provider-fields": "プロバイダーごとに必要な項目だけを入力",
         "providers": "200 以上の DNS プロバイダーから選択"
+      }
+    },
+    "ko_KR": {
+      "name": "DNS-01 챌린지",
+      "description": "200개가 넘는 DNS 제공자를 지원하며, DNS 레코드로 인증서의 도메인을 검증합니다.",
+      "permission_reasons": {
+        "network": "DNS 제공자의 API를 통해 검증 레코드를 만들고 삭제합니다."
+      },
+      "screenshot_captions": {
+        "checks": "검증 전에 DNS 레코드를 확인하는 방식 조정",
+        "credentials": "인증서를 발급할 때 저장된 DNS 자격 증명 선택",
+        "provider-fields": "제공자마다 필요한 항목만 입력",
+        "providers": "200개가 넘는 DNS 제공자 중에서 선택"
+      }
+    },
+    "pt_PT": {
+      "name": "Desafio DNS-01",
+      "description": "Valida os domínios dos certificados através de registos DNS, com mais de 200 provedores DNS.",
+      "permission_reasons": {
+        "network": "Para criar e remover os registos de validação através da API do seu provedor DNS."
+      },
+      "screenshot_captions": {
+        "checks": "Ajustar como os registos DNS são verificados antes da validação",
+        "credentials": "Escolher uma credencial DNS guardada ao emitir um certificado",
+        "provider-fields": "Cada provedor pede apenas os campos de que precisa",
+        "providers": "Mais de 200 provedores DNS à escolha"
+      }
+    },
+    "ru_RU": {
+      "name": "Проверка DNS-01",
+      "description": "Проверяет домены для сертификатов через DNS-записи, поддерживает более 200 DNS-провайдеров.",
+      "permission_reasons": {
+        "network": "Чтобы создавать и удалять проверочные записи через API вашего DNS-провайдера."
+      },
+      "screenshot_captions": {
+        "checks": "Настройка проверки DNS-записей перед подтверждением",
+        "credentials": "Выбор сохранённых учётных данных DNS при выпуске сертификата",
+        "provider-fields": "Каждый провайдер запрашивает только нужные ему поля",
+        "providers": "Более 200 DNS-провайдеров на выбор"
+      }
+    },
+    "tr_TR": {
+      "name": "DNS-01 Doğrulaması",
+      "description": "200'den fazla DNS sağlayıcısıyla, sertifikalar için alan adlarını DNS kayıtları üzerinden doğrular.",
+      "permission_reasons": {
+        "network": "Doğrulama kayıtlarını DNS sağlayıcınızın API'si üzerinden oluşturmak ve kaldırmak için."
+      },
+      "screenshot_captions": {
+        "checks": "Doğrulamadan önce DNS kayıtlarının nasıl denetleneceğini ayarlayın",
+        "credentials": "Sertifika verirken kayıtlı bir DNS kimlik bilgisi seçin",
+        "provider-fields": "Her sağlayıcı yalnızca ihtiyaç duyduğu alanları ister",
+        "providers": "Seçebileceğiniz 200'den fazla DNS sağlayıcısı"
+      }
+    },
+    "uk_UA": {
+      "name": "Перевірка DNS-01",
+      "description": "Перевіряє домени для сертифікатів через DNS-записи, підтримує понад 200 DNS-провайдерів.",
+      "permission_reasons": {
+        "network": "Щоб створювати та видаляти перевірні записи через API вашого DNS-провайдера."
+      },
+      "screenshot_captions": {
+        "checks": "Налаштування перевірки DNS-записів перед підтвердженням",
+        "credentials": "Вибір збережених облікових даних DNS під час випуску сертифіката",
+        "provider-fields": "Кожен провайдер запитує лише потрібні йому поля",
+        "providers": "Понад 200 DNS-провайдерів на вибір"
+      }
+    },
+    "vi_VN": {
+      "name": "Xác thực DNS-01",
+      "description": "Xác thực tên miền cho chứng chỉ bằng bản ghi DNS, hỗ trợ hơn 200 nhà cung cấp DNS.",
+      "permission_reasons": {
+        "network": "Để tạo và xóa bản ghi xác thực qua API của nhà cung cấp DNS của bạn."
+      },
+      "screenshot_captions": {
+        "checks": "Điều chỉnh cách kiểm tra bản ghi DNS trước khi xác thực",
+        "credentials": "Chọn thông tin xác thực DNS đã lưu khi cấp chứng chỉ",
+        "provider-fields": "Mỗi nhà cung cấp chỉ yêu cầu các trường cần thiết",
+        "providers": "Hơn 200 nhà cung cấp DNS để lựa chọn"
       }
     },
     "zh_CN": {

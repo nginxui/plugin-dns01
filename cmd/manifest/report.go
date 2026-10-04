@@ -17,7 +17,7 @@ import (
 )
 
 // Locales are the languages the provider phrases are translated into.
-var Locales = []string{"zh_CN", "zh_TW", "ja_JP"}
+var Locales = []string{"zh_CN", "zh_TW", "ja_JP", "ko_KR", "de_DE", "fr_FR", "es", "it_IT", "pt_PT", "ru_RU", "uk_UA", "tr_TR", "vi_VN", "ar"}
 
 // PhraseKind tells where a form phrase is used.
 type PhraseKind int
