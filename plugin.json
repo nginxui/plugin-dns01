@@ -12,6 +12,12 @@
       "description": "200 以上の DNS プロバイダーに対応し、DNS レコードで証明書のドメインを検証します。",
       "permission_reasons": {
         "network": "DNS プロバイダーの API を通じて検証用レコードを作成、削除します。"
+      },
+      "screenshot_captions": {
+        "checks": "検証前の DNS レコードの確認方法を調整",
+        "credentials": "証明書の発行時に保存済みの DNS 認証情報を選択",
+        "provider-fields": "プロバイダーごとに必要な項目だけを入力",
+        "providers": "200 以上の DNS プロバイダーから選択"
       }
     },
     "zh_CN": {
@@ -19,6 +25,12 @@
       "description": "支持 200 多家 DNS 服务商，用 DNS 记录为证书验证域名。",
       "permission_reasons": {
         "network": "通过 DNS 服务商的 API 创建和删除验证记录。"
+      },
+      "screenshot_captions": {
+        "checks": "调整验证前对 DNS 记录的检查方式",
+        "credentials": "签发证书时选择已保存的 DNS 凭据",
+        "provider-fields": "每家服务商只需填写它需要的字段",
+        "providers": "可从 200 多家 DNS 服务商中选择"
       }
     },
     "zh_TW": {
@@ -26,6 +38,12 @@
       "description": "支援 200 多家 DNS 服務商，以 DNS 記錄為憑證驗證網域。",
       "permission_reasons": {
         "network": "透過 DNS 服務商的 API 建立和刪除驗證記錄。"
+      },
+      "screenshot_captions": {
+        "checks": "調整驗證前對 DNS 記錄的檢查方式",
+        "credentials": "簽發憑證時選擇已儲存的 DNS 憑證",
+        "provider-fields": "每家服務商只需填寫它需要的欄位",
+        "providers": "可從 200 多家 DNS 服務商中選擇"
       }
     }
   },
@@ -70,6 +88,32 @@
   "permission_reasons": {
     "network": "To create and remove the validation records through the API of your DNS provider."
   },
+  "screenshots": [
+    {
+      "id": "credentials",
+      "path": "docs/screenshots/1-credentials.png",
+      "dark_path": "docs/screenshots/1-credentials-dark.png",
+      "caption": "Pick a saved DNS credential when issuing a certificate"
+    },
+    {
+      "id": "checks",
+      "path": "docs/screenshots/2-checks.png",
+      "dark_path": "docs/screenshots/2-checks-dark.png",
+      "caption": "Adjust how DNS records are checked before validation"
+    },
+    {
+      "id": "providers",
+      "path": "docs/screenshots/3-providers.png",
+      "dark_path": "docs/screenshots/3-providers-dark.png",
+      "caption": "More than 200 DNS providers to choose from"
+    },
+    {
+      "id": "provider-fields",
+      "path": "docs/screenshots/4-provider-fields.png",
+      "dark_path": "docs/screenshots/4-provider-fields-dark.png",
+      "caption": "Each provider asks only for the fields it needs"
+    }
+  ],
   "dns01": {
     "providers": [
       {

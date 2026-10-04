@@ -51,12 +51,24 @@ var translations = map[string]protocol.ManifestI18n{
 		PermissionReasons: map[string]string{
 			protocol.PermissionNetwork: "通过 DNS 服务商的 API 创建和删除验证记录。",
 		},
+		ScreenshotCaptions: map[string]string{
+			"credentials":     "签发证书时选择已保存的 DNS 凭据",
+			"checks":          "调整验证前对 DNS 记录的检查方式",
+			"providers":       "可从 200 多家 DNS 服务商中选择",
+			"provider-fields": "每家服务商只需填写它需要的字段",
+		},
 	},
 	"zh_TW": {
 		Name:        "DNS-01 驗證",
 		Description: "支援 200 多家 DNS 服務商，以 DNS 記錄為憑證驗證網域。",
 		PermissionReasons: map[string]string{
 			protocol.PermissionNetwork: "透過 DNS 服務商的 API 建立和刪除驗證記錄。",
+		},
+		ScreenshotCaptions: map[string]string{
+			"credentials":     "簽發憑證時選擇已儲存的 DNS 憑證",
+			"checks":          "調整驗證前對 DNS 記錄的檢查方式",
+			"providers":       "可從 200 多家 DNS 服務商中選擇",
+			"provider-fields": "每家服務商只需填寫它需要的欄位",
 		},
 	},
 	"ja_JP": {
@@ -65,7 +77,22 @@ var translations = map[string]protocol.ManifestI18n{
 		PermissionReasons: map[string]string{
 			protocol.PermissionNetwork: "DNS プロバイダーの API を通じて検証用レコードを作成、削除します。",
 		},
+		ScreenshotCaptions: map[string]string{
+			"credentials":     "証明書の発行時に保存済みの DNS 認証情報を選択",
+			"checks":          "検証前の DNS レコードの確認方法を調整",
+			"providers":       "200 以上の DNS プロバイダーから選択",
+			"provider-fields": "プロバイダーごとに必要な項目だけを入力",
+		},
 	},
+}
+
+// screenshots are the catalog images under docs/screenshots, with English
+// captions. translations carries the other languages by id.
+var screenshots = []protocol.ManifestScreenshot{
+	{ID: "credentials", Path: "docs/screenshots/1-credentials.png", DarkPath: "docs/screenshots/1-credentials-dark.png", Caption: "Pick a saved DNS credential when issuing a certificate"},
+	{ID: "checks", Path: "docs/screenshots/2-checks.png", DarkPath: "docs/screenshots/2-checks-dark.png", Caption: "Adjust how DNS records are checked before validation"},
+	{ID: "providers", Path: "docs/screenshots/3-providers.png", DarkPath: "docs/screenshots/3-providers-dark.png", Caption: "More than 200 DNS providers to choose from"},
+	{ID: "provider-fields", Path: "docs/screenshots/4-provider-fields.png", DarkPath: "docs/screenshots/4-provider-fields-dark.png", Caption: "Each provider asks only for the fields it needs"},
 }
 
 // platforms are the targets build.sh cross compiles, in manifest order.
@@ -126,6 +153,7 @@ func Build() (*protocol.Manifest, error) {
 		APIVersion:        protocol.APIVersion,
 		MinNginxUIVersion: MinNginxUIVersion,
 		I18n:              translations,
+		Screenshots:       screenshots,
 		Server: &protocol.ManifestServer{
 			Executables:        executables,
 			Lifecycle:          protocol.LifecycleOnDemand,
