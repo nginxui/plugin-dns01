@@ -389,20 +389,41 @@ func (h *Handler) Validate(_ context.Context, providerCode string, config map[st
 	return nil
 }
 
-// Check runs the DNS propagation check for one challenge record.
-func (h *Handler) Check(ctx context.Context, params protocol.DNS01CheckParams) (protocol.DNS01CheckResult, error) {
-	settings := h.settingsFor(ctx)
+// optionCheckRecursiveNSPropagation turns the recursive resolver check on for
+// a certificate. It replaces disable_recursive_ns_propagation, whose false
+// value the challenge form of 1.0.0 wrote for every certificate it saved.
+const optionCheckRecursiveNSPropagation = "check_recursive_ns_propagation"
 
-	opts := check.Options{
+// Check runs the DNS propagation check for one challenge record.
+//
+// With both nameserver checks off nothing is left to query. The plugin then
+// reports dns01.check as unsupported, and NGINX UI waits a fixed time before
+// asking for validation, as the challenge form describes.
+func (h *Handler) Check(ctx context.Context, params protocol.DNS01CheckParams) (protocol.DNS01CheckResult, error) {
+	opts := checkOptions(params, h.settingsFor(ctx))
+	if opts.DisableAuthoritativeNSPropagation && opts.DisableRecursiveNSPropagation {
+		return protocol.DNS01CheckResult{}, sdk.Unsupported(protocol.MethodDNS01Check)
+	}
+	return check.Propagated(ctx, opts)
+}
+
+// checkOptions maps a check request onto the checker options.
+//
+// The recursive check only runs when the certificate turned it on with
+// check_recursive_ns_propagation. Before the providers moved into this plugin,
+// NGINX UI only waited for the authoritative nameservers, because local
+// resolvers such as systemd-resolved at 127.0.0.53 often do not return a fresh
+// TXT record in time (0xJacky/nginx-ui#1711, #1719). The older
+// disable_recursive_ns_propagation option can only keep the check off.
+func checkOptions(params protocol.DNS01CheckParams, settings Settings) check.Options {
+	return check.Options{
 		FQDN:                              params.FQDN,
 		Value:                             params.Value,
 		RecursiveNameservers:              settings.RecursiveNameservers,
 		DisableCNAME:                      boolOption(params.Options, protocol.DNS01OptionDisableCNAME),
 		DisableAuthoritativeNSPropagation: boolOption(params.Options, protocol.DNS01OptionDisableAuthoritativeNSPropagation),
-		DisableRecursiveNSPropagation:     boolOption(params.Options, protocol.DNS01OptionDisableRecursiveNSPropagation),
+		DisableRecursiveNSPropagation:     !boolOption(params.Options, optionCheckRecursiveNSPropagation),
 	}
-
-	return check.Propagated(ctx, opts)
 }
 
 // applyCNAMEOption exports LEGO_DISABLE_CNAME_SUPPORT for the duration of the

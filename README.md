@@ -16,10 +16,10 @@ waits for the record to propagate and cleans it up afterwards.
 * Credential validation without issuing a certificate: the plugin builds the
   provider from the values you entered and reports the first field that is
   missing.
-* Propagation check against the zone's authoritative nameservers and against
-  your recursive resolvers, with CNAME delegation support.
-* Per-certificate switches to disable CNAME following, the authoritative check
-  or the recursive check when a network does not allow them.
+* Propagation check against the zone's authoritative nameservers, with CNAME
+  delegation support, and on request against your recursive resolvers.
+* Per-certificate switches to disable CNAME following or the authoritative
+  check, and to turn on the recursive check.
 * Propagation timings reported per provider, so NGINX UI waits as long as the
   vendor actually needs instead of using one global timeout.
 * Runs on demand: the host starts the process when a certificate needs it and
@@ -57,8 +57,8 @@ Per-certificate options travel with the request rather than the settings:
 | Option | Effect |
 | --- | --- |
 | `disable_cname` | Do not follow the challenge record's CNAME. Also exported as `LEGO_DISABLE_CNAME_SUPPORT` for the duration of the call. |
-| `disable_authoritative_ns_propagation` | Skip the authoritative nameserver check. |
-| `disable_recursive_ns_propagation` | Skip the recursive nameserver check. |
+| `disable_authoritative_ns_propagation` | Skip the authoritative nameserver check. When the recursive check is off too, `dns01.check` reports itself unsupported and NGINX UI waits a fixed 60 seconds instead. |
+| `check_recursive_ns_propagation` | Also wait for the recursive nameservers. Off by default: the check stays on the authoritative nameservers, as NGINX UI did before the providers moved into this plugin, because local resolvers such as systemd-resolved often do not return a fresh TXT record in time. The older `disable_recursive_ns_propagation` option is no longer read. |
 
 ## Credential fields
 
@@ -113,8 +113,8 @@ plugin.
 [@nginxui/plugin-sdk](https://github.com/nginxui/plugin-sdk-web),
 that replaces the host's built-in DNS-01 challenge form
 (`certificate.challenge.form:dns01`) with one that also exposes the plugin's
-own per-certificate options: disabling CNAME following, and skipping the
-authoritative or the recursive nameserver propagation check.
+own per-certificate options: disabling CNAME following, skipping the
+authoritative nameserver check and turning on the recursive one.
 
 ```bash
 cd webapp

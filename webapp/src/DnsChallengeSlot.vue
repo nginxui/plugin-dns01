@@ -56,6 +56,8 @@ interface CheckItem {
   title: string
   description: string
   offSummary: string
+  /** The state a certificate that never set the option gets. */
+  defaultOn: boolean
 }
 
 const props = defineProps<{
@@ -88,7 +90,7 @@ const isAdvancedOpen = ref(false)
 const checks = reactive<Record<CheckKey, boolean>>({
   followCname: true,
   checkAuthoritative: true,
-  checkRecursive: true,
+  checkRecursive: false,
 })
 
 const checkItems = computed<CheckItem[]>(() => [
@@ -97,24 +99,29 @@ const checkItems = computed<CheckItem[]>(() => [
     title: $t('Follow CNAME'),
     description: $t('Keep on when the validation record of a domain is delegated to another domain.'),
     offSummary: $t('CNAME following off'),
+    defaultOn: true,
   },
   {
     key: 'checkAuthoritative',
     title: $t('Check authoritative servers'),
     description: $t('When off, waits a fixed 60 seconds before asking for validation.'),
     offSummary: $t('Authoritative server check off'),
+    defaultOn: true,
   },
   {
     key: 'checkRecursive',
     title: $t('Check public resolvers'),
     description: $t('Confirms the record is visible through the recursive DNS servers set in the plugin settings.'),
     offSummary: $t('Public resolver check off'),
+    defaultOn: false,
   },
 ])
 
 const changedSummary = computed(() => checkItems.value
-  .filter(item => !checks[item.key])
-  .map(item => item.offSummary))
+  .filter(item => checks[item.key] !== item.defaultOn)
+  .map(item => checks[item.key]
+    ? item.title
+    : item.offSummary))
 
 const openCredentialEditor = shared.ui?.openDnsCredentialEditor
 
@@ -267,7 +274,10 @@ function initSwitches() {
   const config = props.context.options.challenge_config ?? {}
   checks.followCname = !config.disable_cname
   checks.checkAuthoritative = !config.disable_authoritative_ns_propagation
-  checks.checkRecursive = !config.disable_recursive_ns_propagation
+  // Off unless the certificate turned it on. The disable_recursive_ns_propagation
+  // value earlier versions wrote is not read: it was false for every
+  // certificate they saved.
+  checks.checkRecursive = config.check_recursive_ns_propagation === true
 }
 
 // Mirrors the switches and the selected credential into challenge_config, the
@@ -286,7 +296,7 @@ watch(
       credential_id: credentialId ? String(credentialId) : '',
       disable_cname: !checks.followCname,
       disable_authoritative_ns_propagation: !checks.checkAuthoritative,
-      disable_recursive_ns_propagation: !checks.checkRecursive,
+      check_recursive_ns_propagation: checks.checkRecursive,
     }
   },
 )
