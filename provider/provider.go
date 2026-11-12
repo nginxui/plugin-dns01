@@ -295,18 +295,26 @@ func (h *Handler) Validate(_ context.Context, providerCode string, config map[st
 
 // Check runs the DNS propagation check for one challenge record.
 func (h *Handler) Check(ctx context.Context, params protocol.DNS01CheckParams) (protocol.DNS01CheckResult, error) {
-	settings := h.settingsFor(ctx)
+	return check.Propagated(ctx, checkOptions(params, h.settingsFor(ctx)))
+}
 
-	opts := check.Options{
+// checkOptions maps a check request onto the checker options.
+//
+// The recursive check only runs when the certificate asked for it by setting
+// disable_recursive_ns_propagation to false. Before the providers moved into
+// this plugin, NGINX UI only waited for the authoritative nameservers, because
+// local resolvers such as systemd-resolved at 127.0.0.53 often do not return a
+// fresh TXT record in time (0xJacky/nginx-ui#1711, #1719). Certificates that
+// never set the option keep that behaviour.
+func checkOptions(params protocol.DNS01CheckParams, settings Settings) check.Options {
+	return check.Options{
 		FQDN:                              params.FQDN,
 		Value:                             params.Value,
 		RecursiveNameservers:              settings.RecursiveNameservers,
 		DisableCNAME:                      boolOption(params.Options, protocol.DNS01OptionDisableCNAME),
 		DisableAuthoritativeNSPropagation: boolOption(params.Options, protocol.DNS01OptionDisableAuthoritativeNSPropagation),
-		DisableRecursiveNSPropagation:     boolOption(params.Options, protocol.DNS01OptionDisableRecursiveNSPropagation),
+		DisableRecursiveNSPropagation:     !optionSetToFalse(params.Options, protocol.DNS01OptionDisableRecursiveNSPropagation),
 	}
-
-	return check.Propagated(ctx, opts)
 }
 
 // applyCNAMEOption exports LEGO_DISABLE_CNAME_SUPPORT for the duration of the
@@ -336,6 +344,27 @@ func boolOption(options map[string]any, key string) bool {
 		return err == nil && parsed
 	case float64:
 		return value != 0
+	default:
+		return false
+	}
+}
+
+// optionSetToFalse reports whether a per-certificate option is present and
+// false, as opposed to missing.
+func optionSetToFalse(options map[string]any, key string) bool {
+	v, ok := options[key]
+	if !ok {
+		return false
+	}
+
+	switch value := v.(type) {
+	case bool:
+		return !value
+	case string:
+		parsed, err := strconv.ParseBool(strings.TrimSpace(value))
+		return err == nil && !parsed
+	case float64:
+		return value == 0
 	default:
 		return false
 	}
