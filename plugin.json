@@ -1,7 +1,7 @@
 {
   "id": "com.nginxui.dns01",
   "name": "DNS-01 Challenge",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Validate domains for certificates through DNS records, with more than 200 DNS providers.",
   "icon_path": "webapp/dist/icon.svg",
   "api_version": 1,
@@ -216,7 +216,7 @@
     "style_path": "webapp/dist/style.css",
     "shared": {
       "@vueuse/core": ">=15.0.0",
-      "antdv-next": "~1.5",
+      "antdv-next": ">=1.5.4 <2",
       "pinia": ">=4.0.3 <5",
       "vue": ">=3.5.42 <4",
       "vue-router": ">=5.3.1 <6"
