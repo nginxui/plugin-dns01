@@ -6,8 +6,12 @@ package provider
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"errors"
 	"fmt"
+	"maps"
+	"slices"
 	"strconv"
 	"strings"
 	"sync"
@@ -46,11 +50,36 @@ type Settings struct {
 	DefaultPropagationTimeout time.Duration
 }
 
+// presentedTTL bounds how long the provider that published a record is kept
+// for the cleanup of that record. lego cleans up right after the validation,
+// well within this, so the bound only stops a missed cleanup from leaking.
+const presentedTTL = 6 * time.Hour
+
 // Handler implements the dns01 capability on top of lego.
 type Handler struct {
 	mu         sync.RWMutex
 	settings   Settings
 	configured bool
+
+	// presented keeps the provider of every record Present published until
+	// CleanUp removes it. Many lego providers remember the vendor's record ID
+	// in memory during Present and cannot delete the record without it.
+	presentedMu sync.Mutex
+	presented   map[presentedKey]presentedEntry
+}
+
+// presentedKey names one published challenge record.
+type presentedKey struct {
+	provider    string
+	fingerprint string
+	domain      string
+	token       string
+	keyAuth     string
+}
+
+type presentedEntry struct {
+	provider challenge.Provider
+	expires  time.Time
 }
 
 // New builds a handler with lego's defaults.
@@ -193,9 +222,21 @@ func (h *Handler) solve(ctx context.Context, req sdk.DNS01Request, present bool)
 		return sdk.Internal(err.Error())
 	}
 
-	p, err := dnsproviders.NewDNSChallengeProviderByName(req.Provider)
-	if err != nil {
-		return configError(cfg, req.Config, err)
+	key := newPresentedKey(req)
+
+	// The cleanup goes through the provider that published the record, which
+	// may hold the record ID. A fresh one is the fallback when that provider is
+	// gone, for example because the plugin restarted in between.
+	var p challenge.Provider
+	if !present && !req.DryRun {
+		p = h.takePresented(key)
+	}
+	if p == nil {
+		var err error
+		p, err = dnsproviders.NewDNSChallengeProviderByName(req.Provider)
+		if err != nil {
+			return configError(cfg, req.Config, err)
+		}
 	}
 
 	if req.DryRun {
@@ -210,6 +251,7 @@ func (h *Handler) solve(ctx context.Context, req sdk.DNS01Request, present bool)
 		if err := p.Present(ctx, req.Domain, req.Token, req.KeyAuth); err != nil {
 			return sdk.Internal(err.Error())
 		}
+		h.keepPresented(key, p)
 		return nil
 	}
 
@@ -218,6 +260,60 @@ func (h *Handler) solve(ctx context.Context, req sdk.DNS01Request, present bool)
 		return sdk.Internal(err.Error())
 	}
 	return nil
+}
+
+// newPresentedKey identifies the record of a request. The fingerprint covers
+// the credentials and the options, so a cleanup sent with other credentials
+// never reuses the provider built from these.
+func newPresentedKey(req sdk.DNS01Request) presentedKey {
+	hash := sha256.New()
+	for _, k := range slices.Sorted(maps.Keys(req.Config)) {
+		fmt.Fprintf(hash, "c%d:%s=%d:%s\n", len(k), k, len(req.Config[k]), req.Config[k])
+	}
+	for _, k := range slices.Sorted(maps.Keys(req.Options)) {
+		v := fmt.Sprint(req.Options[k])
+		fmt.Fprintf(hash, "o%d:%s=%d:%s\n", len(k), k, len(v), v)
+	}
+	return presentedKey{
+		provider:    req.Provider,
+		fingerprint: hex.EncodeToString(hash.Sum(nil)),
+		domain:      req.Domain,
+		token:       req.Token,
+		keyAuth:     req.KeyAuth,
+	}
+}
+
+// keepPresented remembers the provider that published a record, dropping the
+// entries whose cleanup never came.
+func (h *Handler) keepPresented(key presentedKey, p challenge.Provider) {
+	h.presentedMu.Lock()
+	defer h.presentedMu.Unlock()
+
+	now := time.Now()
+	if h.presented == nil {
+		h.presented = make(map[presentedKey]presentedEntry)
+	}
+	maps.DeleteFunc(h.presented, func(_ presentedKey, e presentedEntry) bool {
+		return now.After(e.expires)
+	})
+	h.presented[key] = presentedEntry{provider: p, expires: now.Add(presentedTTL)}
+}
+
+// takePresented returns and forgets the provider that published a record, or
+// nil when there is none.
+func (h *Handler) takePresented(key presentedKey) challenge.Provider {
+	h.presentedMu.Lock()
+	defer h.presentedMu.Unlock()
+
+	entry, ok := h.presented[key]
+	if !ok {
+		return nil
+	}
+	delete(h.presented, key)
+	if time.Now().After(entry.expires) {
+		return nil
+	}
+	return entry.provider
 }
 
 // Options reports the propagation timings lego would use for the provider.
