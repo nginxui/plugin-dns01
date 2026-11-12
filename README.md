@@ -57,8 +57,8 @@ Per-certificate options travel with the request rather than the settings:
 | Option | Effect |
 | --- | --- |
 | `disable_cname` | Do not follow the challenge record's CNAME. Also exported as `LEGO_DISABLE_CNAME_SUPPORT` for the duration of the call. |
-| `disable_authoritative_ns_propagation` | Skip the authoritative nameserver check. |
-| `disable_recursive_ns_propagation` | Set it to `false` to also wait for the recursive nameservers. When it is missing or `true` the check stays on the authoritative nameservers, as NGINX UI did before the providers moved into this plugin: local resolvers such as systemd-resolved often do not return a fresh TXT record in time. |
+| `disable_authoritative_ns_propagation` | Skip the authoritative nameserver check. When the recursive check is off too, `dns01.check` reports itself unsupported and NGINX UI waits a fixed 60 seconds instead. |
+| `check_recursive_ns_propagation` | Also wait for the recursive nameservers. Off by default: the check stays on the authoritative nameservers, as NGINX UI did before the providers moved into this plugin, because local resolvers such as systemd-resolved often do not return a fresh TXT record in time. The older `disable_recursive_ns_propagation` option is no longer read. |
 
 ## Credential fields
 

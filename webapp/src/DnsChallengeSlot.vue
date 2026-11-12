@@ -274,9 +274,10 @@ function initSwitches() {
   const config = props.context.options.challenge_config ?? {}
   checks.followCname = !config.disable_cname
   checks.checkAuthoritative = !config.disable_authoritative_ns_propagation
-  // Off unless the certificate turned it on, matching what the plugin does
-  // when the option is missing.
-  checks.checkRecursive = config.disable_recursive_ns_propagation === false
+  // Off unless the certificate turned it on. The disable_recursive_ns_propagation
+  // value earlier versions wrote is not read: it was false for every
+  // certificate they saved.
+  checks.checkRecursive = config.check_recursive_ns_propagation === true
 }
 
 // Mirrors the switches and the selected credential into challenge_config, the
@@ -295,7 +296,7 @@ watch(
       credential_id: credentialId ? String(credentialId) : '',
       disable_cname: !checks.followCname,
       disable_authoritative_ns_propagation: !checks.checkAuthoritative,
-      disable_recursive_ns_propagation: !checks.checkRecursive,
+      check_recursive_ns_propagation: checks.checkRecursive,
     }
   },
 )

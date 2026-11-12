@@ -293,19 +293,32 @@ func (h *Handler) Validate(_ context.Context, providerCode string, config map[st
 	return nil
 }
 
+// optionCheckRecursiveNSPropagation turns the recursive resolver check on for
+// a certificate. It replaces disable_recursive_ns_propagation, whose false
+// value the challenge form of 1.0.0 wrote for every certificate it saved.
+const optionCheckRecursiveNSPropagation = "check_recursive_ns_propagation"
+
 // Check runs the DNS propagation check for one challenge record.
+//
+// With both nameserver checks off nothing is left to query. The plugin then
+// reports dns01.check as unsupported, and NGINX UI waits a fixed time before
+// asking for validation, as the challenge form describes.
 func (h *Handler) Check(ctx context.Context, params protocol.DNS01CheckParams) (protocol.DNS01CheckResult, error) {
-	return check.Propagated(ctx, checkOptions(params, h.settingsFor(ctx)))
+	opts := checkOptions(params, h.settingsFor(ctx))
+	if opts.DisableAuthoritativeNSPropagation && opts.DisableRecursiveNSPropagation {
+		return protocol.DNS01CheckResult{}, sdk.Unsupported(protocol.MethodDNS01Check)
+	}
+	return check.Propagated(ctx, opts)
 }
 
 // checkOptions maps a check request onto the checker options.
 //
-// The recursive check only runs when the certificate asked for it by setting
-// disable_recursive_ns_propagation to false. Before the providers moved into
-// this plugin, NGINX UI only waited for the authoritative nameservers, because
-// local resolvers such as systemd-resolved at 127.0.0.53 often do not return a
-// fresh TXT record in time (0xJacky/nginx-ui#1711, #1719). Certificates that
-// never set the option keep that behaviour.
+// The recursive check only runs when the certificate turned it on with
+// check_recursive_ns_propagation. Before the providers moved into this plugin,
+// NGINX UI only waited for the authoritative nameservers, because local
+// resolvers such as systemd-resolved at 127.0.0.53 often do not return a fresh
+// TXT record in time (0xJacky/nginx-ui#1711, #1719). The older
+// disable_recursive_ns_propagation option can only keep the check off.
 func checkOptions(params protocol.DNS01CheckParams, settings Settings) check.Options {
 	return check.Options{
 		FQDN:                              params.FQDN,
@@ -313,7 +326,7 @@ func checkOptions(params protocol.DNS01CheckParams, settings Settings) check.Opt
 		RecursiveNameservers:              settings.RecursiveNameservers,
 		DisableCNAME:                      boolOption(params.Options, protocol.DNS01OptionDisableCNAME),
 		DisableAuthoritativeNSPropagation: boolOption(params.Options, protocol.DNS01OptionDisableAuthoritativeNSPropagation),
-		DisableRecursiveNSPropagation:     !optionSetToFalse(params.Options, protocol.DNS01OptionDisableRecursiveNSPropagation),
+		DisableRecursiveNSPropagation:     !boolOption(params.Options, optionCheckRecursiveNSPropagation),
 	}
 }
 
@@ -344,27 +357,6 @@ func boolOption(options map[string]any, key string) bool {
 		return err == nil && parsed
 	case float64:
 		return value != 0
-	default:
-		return false
-	}
-}
-
-// optionSetToFalse reports whether a per-certificate option is present and
-// false, as opposed to missing.
-func optionSetToFalse(options map[string]any, key string) bool {
-	v, ok := options[key]
-	if !ok {
-		return false
-	}
-
-	switch value := v.(type) {
-	case bool:
-		return !value
-	case string:
-		parsed, err := strconv.ParseBool(strings.TrimSpace(value))
-		return err == nil && !parsed
-	case float64:
-		return value == 0
 	default:
 		return false
 	}

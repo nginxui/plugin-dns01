@@ -1,14 +1,17 @@
 package provider
 
 import (
+	"errors"
 	"strings"
 	"testing"
 
 	"github.com/nginxui/plugin-sdk-go/protocol"
 )
 
-// The recursive check is opt-in: a certificate that never set the option only
-// waits for the authoritative nameservers, as NGINX UI 2.x did.
+// The recursive check is opt-in: a certificate that never turned it on only
+// waits for the authoritative nameservers, as NGINX UI 2.x did. The false value
+// of the older disable option, written by the 1.0.0 form for every
+// certificate, does not turn it on.
 func TestCheckOptionsRecursiveCheckIsOptIn(t *testing.T) {
 	cases := []struct {
 		name          string
@@ -17,11 +20,19 @@ func TestCheckOptionsRecursiveCheckIsOptIn(t *testing.T) {
 	}{
 		{name: "no options", options: nil, skipRecursive: true},
 		{name: "option missing", options: map[string]any{protocol.DNS01OptionDisableCNAME: true}, skipRecursive: true},
-		{name: "disabled", options: map[string]any{protocol.DNS01OptionDisableRecursiveNSPropagation: true}, skipRecursive: true},
-		{name: "turned on", options: map[string]any{protocol.DNS01OptionDisableRecursiveNSPropagation: false}, skipRecursive: false},
-		{name: "turned on as string", options: map[string]any{protocol.DNS01OptionDisableRecursiveNSPropagation: "false"}, skipRecursive: false},
-		{name: "turned on as number", options: map[string]any{protocol.DNS01OptionDisableRecursiveNSPropagation: float64(0)}, skipRecursive: false},
-		{name: "unreadable value", options: map[string]any{protocol.DNS01OptionDisableRecursiveNSPropagation: "maybe"}, skipRecursive: true},
+		{name: "legacy disable false", options: map[string]any{protocol.DNS01OptionDisableRecursiveNSPropagation: false}, skipRecursive: true},
+		{name: "legacy disable true", options: map[string]any{protocol.DNS01OptionDisableRecursiveNSPropagation: true}, skipRecursive: true},
+		{name: "turned off", options: map[string]any{optionCheckRecursiveNSPropagation: false}, skipRecursive: true},
+		{name: "turned on", options: map[string]any{optionCheckRecursiveNSPropagation: true}, skipRecursive: false},
+		{name: "turned on as string", options: map[string]any{optionCheckRecursiveNSPropagation: "true"}, skipRecursive: false},
+		{
+			name: "turned on with a legacy false",
+			options: map[string]any{
+				optionCheckRecursiveNSPropagation:                 true,
+				protocol.DNS01OptionDisableRecursiveNSPropagation: false,
+			},
+			skipRecursive: false,
+		},
 	}
 
 	for _, tc := range cases {
@@ -77,5 +88,45 @@ func TestCheckSkipsRecursiveResolversByDefault(t *testing.T) {
 	}
 	if strings.HasPrefix(result.Detail, "recursive nameservers:") {
 		t.Fatalf("Detail = %q, the recursive check ran although the certificate never asked for it", result.Detail)
+	}
+}
+
+// With both nameserver checks off the plugin must not report the record as
+// ready on the spot: it hands the wait back to the host, which waits a fixed
+// time before asking for validation.
+func TestCheckWithBothChecksOffDefersToTheHost(t *testing.T) {
+	h := New()
+	_, err := h.Check(t.Context(), protocol.DNS01CheckParams{
+		FQDN:    "_acme-challenge.example.com.",
+		Value:   "value",
+		Options: map[string]any{protocol.DNS01OptionDisableAuthoritativeNSPropagation: true},
+	})
+
+	var rpcErr *protocol.Error
+	if !errors.As(err, &rpcErr) || rpcErr.Code != protocol.CodeUnsupported {
+		t.Fatalf("Check = %v, want an unsupported error so the host waits instead", err)
+	}
+}
+
+// With the authoritative check off and the recursive one on, the recursive
+// resolvers are still queried.
+func TestCheckWithOnlyTheRecursiveCheckQueriesIt(t *testing.T) {
+	h := New()
+	h.SetSettings(Settings{RecursiveNameservers: []string{"127.0.0.1:1"}})
+
+	result, err := h.Check(t.Context(), protocol.DNS01CheckParams{
+		FQDN:  "_acme-challenge.example.com.",
+		Value: "value",
+		Options: map[string]any{
+			protocol.DNS01OptionDisableCNAME:                      true,
+			protocol.DNS01OptionDisableAuthoritativeNSPropagation: true,
+			optionCheckRecursiveNSPropagation:                     true,
+		},
+	})
+	if err != nil {
+		t.Fatalf("Check: %v", err)
+	}
+	if result.Ready || !strings.HasPrefix(result.Detail, "recursive nameservers:") {
+		t.Fatalf("result = %+v, want not ready on the recursive check", result)
 	}
 }
