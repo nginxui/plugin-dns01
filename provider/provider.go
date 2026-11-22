@@ -1,7 +1,8 @@
 // Package provider bridges the nginx-ui dns01 capability onto lego's DNS
-// providers. lego configures a provider from process environment variables, so
-// every call here takes a package wide lock, exports the user's configuration,
-// runs the provider and restores the previous environment.
+// providers. lego configures a provider from process environment variables and
+// finds the zone through a process wide DNS client, so every call here takes a
+// package wide lock, exports the user's configuration, points the DNS client at
+// the configured resolvers, runs the provider and restores the previous state.
 package provider
 
 import (
@@ -31,7 +32,9 @@ import (
 // challenge record.
 const envDisableCNAME = "LEGO_DISABLE_CNAME_SUPPORT"
 
-// envMu serializes every call that touches the process environment.
+// envMu serializes every call that touches the process environment or lego's
+// default DNS client, and every call that runs lego provider code, which reads
+// both.
 var envMu sync.Mutex
 
 // sequentialProvider is lego's unexported interface for providers that must
@@ -42,8 +45,9 @@ type sequentialProvider interface {
 
 // Settings are the plugin settings the host pushes on configure.
 type Settings struct {
-	// RecursiveNameservers are queried during the propagation check. Empty
-	// means the system resolvers.
+	// RecursiveNameservers are queried for the zone lookup the providers do
+	// when they present and clean up a record, and during the propagation
+	// check. Empty means the system resolvers.
 	RecursiveNameservers []string
 	// DefaultPropagationTimeout applies to providers that do not report a
 	// timeout of their own. Zero means lego's default.
@@ -222,6 +226,11 @@ func (h *Handler) solve(ctx context.Context, req sdk.DNS01Request, present bool)
 		return sdk.Internal(err.Error())
 	}
 
+	// Set before the provider is built: some providers bind the default
+	// client's zone lookup in their constructor.
+	restoreDNSClient := useRecursiveNameservers(h.settingsFor(ctx).RecursiveNameservers)
+	defer restoreDNSClient()
+
 	key := newPresentedKey(req)
 
 	// The cleanup goes through the provider that published the record, which
@@ -260,6 +269,32 @@ func (h *Handler) solve(ctx context.Context, req sdk.DNS01Request, present bool)
 		return sdk.Internal(err.Error())
 	}
 	return nil
+}
+
+// useRecursiveNameservers makes lego's default DNS client query the given
+// recursive nameservers and returns the function that puts the previous client
+// back. lego's providers find the zone, and follow the challenge record's
+// CNAME, through that client in Present and CleanUp; without this they ask the
+// system resolvers, which with split-horizon DNS answer for an internal zone
+// the DNS vendor does not know (nginxui/plugin-dns01#4). NGINX UI 2.x swapped
+// the client the same way around every certificate it issued.
+//
+// With no nameservers the default client, which reads the system resolvers, is
+// left alone. lego adds port 53 to an entry without a port.
+//
+// The client is process wide, so the caller must hold envMu until it has
+// restored the previous client.
+func useRecursiveNameservers(nameservers []string) (restore func()) {
+	if len(nameservers) == 0 {
+		return func() {}
+	}
+
+	opts := dns01.NewOptions()
+	opts.RecursiveNameservers = slices.Clone(nameservers)
+
+	previous := dns01.DefaultClient()
+	dns01.SetDefaultClient(dns01.NewClient(opts))
+	return func() { dns01.SetDefaultClient(previous) }
 }
 
 // newPresentedKey identifies the record of a request. The fingerprint covers
