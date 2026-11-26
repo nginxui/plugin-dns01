@@ -24,7 +24,7 @@ export default {
   'Public resolver check off': 'فحص المحللات العامة متوقف',
   // Settings schema
   'Recursive DNS servers': 'خوادم DNS التكرارية',
-  'Used to check that DNS records are visible. Empty means the system resolvers.': 'تُستخدم للتحقق من ظهور سجلات DNS. يعني الفراغ استخدام محللات النظام.',
+  'Used to find the DNS zone of a domain and to check that DNS records are visible. Empty means the system resolvers. Set public resolvers such as 1.1.1.1:53 if your network has an internal DNS zone for the domain.': 'تُستخدم للعثور على منطقة DNS الخاصة بالنطاق وللتحقق من ظهور سجلات DNS. يعني الفراغ استخدام محللات النظام. أدخل محللات عامة مثل 1.1.1.1:53 إذا كانت شبكتك تحتوي على منطقة DNS داخلية للنطاق.',
   'Default wait time (seconds)': 'مدة الانتظار الافتراضية (بالثواني)',
   'How long to wait at most for a record to become visible when the provider does not say.': 'أقصى مدة انتظار لظهور السجل عندما لا يحددها المزود.',
 }

@@ -24,7 +24,7 @@ export default {
   'Public resolver check off': 'Перевірку публічних резолверів вимкнено',
   // Settings schema
   'Recursive DNS servers': 'Рекурсивні DNS-сервери',
-  'Used to check that DNS records are visible. Empty means the system resolvers.': 'Використовуються для перевірки видимості DNS-записів. Порожнє значення означає системні резолвери.',
+  'Used to find the DNS zone of a domain and to check that DNS records are visible. Empty means the system resolvers. Set public resolvers such as 1.1.1.1:53 if your network has an internal DNS zone for the domain.': 'Використовуються для пошуку DNS-зони домену та перевірки видимості DNS-записів. Порожнє значення означає системні резолвери. Вкажіть публічні резолвери, наприклад 1.1.1.1:53, якщо у вашій мережі є внутрішня DNS-зона для домену.',
   'Default wait time (seconds)': 'Типовий час очікування (секунди)',
   'How long to wait at most for a record to become visible when the provider does not say.': 'Максимальний час очікування появи запису, якщо провайдер його не вказує.',
 }

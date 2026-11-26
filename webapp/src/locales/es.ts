@@ -24,7 +24,7 @@ export default {
   'Public resolver check off': 'Comprobación de resolvedores públicos desactivada',
   // Settings schema
   'Recursive DNS servers': 'Servidores DNS recursivos',
-  'Used to check that DNS records are visible. Empty means the system resolvers.': 'Se usan para comprobar que los registros DNS son visibles. Vacío significa los resolvedores del sistema.',
+  'Used to find the DNS zone of a domain and to check that DNS records are visible. Empty means the system resolvers. Set public resolvers such as 1.1.1.1:53 if your network has an internal DNS zone for the domain.': 'Se usan para encontrar la zona DNS de un dominio y comprobar que los registros DNS son visibles. Vacío significa los resolvedores del sistema. Indique resolvedores públicos como 1.1.1.1:53 si su red tiene una zona DNS interna para el dominio.',
   'Default wait time (seconds)': 'Tiempo de espera predeterminado (segundos)',
   'How long to wait at most for a record to become visible when the provider does not say.': 'Tiempo máximo de espera para que un registro sea visible cuando el proveedor no lo indica.',
 }

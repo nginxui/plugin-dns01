@@ -24,7 +24,7 @@ export default {
   'Public resolver check off': '공용 리졸버 확인 꺼짐',
   // Settings schema
   'Recursive DNS servers': '재귀 DNS 서버',
-  'Used to check that DNS records are visible. Empty means the system resolvers.': 'DNS 레코드가 보이는지 확인하는 데 사용합니다. 비워 두면 시스템 리졸버를 사용합니다.',
+  'Used to find the DNS zone of a domain and to check that DNS records are visible. Empty means the system resolvers. Set public resolvers such as 1.1.1.1:53 if your network has an internal DNS zone for the domain.': '도메인의 DNS 영역을 찾고 DNS 레코드가 보이는지 확인하는 데 사용합니다. 비워 두면 시스템 리졸버를 사용합니다. 네트워크에 해당 도메인의 내부 DNS 영역이 있으면 1.1.1.1:53 같은 공용 리졸버를 지정하세요.',
   'Default wait time (seconds)': '기본 대기 시간(초)',
   'How long to wait at most for a record to become visible when the provider does not say.': '제공자가 지정하지 않을 때 레코드가 보이기까지 기다리는 최대 시간입니다.',
 }

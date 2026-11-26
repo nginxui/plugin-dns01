@@ -49,7 +49,7 @@ own.
 
 | Key | Type | Default | Meaning |
 | --- | --- | --- | --- |
-| `recursive_nameservers` | list | empty | `host:port` entries used for the propagation check and the zone lookup. An entry without a port gets `:53`. Empty means the system resolvers from `/etc/resolv.conf`, falling back to `1.1.1.1` and `1.0.0.1`. A comma separated string from older hosts is still accepted. |
+| `recursive_nameservers` | list | empty | `host:port` entries used for the propagation check and the zone lookup. An entry without a port gets `:53`. Empty means the system resolvers from `/etc/resolv.conf`, falling back to `1.1.1.1` and `1.0.0.1`. Set public resolvers when the system resolver serves an internal (split-horizon) zone for the domain: the providers take the zone name from the SOA record the resolver returns, and the DNS vendor does not know the internal zone. A comma separated string from older hosts is still accepted. |
 | `default_propagation_timeout_seconds` | number | 120 | Applied to providers that do not report a propagation timeout of their own. Providers that do report one always win. lego's own default is 60 seconds. |
 
 Per-certificate options travel with the request rather than the settings:

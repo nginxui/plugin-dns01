@@ -320,7 +320,7 @@ func Build() (*protocol.Manifest, error) {
 					Key:         "recursive_nameservers",
 					Type:        "list",
 					DisplayName: "Recursive DNS servers",
-					HelpText:    "Used to check that DNS records are visible. Empty means the system resolvers.",
+					HelpText:    "Used to find the DNS zone of a domain and to check that DNS records are visible. Empty means the system resolvers. Set public resolvers such as 1.1.1.1:53 if your network has an internal DNS zone for the domain.",
 					Default:     []string{},
 				},
 				{

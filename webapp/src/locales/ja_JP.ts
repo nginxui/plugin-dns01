@@ -24,7 +24,7 @@ export default {
   'Public resolver check off': 'パブリックリゾルバー確認オフ',
   // Settings schema
   'Recursive DNS servers': '再帰 DNS サーバー',
-  'Used to check that DNS records are visible. Empty means the system resolvers.': 'DNS レコードが見えるかどうかの確認に使います。空欄の場合はシステムのリゾルバーを使います。',
+  'Used to find the DNS zone of a domain and to check that DNS records are visible. Empty means the system resolvers. Set public resolvers such as 1.1.1.1:53 if your network has an internal DNS zone for the domain.': 'ドメインの DNS ゾーンの検索と、DNS レコードが見えるかどうかの確認に使います。空欄の場合はシステムのリゾルバーを使います。ネットワーク内にそのドメインの内部 DNS ゾーンがある場合は、1.1.1.1:53 などのパブリックリゾルバーを指定してください。',
   'Default wait time (seconds)': 'デフォルトの待機時間（秒）',
   'How long to wait at most for a record to become visible when the provider does not say.': 'プロバイダーが指定しない場合に、レコードが見えるようになるまで待つ最大時間です。',
 }

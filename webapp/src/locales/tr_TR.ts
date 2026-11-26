@@ -24,7 +24,7 @@ export default {
   'Public resolver check off': 'Genel çözümleyici denetimi kapalı',
   // Settings schema
   'Recursive DNS servers': 'Özyinelemeli DNS sunucuları',
-  'Used to check that DNS records are visible. Empty means the system resolvers.': 'DNS kayıtlarının görünür olup olmadığını denetlemek için kullanılır. Boş bırakılırsa sistem çözümleyicileri kullanılır.',
+  'Used to find the DNS zone of a domain and to check that DNS records are visible. Empty means the system resolvers. Set public resolvers such as 1.1.1.1:53 if your network has an internal DNS zone for the domain.': 'Bir alan adının DNS bölgesini bulmak ve DNS kayıtlarının görünür olup olmadığını denetlemek için kullanılır. Boş bırakılırsa sistem çözümleyicileri kullanılır. Ağınızda alan adı için dahili bir DNS bölgesi varsa 1.1.1.1:53 gibi genel çözümleyiciler girin.',
   'Default wait time (seconds)': 'Varsayılan bekleme süresi (saniye)',
   'How long to wait at most for a record to become visible when the provider does not say.': 'Sağlayıcı belirtmediğinde bir kaydın görünür olması için beklenecek en uzun süre.',
 }

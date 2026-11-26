@@ -24,7 +24,7 @@ export default {
   'Public resolver check off': '已关闭公共解析服务器检查',
   // Settings schema
   'Recursive DNS servers': '递归 DNS 服务器',
-  'Used to check that DNS records are visible. Empty means the system resolvers.': '用于检查 DNS 记录是否可见。留空则使用系统解析服务器。',
+  'Used to find the DNS zone of a domain and to check that DNS records are visible. Empty means the system resolvers. Set public resolvers such as 1.1.1.1:53 if your network has an internal DNS zone for the domain.': '用于查找域名所在的 DNS 区域，并检查 DNS 记录是否可见。留空则使用系统解析服务器。如果内网为该域名配置了内部 DNS 区域，请填写公共解析服务器，例如 1.1.1.1:53。',
   'Default wait time (seconds)': '默认等待时间（秒）',
   'How long to wait at most for a record to become visible when the provider does not say.': '服务商未指定时，等待记录生效的最长时间。',
 }
