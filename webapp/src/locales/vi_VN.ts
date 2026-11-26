@@ -24,7 +24,7 @@ export default {
   'Public resolver check off': 'Đã tắt kiểm tra trình phân giải công cộng',
   // Settings schema
   'Recursive DNS servers': 'Máy chủ DNS đệ quy',
-  'Used to check that DNS records are visible. Empty means the system resolvers.': 'Dùng để kiểm tra bản ghi DNS đã hiển thị chưa. Để trống nghĩa là dùng trình phân giải của hệ thống.',
+  'Used to find the DNS zone of a domain and to check that DNS records are visible. Empty means the system resolvers. Set public resolvers such as 1.1.1.1:53 if your network has an internal DNS zone for the domain.': 'Dùng để tìm vùng DNS của tên miền và kiểm tra bản ghi DNS đã hiển thị chưa. Để trống nghĩa là dùng trình phân giải của hệ thống. Hãy nhập trình phân giải công cộng như 1.1.1.1:53 nếu mạng của bạn có vùng DNS nội bộ cho tên miền.',
   'Default wait time (seconds)': 'Thời gian chờ mặc định (giây)',
   'How long to wait at most for a record to become visible when the provider does not say.': 'Thời gian chờ tối đa để bản ghi hiển thị khi nhà cung cấp không chỉ định.',
 }

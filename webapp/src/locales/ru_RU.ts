@@ -24,7 +24,7 @@ export default {
   'Public resolver check off': 'Проверка публичных резолверов выключена',
   // Settings schema
   'Recursive DNS servers': 'Рекурсивные DNS-серверы',
-  'Used to check that DNS records are visible. Empty means the system resolvers.': 'Используются для проверки видимости DNS-записей. Пустое значение означает системные резолверы.',
+  'Used to find the DNS zone of a domain and to check that DNS records are visible. Empty means the system resolvers. Set public resolvers such as 1.1.1.1:53 if your network has an internal DNS zone for the domain.': 'Используются для поиска DNS-зоны домена и проверки видимости DNS-записей. Пустое значение означает системные резолверы. Укажите публичные резолверы, например 1.1.1.1:53, если в вашей сети есть внутренняя DNS-зона для домена.',
   'Default wait time (seconds)': 'Время ожидания по умолчанию (секунды)',
   'How long to wait at most for a record to become visible when the provider does not say.': 'Максимальное время ожидания появления записи, если провайдер его не указывает.',
 }
