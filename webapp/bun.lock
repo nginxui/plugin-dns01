@@ -5,7 +5,7 @@
     "": {
       "name": "plugin-dns01-webapp",
       "dependencies": {
-        "@nginxui/plugin-sdk": "^0.1.1",
+        "@nginxui/plugin-sdk": "^0.1.2",
       },
       "devDependencies": {
         "@antdv-next/icons": "^1.1.2",
@@ -111,7 +111,7 @@
 
     "@napi-rs/lzma-linux-x64-gnu": ["@napi-rs/lzma-linux-x64-gnu@1.5.1", "", { "os": "linux", "cpu": "x64" }, "sha512-oTXEIha4SsuXdTA4Iyskj0kpdx2yVXdhd75c2v3xGrHFfVMsbhTPZU/nMPL4sWKo4pBHm3aucLaqGlF696dTyQ=="],
 
-    "@nginxui/plugin-sdk": ["@nginxui/plugin-sdk@0.1.1", "", { "peerDependencies": { "vite": ">=5" }, "optionalPeers": ["vite"] }, "sha512-KuJhs8NbZD3HQE8GWS2TpFXj7P+hMwbYcsJmRotHx8tlXHaBk4jxKqIc1SrPy3bwdwJOuB5mkpaUT9QSJ64/8Q=="],
+    "@nginxui/plugin-sdk": ["@nginxui/plugin-sdk@0.1.2", "", { "peerDependencies": { "vite": ">=5" }, "optionalPeers": ["vite"] }, "sha512-TqwH699Rusglw0AAke7127zztFIi4qMCPvg8GEXZYL4PEno0LwrfTKJDlJsLqglunQUYt95ilyWHyiiYxvwUjg=="],
 
     "@rolldown/pluginutils": ["@rolldown/pluginutils@1.0.1", "", {}, "sha512-2j9bGt5Jh8hj+vPtgzPtl72j0yRxHAyumoo6TNfAjsLB04UtpSvPbPcDcBMxz7n+9CYB0c1GxQFxYRg2jimqGw=="],
 
