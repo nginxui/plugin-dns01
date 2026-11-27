@@ -18,7 +18,7 @@ import {
 } from 'antdv-next'
 import { computed, h, onMounted, reactive, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { getCoreHttp } from './host'
+import { listDnsCredentials } from './host'
 
 // Fields this component reads and writes on AutoCertOptions. Kept local and
 // loose: the plugin does not depend on the host's TypeScript sources.
@@ -37,11 +37,6 @@ interface DnsCredential {
   provider?: string
   provider_code?: string
   code: string
-}
-
-interface DnsCredentialListResponse {
-  data: DnsCredential[]
-  pagination?: { per_page?: number }
 }
 
 interface GettextLike {
@@ -177,34 +172,16 @@ async function loadCredentials() {
   loading.value = true
   hasLoadError.value = false
   try {
-    const list: DnsCredential[] = []
-    const http = getCoreHttp()
-    let page = 1
-
-    // Same pagination loop as the host's fallback DNSChallenge.vue.
-    while (true) {
-      try {
-        const response = await http.get<DnsCredentialListResponse>('/dns_credentials', { params: { page } })
-        const data = response?.data ?? []
-        list.push(...data)
-
-        const perPage = response?.pagination?.per_page ?? 0
-        if (!perPage || data.length < perPage)
-          break
-
-        page++
-      }
-      catch {
-        hasLoadError.value = true
-        break
-      }
-    }
-    credentials.value = list
+    credentials.value = await listDnsCredentials()
 
     // Refresh the provider fields of the saved credential. A missing one is
     // kept so the form can tell the user it was deleted.
     if (currentCredential.value)
       applyCredentialMeta(currentCredential.value)
+  }
+  catch {
+    credentials.value = []
+    hasLoadError.value = true
   }
   finally {
     loading.value = false
