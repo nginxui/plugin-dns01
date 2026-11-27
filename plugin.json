@@ -1,7 +1,7 @@
 {
   "id": "com.nginxui.dns01",
   "name": "DNS-01 Challenge",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Validate domains for certificates through DNS records, with more than 200 DNS providers.",
   "icon_path": "webapp/dist/icon.svg",
   "api_version": 1,
